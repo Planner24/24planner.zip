@@ -4,7 +4,7 @@ package com.example.p24zip.domain.user.service;
 import com.example.p24zip.domain.user.dto.request.SignupRequestDto;
 import com.example.p24zip.domain.user.entity.User;
 import com.example.p24zip.domain.user.repository.UserRepository;
-import com.example.p24zip.global.exception.ResourceNotFoundException;
+import com.example.p24zip.global.exception.ExistEmailException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,15 +20,15 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void signup(@Valid SignupRequestDto requestDto) {
-        boolean checkUsername = checkExistsUsername(requestDto.getEmail());
+    public void signup(@Valid SignupRequestDto signupRequestDto) {
+        boolean checkUsername = checkExistsUsername(signupRequestDto.getEmail());
 
         if (checkUsername) {
-            throw new ResourceNotFoundException("유효하지 않은 입력값입니다.");
+            throw new ExistEmailException("EXIST_EMAIL", "이미 사용중인 이메일입니다.");
         }
 
-        User user = requestDto.toEntity();
-        String encryptedPassword = passwordEncoder.encode(requestDto.getPassword());
+        User user = signupRequestDto.toEntity();
+        String encryptedPassword = passwordEncoder.encode(signupRequestDto.getPassword());
         user.setPassword(encryptedPassword);
         userRepository.save(user);
     }
