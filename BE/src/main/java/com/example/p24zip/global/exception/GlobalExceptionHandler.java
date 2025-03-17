@@ -20,8 +20,8 @@ public class GlobalExceptionHandler {
     /**
      * 이미 사용되고 있는 이메일 아이디가 있을 때
      **/
-    @ExceptionHandler(ExistEmailException.class)
-    public ResponseEntity<ApiResponse<Void>> handleCustomExistEmail(ExistEmailException ex) {
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ApiResponse<Void>> handleCustomExistEmail(CustomException ex) {
 //    public ResponseEntity<Void> handleCustomExistEmail(ExistEmailException ex) {
 //        ResponseEntity<Void> ResponseEntity = null;
 //        return ResponseEntity;
