@@ -1,6 +1,8 @@
 package com.example.p24zip.domain.user.controller;
 
+import com.example.p24zip.domain.user.dto.request.LoginRequestDto;
 import com.example.p24zip.domain.user.dto.request.SignupRequestDto;
+import com.example.p24zip.domain.user.dto.response.LoginResponseDto;
 import com.example.p24zip.domain.user.service.AuthService;
 import com.example.p24zip.global.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -26,5 +28,15 @@ public class AuthController {
         return ResponseEntity.ok(
             ApiResponse.ok("CREATED", "회원가입을 성공했습니다.", null)
         );
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<LoginResponseDto>> login(
+            @Valid @RequestBody LoginRequestDto requestDto) {
+        return ResponseEntity.ok(ApiResponse.ok(
+                "OK",
+                "로그인이 성공했습니다.",
+                authService.login(requestDto)
+        ));
     }
 }
