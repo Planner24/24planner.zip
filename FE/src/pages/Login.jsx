@@ -9,12 +9,14 @@ export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // formData 상태 관리
+  // 상태 관리 데이터
+  const [errorMessage, setErrorMessage] = useState('');
+  const [emptyFields, setEmptyFields] = useState({ username: '', password: '' });
   const [formData, setFormData] = useState({
     username: '',
     password: '',
   });
-
+ 
   // 로고 클릭 시 메인 페이지로 이동
   const toHome = () => {
     navigate('/');
@@ -23,6 +25,16 @@ export default function Login() {
   // 로그인 폼 제출 시 api 요청
   const handleSubmitLoginForm = async (e) => {
     e.preventDefault();
+
+    const errors = {};
+    if (!formData.username) errors.username = '이메일주소를 입력해주세요.';
+    if (!formData.password) errors.password = '비밀번호를 입력해주세요.';
+
+    // 입력값이 비어 있으면 입력 요청 메세지 표시 후 중단
+    if (Object.keys(errors).length) {
+      setEmptyFields(errors);
+      return;
+    }
 
     try {
       const response = await authApi.login(formData);
@@ -34,13 +46,22 @@ export default function Login() {
 
       navigate('/plans');
     } catch (error) {
-      console.error('로그인 중 오류가 발생했습니다.');
+      // 로그인 실패 시 메세지
+      if (error.code == 'INVALID_CREDENTIALS') {
+        setErrorMessage(error.message);
+      }
     }
   };
 
   // 이메일주소, 비밀번호 입력 시 formData 값 변경
   const handleInput = (e) => {
     const { name, value } = e.target;
+
+    // 입력값 존재 시 emptyFields 초기화
+    if (value) {
+      setEmptyFields((prev) => ({ ...prev, [name]: '' }));
+    }
+
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -56,11 +77,13 @@ export default function Login() {
   const loginFormStyle =
     'w-130 h-3/4 flex flex-col justify-between items-center box-border pt-15 pb-3';
   const inputWrapperStyle = 'w-full';
-  const inputStyle = 'w-full text-xl pl-3 focus:outline-none focus:placeholder-transparent';
+  const inputStyle = 'w-full text-xl pl-3 focus:outline-none focus:placeholder-transparent mt-5';
   const lineStyle = 'mt-3';
+  const inputRequestMessageStyle = 'text-red-400 mt-1';
+  const loginErrorMessageStyle = 'text-red-400 m-2';
   const buttonStyle =
     'px-12 py-3 text-2xl text-primary cursor-pointer border-3 border-solid rounded-3xl border-primary hover:bg-primary hover:text-white';
-  const signupRequestStyle = 'w-1/3 flex justify-center gap-1 mt-2';
+  const signupRequestStyle = 'w-1/3 flex justify-center gap-1 mt-3 pt-2';
   const signupButtonStyle =
     'border-b border-primary cursor-pointer hover:text-primary hover:font-bold ';
 
@@ -71,7 +94,7 @@ export default function Login() {
         <form onSubmit={(e) => handleSubmitLoginForm(e)} className={loginFormStyle}>
           <div className={inputWrapperStyle}>
             <input
-              type="email"
+              type="text"
               name="username"
               id="username"
               placeholder="이메일주소"
@@ -80,6 +103,7 @@ export default function Login() {
               className={inputStyle}
             />
             <hr className={lineStyle} />
+            <div className={inputRequestMessageStyle}>{emptyFields.username || '\u00A0'}</div>
           </div>
           <div className={inputWrapperStyle}>
             <input
@@ -92,7 +116,9 @@ export default function Login() {
               className={inputStyle}
             />
             <hr className={lineStyle} />
+            <div className={inputRequestMessageStyle}>{emptyFields.password || '\u00A0'}</div>
           </div>
+          <div className={loginErrorMessageStyle}>{errorMessage || '\u00A0'}</div>
           <button className={buttonStyle}>로그인</button>
         </form>
         <div className={signupRequestStyle}>
