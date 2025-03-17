@@ -48,4 +48,15 @@ public class AuthController {
                 authService.reissue(request)
         ));
     }
+
+    @DeleteMapping("/logout")
+    public ResponseEntity<ApiResponse<Object>> logout(HttpServletResponse response) {
+        authService.logout(response);
+
+        return ResponseEntity.ok(ApiResponse.ok(
+                "OK",
+                "로그아웃을 성공했습니다.",
+                null
+        ));
+    }
 }

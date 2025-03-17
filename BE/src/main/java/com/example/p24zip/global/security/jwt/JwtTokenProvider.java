@@ -20,10 +20,11 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private final long accessTokenValidityInMilliseconds = 1000L * 60 * 30; // 30분
-    private final long refrshTokenValidityInMilliseconds = 1000L * 60 * 60 * 48; // 48시간
+//    private final long accessTokenValidityInMilliseconds = 1000L * 60 * 30; // 30분
+//    private final long refrshTokenValidityInMilliseconds = 1000L * 60 * 60 * 48; // 48시간
 
-
+    private final long accessTokenValidityInMilliseconds = 1000L * 20;
+    private final long refrshTokenValidityInMilliseconds = 1000L * 60 * 1;
 
     @PostConstruct
     protected void init() {

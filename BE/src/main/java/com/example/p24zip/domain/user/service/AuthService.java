@@ -88,11 +88,9 @@ public class AuthService {
         Cookie[] cookies = request.getCookies();
 
         String refresh = findByRefreshToken(cookies);
-
         if(refresh == null || !jwtTokenProvider.validateToken(refresh)) {
             throw new TokenException();
         }
-
 
 
         String refreshusername = jwtTokenProvider.getUsername(refresh);
@@ -114,6 +112,18 @@ public class AuthService {
         }
 
         return new AccessTokenResponseDto(accessjwt);
+    }
+
+    // 로그아웃
+    public void logout(HttpServletResponse response) {
+
+        redisTemplate.delete("refreshToken"); // redis에서 Refresh 토큰 삭제
+
+        Cookie cookie = new Cookie("refreshToken", null); // 같은 이름, 값은 null
+        cookie.setPath("/"); // 기존 쿠키와 동일한 경로 설정
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0); // 즉시 만료
+        response.addCookie(cookie); // 응답에 추가하여 삭제
     }
 
     public String findByRefreshToken(Cookie[] cookies) {
