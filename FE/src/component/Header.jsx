@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function Header() {
   const headerItemStyle = 'flex items-center p-4';
 
@@ -7,7 +9,9 @@ export default function Header() {
         {/* Linux 환경 Firefox에서 flex에 이미지가 들어가면 무조건 크기를 최대로 차지하는 문제가 있어 flex 크기 수동 지정*/}
         <div className="flex flex-4 font-bold">
           <div className={`${headerItemStyle} max-w-40`}>
-            <img src="/logo.png" />
+            <Link to="/">
+              <img src="/logo.png" />
+            </Link>
           </div>
 
           {/* 로그인 후 화면까지 구현한 시점에서 활성화 예정 */}
