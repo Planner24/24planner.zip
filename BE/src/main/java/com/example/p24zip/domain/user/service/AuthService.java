@@ -3,6 +3,7 @@ package com.example.p24zip.domain.user.service;
 
 import com.example.p24zip.domain.user.dto.request.LoginRequestDto;
 import com.example.p24zip.domain.user.dto.request.SignupRequestDto;
+import com.example.p24zip.domain.user.dto.response.AccessTokenResponseDto;
 import com.example.p24zip.domain.user.dto.response.LoginResponseDto;
 import com.example.p24zip.domain.user.entity.User;
 import com.example.p24zip.domain.user.repository.UserRepository;
@@ -10,6 +11,7 @@ import com.example.p24zip.global.exception.CustomException;
 import com.example.p24zip.global.exception.ResourceNotFoundException;
 import com.example.p24zip.global.security.jwt.JwtTokenProvider;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,6 +79,50 @@ public class AuthService {
         redisTemplate.opsForValue().set("refreshToken", refreshjwt);
 
         return new LoginResponseDto(accessjwt, refreshjwt);
+    }
+
+    // refresh token 검증 및 access token 재발급
+    public AccessTokenResponseDto reissue(HttpServletRequest request) {
+
+        Cookie[] cookies = request.getCookies();
+
+        String accessjwt = null;
+
+        String refresh = findByRefreshToken(cookies);
+        if(refresh == null) {
+
+        }
+        String refreshusername = jwtTokenProvider.getUsername(refresh);
+        if(refreshusername == null) {
+
+        }
+
+        String redistoken = (String) redisTemplate.opsForValue().get("refreshToken");
+
+        User user = userRepository.findByUsername(refreshusername)
+                .orElseThrow(() -> new ResourceNotFoundException());
+
+        if(refresh.equals(redistoken)) {
+            accessjwt = jwtTokenProvider.accessCreateToken(user);
+        } else {
+
+        }
+
+        return new AccessTokenResponseDto(accessjwt);
+    }
+
+    public String findByRefreshToken(Cookie[] cookies) {
+        String refresh = null;
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if(cookie.getName().equals("refreshToken")) {
+                    refresh = cookie.getValue();
+                    return refresh;
+                }
+            }
+        }
+        return refresh;
     }
 
     public boolean checkExistsUsername(String userName) {

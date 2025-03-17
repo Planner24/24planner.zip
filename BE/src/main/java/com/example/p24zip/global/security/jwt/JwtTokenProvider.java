@@ -32,9 +32,7 @@ public class JwtTokenProvider {
 
     public String accessCreateToken(User user) {
 
-        Claims claims = Jwts.claims();
-
-        claims.put("id", user.getId());
+        Claims claims = Jwts.claims().setSubject(user.getUsername());
         claims.put("nickname", user.getNickname());
 
         Date now = new Date();
@@ -51,9 +49,7 @@ public class JwtTokenProvider {
 
     public String refreshCreateToken(User user) {
 
-        Claims claims = Jwts.claims();
-
-        claims.put("id", user.getId());
+        Claims claims = Jwts.claims().setSubject(user.getUsername());
         claims.put("nickname", user.getNickname());
 
         Date now = new Date();
