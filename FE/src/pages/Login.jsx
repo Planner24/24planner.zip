@@ -40,10 +40,8 @@ export default function Login() {
 
   // 이메일주소, 비밀번호 입력 시 formData 값 변경
   const handleInput = (e) => {
-    const key = e.target.name;
-    const value = e.target.value;
-
-    setFormData((prev) => ({ ...prev, [key]: value }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   // 회원가입 버튼 클릭 시 회원가입 페이지로 이동
