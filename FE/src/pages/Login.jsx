@@ -2,15 +2,18 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../../public/logo.png';
 import { useState } from 'react';
 import authApi from '../api/authApi';
+import { useDispatch } from 'react-redux';
+import { login } from '../store/slices/authSlice';
 
 export default function Login() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   // formData 상태 관리
   const [formData, setFormData] = useState({
     username: '',
     password: '',
   });
-
-  const navigate = useNavigate();
 
   // 로고 클릭 시 메인 페이지로 이동
   const toHome = () => {
@@ -23,9 +26,15 @@ export default function Login() {
 
     try {
       const response = await authApi.login(formData);
+      const data = response.data;
+
+      // 로그인 시 accessToken을 localstorage에 저장
+      const { accessToken } = data.data;
+      dispatch(login({ accessToken }));
+
       navigate('/plans');
     } catch (error) {
-      console.error("로그인 중 오류가 발생했습니다.");
+      console.error('로그인 중 오류가 발생했습니다.');
     }
   };
 
