@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import logo from '../../public/logo.png';
 import { useNavigate } from 'react-router-dom';
+import authApi from '../api/authApi';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -12,8 +13,18 @@ export default function Signup() {
     password: '',
   });
   const [validation, setValidation] = useState({
+    username: { isValid: false },
     nickname: { isValid: false },
     password: { isValid: false, isEqual: false },
+  });
+  const [time, setTime] = useState({
+    expiredAt: null,
+    remainingTime: '',
+  });
+  const [usernameState, setUsernameState] = useState({
+    isVerifying: false,
+    isVerfied: false,
+    username: '',
   });
   const [usernameMessage, setUsernameMessage] = useState('');
   const [codeMessage, setCodeMessage] = useState('');
@@ -21,8 +32,9 @@ export default function Signup() {
   const [passwordMessage, setPasswordMessage] = useState('');
 
   // 닉네임, 비밀번호 검증
-  const nicknameRegex = /^[가-힣a-zA-Z0-9]{2,15}$/;
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[#?!]).{8,}$/;
+  const checkUsername = (value) => /\S+@\S+\.\S+/.test(value);
+  const checkNickname = (value) => /^[가-힣a-zA-Z0-9]{2,15}$/.test(value);
+  const checkPassword = (value) => /^(?=.*[A-Za-z])(?=.*\d)(?=.*[#?!]).{8,}$/.test(value);
   const checkMinLength = (value) => value.length >= 8;
   const checkLetter = (value) => /[a-zA-Z]/.test(value);
   const checkNumber = (value) => /[0-9]/.test(value);
@@ -42,12 +54,24 @@ export default function Signup() {
       [name]: value,
     }));
 
-    if (name === 'nickname') {
-      if (!value || nicknameRegex.test(value)) {
+    if (name === 'username') {
+      setUsernameMessage('');
+    } else if (name === 'nickname') {
+      setValidation((prev) => ({
+        ...prev,
+        nickname: { isValid: checkNickname(value) },
+      }));
+
+      if (!value || checkNickname(value)) {
         setNicknameMessage('');
       } else {
         setNicknameMessage('특수문자 제외, 2자 이상 17자 이하여야 합니다.');
       }
+    } else if (name === 'password') {
+      setValidation((prev) => ({
+        ...prev,
+        password: { ...prev.password, isValid: checkPassword(value) },
+      }));
     }
   };
 
@@ -66,16 +90,55 @@ export default function Signup() {
     }));
   };
 
+  const verifyEmail = async () => {
+    setUsernameMessage('');
+
+    try {
+      if (!formData.username) return;
+
+      if (!checkUsername(formData.username)) {
+        setUsernameMessage('유효한 이메일 주소를 입력해주세요.');
+        return;
+      }
+
+      const response = await authApi.verifyEmail(formData.username);
+      const expiredAt = response.data.expiredAt;
+
+      setUsernameState((prev) => ({
+        ...prev,
+        isVerifying: true,
+        username: formData.username,
+      }));
+      setTime();
+    } catch (error) {
+      if (error.code === 'EXIST_EMAIL') {
+        setUsernameMessage(error.message);
+      } else {
+        setUsernameMessage('인증 코드 발송에 실패했습니다.');
+      }
+    } finally {
+    }
+  };
+
+  const verifyEmailCode = async () => {
+    setCodeMessage('');
+
+    try {
+      if (!formData.code) return;
+    } catch (error) {}
+  };
+
   // 테일윈드 class
   const displayStyle = 'h-screen flex flex-col justify-center items-center gap-10';
   const logoStyle = 'w-48 cursor-pointer';
-  const explainTextStyle = 'text-2xl mb-5';
+  const explainTextStyle = 'mb-5 text-2xl ';
   const inputButtonDiv = 'flex justify-between';
-  const inputStyle = 'w-110 mx-1 px-2 focus:outline-none text-xl';
+  const inputStyle = 'w-100 mx-1 px-2 focus:outline-none text-xl';
+  const timeStyle = 'pr-3 self-center text-primary';
   const buttonStyle =
     'w-25 border-2 border-primary rounded-full px-2 py-1 text-primary hover:bg-primary hover:text-white cursor-pointer';
   const lineStyle = 'mt-2';
-  const messageStyle = 'text-secondary font-semibold text-right mb-2 pr-2';
+  const messageStyle = 'mb-2 pl-2 text-red-400';
   const invalid = 'text-gray-300 font-semibold';
   const valid = 'text-primary font-semibold';
   const wrong = 'text-red-400 font-semibold';
@@ -101,7 +164,13 @@ export default function Signup() {
               onChange={handleFormInput}
               required
             />
-            <button type="button" className={buttonStyle}>
+            <p className={timeStyle}>3:00</p>
+            <button
+              type="button"
+              className={buttonStyle}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={verifyEmail}
+            >
               이메일인증
             </button>
           </div>
@@ -119,7 +188,12 @@ export default function Signup() {
               onChange={handleFormInput}
               required
             />
-            <button type="button" className={buttonStyle}>
+            <button
+              type="button"
+              className={buttonStyle}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={verifyEmailCode}
+            >
               확인
             </button>
           </div>
