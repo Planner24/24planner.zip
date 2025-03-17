@@ -20,15 +20,15 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void signup(@Valid SignupRequestDto signupRequestDto) {
-        boolean checkUsername = checkExistsUsername(signupRequestDto.getEmail());
+    public void signup(@Valid SignupRequestDto requestDto) {
+        boolean checkUsername = checkExistsUsername(requestDto.getEmail());
 
         if (checkUsername) {
             throw new CustomException("EXIST_EMAIL", "이미 사용중인 이메일입니다.");
         }
 
-        User user = signupRequestDto.toEntity();
-        String encryptedPassword = passwordEncoder.encode(signupRequestDto.getPassword());
+        User user = requestDto.toEntity();
+        String encryptedPassword = passwordEncoder.encode(requestDto.getPassword());
         user.setPassword(encryptedPassword);
         userRepository.save(user);
     }
