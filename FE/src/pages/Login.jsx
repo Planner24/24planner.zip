@@ -1,17 +1,35 @@
 import { useNavigate } from 'react-router-dom';
 import logo from '../../public/logo.png';
+import { useState } from 'react';
 
 export default function Login() {
+  // formData 상태 관리
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  });
+
   const navigate = useNavigate();
 
+  // 로고 클릭 시 메인 페이지로 이동
   const toHome = () => {
     navigate('/');
   };
 
+  // 로그인 폼 제출 시 api 요청
   const handleSubmitLoginForm = (e) => {
     e.preventDefault();
   };
 
+  // 이메일주소, 비밀번호 입력 시 formData 값 변경
+  const handleInput = (e) => {
+    const key = e.target.name;
+    const value = e.target.value;
+
+    setFormData((prev) => ({ ...prev, [key]: value }));
+  };
+
+  // 회원가입 버튼 클릭 시 회원가입 페이지로 이동
   const handleClickSignupButton = () => {
     navigate('/signup');
   };
@@ -20,14 +38,16 @@ export default function Login() {
   const displayStyle = 'h-screen flex flex-col justify-center items-center';
   const logoStyle = 'w-64 text-center cursor-pointer';
   const loginWrapperStyle = 'w-full h-1/2 flex flex-col justify-center items-center';
-  const loginFormStyle = 'w-130 h-3/4 flex flex-col justify-between items-center box-border pt-15 pb-3';
+  const loginFormStyle =
+    'w-130 h-3/4 flex flex-col justify-between items-center box-border pt-15 pb-3';
   const inputWrapperStyle = 'w-full';
   const inputStyle = 'w-full text-xl pl-3 focus:outline-none focus:placeholder-transparent';
   const lineStyle = 'mt-3';
   const buttonStyle =
     'px-12 py-3 text-2xl text-primary cursor-pointer border-3 border-solid rounded-3xl border-primary hover:bg-primary hover:text-white';
   const signupRequestStyle = 'w-1/3 flex justify-center gap-1 mt-2';
-  const signupButtonStyle = 'border-b border-primary cursor-pointer hover:text-primary hover:font-bold ';
+  const signupButtonStyle =
+    'border-b border-primary cursor-pointer hover:text-primary hover:font-bold ';
 
   return (
     <div className={displayStyle}>
@@ -40,6 +60,8 @@ export default function Login() {
               name="username"
               id="username"
               placeholder="이메일주소"
+              value={formData.username}
+              onChange={(e) => handleInput(e)}
               className={inputStyle}
             />
             <hr className={lineStyle} />
@@ -50,6 +72,8 @@ export default function Login() {
               name="password"
               id="password"
               placeholder="비밀번호"
+              value={formData.password}
+              onChange={(e) => handleInput(e)}
               className={inputStyle}
             />
             <hr className={lineStyle} />
