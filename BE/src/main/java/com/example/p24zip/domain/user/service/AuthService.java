@@ -9,6 +9,7 @@ import com.example.p24zip.domain.user.entity.User;
 import com.example.p24zip.domain.user.repository.UserRepository;
 import com.example.p24zip.global.exception.CustomException;
 import com.example.p24zip.global.exception.ResourceNotFoundException;
+import com.example.p24zip.global.exception.TokenException;
 import com.example.p24zip.global.security.jwt.JwtTokenProvider;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -86,15 +87,17 @@ public class AuthService {
 
         Cookie[] cookies = request.getCookies();
 
-        String accessjwt = null;
-
         String refresh = findByRefreshToken(cookies);
-        if(refresh == null) {
 
+        if(refresh == null || !jwtTokenProvider.validateToken(refresh)) {
+            throw new TokenException();
         }
+
+
+
         String refreshusername = jwtTokenProvider.getUsername(refresh);
         if(refreshusername == null) {
-
+            throw new TokenException();
         }
 
         String redistoken = (String) redisTemplate.opsForValue().get("refreshToken");
@@ -102,10 +105,12 @@ public class AuthService {
         User user = userRepository.findByUsername(refreshusername)
                 .orElseThrow(() -> new ResourceNotFoundException());
 
+        String accessjwt = null;
+
         if(refresh.equals(redistoken)) {
             accessjwt = jwtTokenProvider.accessCreateToken(user);
         } else {
-
+            throw new TokenException();
         }
 
         return new AccessTokenResponseDto(accessjwt);

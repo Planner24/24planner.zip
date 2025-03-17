@@ -43,6 +43,13 @@ public class GlobalExceptionHandler {
             .body(ApiResponse.error(ex.getCode(), ex.getMessage()));
     }
 
+    @ExceptionHandler(TokenException.class)
+    public ResponseEntity<ApiResponse<Void>> Token(TokenException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ApiResponse.error("INVALID_TOKEN", "토큰이 유효하지 않습니다."));
+    }
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiResponse<Void>> BadCredentials(BadCredentialsException ex) {
         return ResponseEntity
