@@ -74,7 +74,7 @@ export default function Home() {
         </div>
         <div className={`${flexStyle} p-12`}>
           <Link to="/login">
-            <button className="w-60 h-20 text-white text-4xl bg-primary rounded-3xl cursor-pointer font-bold">
+            <button className="w-60 h-20 bg-white border-4 border-primary rounded-3xl text-primary text-4xl font-bold cursor-pointer hover:bg-primary hover:text-white">
               시작하기
             </button>
           </Link>

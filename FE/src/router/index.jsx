@@ -14,6 +14,7 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <RootLayout />,
+    errorElement: <NotFound />,
     children: [
       {
         index: true,
@@ -39,19 +40,17 @@ const router = createBrowserRouter([
         path: '/plans/:movingPlanId/calendar',
         element: <Calendar />,
       },
-      {
-        path: '*',
-        element: <NotFound />,
-      },
     ],
   },
   {
     path: '/login',
     element: <Login />,
+    errorElement: <NotFound />,
   },
   {
     path: '/signup',
     element: <Signup />,
+    errorElement: <NotFound />,
   },
 ]);
 
