@@ -11,14 +11,18 @@ export default function Header() {
           </div>
 
           {/* 로그인 후 화면까지 구현한 시점에서 활성화 예정 */}
+          {/*
           <div className={`${headerItemStyle} text-primary`}>체크리스트</div>
           <div className={`${headerItemStyle}`}>캘린더</div>
+          */}
         </div>
 
         <div className="flex flex-6 justify-end">
           {/* 로그인 후 화면까지 구현한 시점에서 활성화 예정 */}
+          {/*
           <div className={`${headerItemStyle} text-secondary`}>이사 플랜 1</div>
           <div className={`${headerItemStyle}`}>로그아웃</div>
+          */}
         </div>
       </div>
     </div>
