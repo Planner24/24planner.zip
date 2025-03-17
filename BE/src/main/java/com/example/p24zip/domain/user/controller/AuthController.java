@@ -5,6 +5,7 @@ import com.example.p24zip.domain.user.dto.request.SignupRequestDto;
 import com.example.p24zip.domain.user.dto.response.LoginResponseDto;
 import com.example.p24zip.domain.user.service.AuthService;
 import com.example.p24zip.global.response.ApiResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,11 +33,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponseDto>> login(
-            @Valid @RequestBody LoginRequestDto requestDto) {
+            @Valid @RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
         return ResponseEntity.ok(ApiResponse.ok(
                 "OK",
                 "로그인이 성공했습니다.",
-                authService.login(requestDto)
+                authService.login(requestDto, response)
         ));
     }
 }
