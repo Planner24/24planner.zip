@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import logo from '../../public/logo.png';
 import { useState } from 'react';
+import authApi from '../api/authApi';
 
 export default function Login() {
   // formData 상태 관리
@@ -17,8 +18,15 @@ export default function Login() {
   };
 
   // 로그인 폼 제출 시 api 요청
-  const handleSubmitLoginForm = (e) => {
+  const handleSubmitLoginForm = async (e) => {
     e.preventDefault();
+
+    try {
+      const response = await authApi.login(formData);
+      navigate('/plans');
+    } catch (error) {
+      console.error("로그인 중 오류가 발생했습니다.");
+    }
   };
 
   // 이메일주소, 비밀번호 입력 시 formData 값 변경
