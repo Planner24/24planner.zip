@@ -12,6 +12,7 @@ export default function Signup() {
     nickname: '',
     password: '',
   });
+  const [verifyPassword, setVerifyPassword] = useState('');
   const [validation, setValidation] = useState({
     username: { isValid: false },
     nickname: { isValid: false },
@@ -24,14 +25,17 @@ export default function Signup() {
     username: '',
   });
   const [usernameMessage, setUsernameMessage] = useState({
-    color: 'red-400',
+    color: '',
     content: '',
   });
   const [codeMessage, setCodeMessage] = useState({
-    color: 'red-400',
+    color: '',
     content: '',
   });
-  const [nicknameMessage, setNicknameMessage] = useState('');
+  const [nicknameMessage, setNicknameMessage] = useState({
+    color: '',
+    content: '',
+  });
   const [passwordMessage, setPasswordMessage] = useState('');
 
   // 이메일, 코드, 닉네임, 비밀번호 입력값 검증
@@ -44,6 +48,13 @@ export default function Signup() {
   const checkNumber = (value) => /[0-9]/.test(value);
   const checkSpecialChar = (value) => /[#?!]/.test(value);
   const checkInvalidChar = (value) => /[^A-Za-z0-9#?!]/.test(value);
+
+  // 회원가입 필수값 검증 확인
+  const isSignupAvailable =
+    validation.username.isValid &&
+    validation.nickname.isValid &&
+    validation.password.isValid &&
+    validation.password.isEqual;
 
   // 로고 클릭 시 메인페이지로 이동
   const toHome = () => {
@@ -62,11 +73,6 @@ export default function Signup() {
     if (name === 'username') {
       setUsernameMessage({ color: '', content: '' });
     } else if (name === 'nickname') {
-      setValidation((prev) => ({
-        ...prev,
-        nickname: { isValid: checkNickname(value) },
-      }));
-
       if (!value || checkNickname(value)) {
         setNicknameMessage('');
       } else {
@@ -83,6 +89,8 @@ export default function Signup() {
   // 비밀번호 확인 입력 감지 및 검증
   const handleVerifyPassword = (e) => {
     const { value } = e.target;
+
+    setVerifyPassword(value);
 
     if (!value || value === formData.password) {
       setPasswordMessage('');
@@ -225,10 +233,7 @@ export default function Signup() {
         username: { isValid: true },
       }));
       setUsernameMessage({ color: '', content: '' });
-      setCodeMessage({
-        color: 'primary',
-        content: '인증되었습니다.',
-      });
+      setCodeMessage({ color: 'primary', content: '인증되었습니다.' });
     } catch (error) {
       const errordata = error.response.data;
 
@@ -237,6 +242,66 @@ export default function Signup() {
       } else {
         setCodeMessage({ color: 'red-400', content: '이메일 인증에 실패했습니다.' });
       }
+    }
+  };
+
+  // 닉네임 중복 확인
+  const verifyNickname = async () => {
+    setNicknameMessage({ color: '', content: '' });
+
+    if (!formData.nickname) return;
+
+    try {
+      await authApi.verifyNickname(formData.nickname);
+
+      setValidation((prev) => ({
+        ...prev,
+        nickname: { isValid: true },
+      }));
+      setNicknameMessage({ color: 'primary', content: '인증되었습니다.' });
+    } catch (error) {
+      const errordata = error.response.data;
+
+      if (errordata.code === 'EXIST_NICKNAME') {
+        setNicknameMessage({ color: 'red-400', content: errordata.message });
+      } else {
+        setNicknameMessage({ color: 'red-400', content: '닉네임 중복 확인에 실패했습니다.' });
+      }
+    }
+  };
+
+  // 회원가입
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const { code, ...signupData } = formData;
+
+    try {
+      await authApi.signup(signupData);
+      navigate('/login');
+    } catch (error) {
+      const errordata = error.response.data;
+      if (errordata.code === 'EXIST_EMAIL' || error.code === 'EXIST_NICKNAME') {
+        alert(`회원가입에 실패했습니다.\n${errordata.message}`);
+      } else {
+        alert('회원가입에 실패했습니다.');
+      }
+
+      // 회원가입 실패 시 폼 상태 초기화
+      setFormData({ username: '', code: '', nickname: '', password: '' });
+      setVerifyPassword('');
+      setValidation({
+        username: { isValid: false },
+        nickname: { isValid: false },
+        password: { isValid: false, isEqual: false },
+      });
+      SetExpiredAt(null);
+      setRemainingTime('3:00');
+      setUsernameState({ isVerifying: false, username: '' });
+      setUsernameMessage({ color: '', content: '' });
+      setCodeMessage({ color: '', content: '' });
+      setNicknameMessage({ color: '', content: '' });
+      setPasswordMessage('');
     }
   };
 
@@ -264,7 +329,7 @@ export default function Signup() {
         이사모음.zip의 새로운 <b className="text-secondary">Zipper</b>가 되어주세요
       </h2>
       <div>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className={inputButtonDiv}>
             <input
               type="email"
@@ -329,17 +394,21 @@ export default function Signup() {
               placeholder="닉네임"
               className={inputStyle}
               onChange={handleFormInput}
+              disabled={validation.nickname.isValid}
               required
             />
             <button
               type="button"
               className={`${buttonStyle} ${validation.nickname.isValid ? disable : able}`}
+              disabled={validation.nickname.isValid}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={verifyNickname}
             >
               중복확인
             </button>
           </div>
           <hr className={lineStyle} />
-          <p className={`${messageStyle} !text-${nicknameMessage.color}`}>
+          <p className={`${messageStyle} text-${nicknameMessage.color}`}>
             {nicknameMessage.content || '\u00A0'}
           </p>
 
@@ -370,6 +439,7 @@ export default function Signup() {
             type="password"
             id="verifyPassword"
             name="verifyPassword"
+            value={verifyPassword}
             placeholder="비밀번호 확인"
             className={`${inputStyle} mt-2`}
             onChange={handleVerifyPassword}
@@ -378,7 +448,12 @@ export default function Signup() {
           <hr className={lineStyle} />
           <p className={`${messageStyle} text-red-400`}>{passwordMessage || '\u00A0'}</p>
 
-          <button className={`${signupButton}`}>회원가입</button>
+          <button
+            className={`${signupButton} ${isSignupAvailable ? able : disable}`}
+            disabled={!isSignupAvailable}
+          >
+            회원가입
+          </button>
         </form>
       </div>
     </div>

@@ -17,13 +17,13 @@ const authApi = {
 
   // 닉네임 중복 확인
   verifyNickname: async (nickname) => {
-    const response = await api.get(`${ENDPOINT}/verify-nickname`, { params: { nickname }});
+    const response = await api.get(`${ENDPOINT}/verify-nickname`, { params: { nickname } });
     return response;
   },
 
   // 회원가입
-  signup: async (formData) => {
-    const response = await api.post(`${ENDPOINT}/signup`, formData);
+  signup: async (signupData) => {
+    const response = await api.post(`${ENDPOINT}/signup`, signupData);
     return response;
   },
 };
