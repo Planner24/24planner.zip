@@ -12,7 +12,6 @@ import com.example.p24zip.global.response.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,13 +43,9 @@ public class AuthController {
 
     @PostMapping(value = "/verify-email")
     public ResponseEntity<ApiResponse<VerifyEmailDataResponseDto>> verifyEmail(@RequestBody @Valid VerifyEmailRequestDto requestDto){
-        String subject = "회원가입 인증 메일입니다.";
-        Random random = new Random();
-        int code = random.nextInt(9000) +1000;
-        String text = "인증 코드는" + code + "입니다.";
 
         return ResponseEntity.ok(
-            ApiResponse.ok("OK", "인증 번호를 전송했습니다.", authService.sendEmail(requestDto.getUsername(), subject, text, code))
+            ApiResponse.ok("OK", "인증 번호를 전송했습니다.", authService.sendEmail(requestDto.getUsername()))
         );
     }
 

@@ -23,6 +23,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -52,6 +53,7 @@ public class AuthService {
  
 
     /**
+     * 회원가입
      * @param requestDto
      *    username(email), password, nickname
      * @return null
@@ -72,14 +74,19 @@ public class AuthService {
 
 
     /**
+     * 이메일 인증(이메일 전송)
      * @param username 입력한 email
-     * @param subject 보내질 이메일 제목
-     * @param text 보내질 이메일 본문 내용
-     * @param code 보내질 인증 코드 랜덤한 4자리 수
      * @return 만료일 가진 responseDto
-     *
      * **/
-    public VerifyEmailDataResponseDto sendEmail(@NotNull @Email String username, String subject, String text, int code) {
+    // subject 보내질 이메일 제목
+    // text 보내질 이메일 본문 내용
+    // code 보내질 인증 코드 랜덤한 4자리 수
+    public VerifyEmailDataResponseDto sendEmail(@NotNull @Email String username) {
+        String subject = "회원가입 인증 메일입니다.";
+        Random random = new Random();
+        int code = random.nextInt(9000) +1000;
+        String text = "인증 코드는" + code + "입니다.";
+
         boolean checkUsername = checkExistsUsername(username);
         if (checkUsername) {
             throw new CustomException("EXIST_EMAIL", "이미 사용중인 이메일입니다.");
@@ -100,6 +107,7 @@ public class AuthService {
     }
 
     /**
+     * 이메일 인증 확인
      * @param requestDto 인증한 이메일, 인증한 코드(랜덤한 숫자 4자리)
      * @return null
      * **/
@@ -125,6 +133,7 @@ public class AuthService {
     }
 
     /**
+     * 중복 닉네임 확인
      * @param nickname
      * @return null
      * **/
@@ -237,6 +246,7 @@ public class AuthService {
 
 
     /**
+     * 사용 중인 username 확인
      * @param userName 입력한 email
      * @return Boolean 이메일 존재 유무
      * **/
@@ -246,6 +256,7 @@ public class AuthService {
 
 
     /**
+     * 4자리의 랜덤 수를 redis에 저장
      * @param username 입력한 email
      * @param code 4자리의 랜덤 수
      * @return LocalDateTime expiredAt
