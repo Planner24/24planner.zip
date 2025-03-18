@@ -59,4 +59,8 @@ public class AuthController {
                 null
         ));
     }
+
+    @GetMapping("/verify")
+    public void verify() {
+    }
 }
