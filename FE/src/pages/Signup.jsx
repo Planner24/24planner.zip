@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import logo from '../../public/logo.png';
 import { useNavigate } from 'react-router-dom';
 import authApi from '../api/authApi';
@@ -17,22 +17,26 @@ export default function Signup() {
     nickname: { isValid: false },
     password: { isValid: false, isEqual: false },
   });
-  const [time, setTime] = useState({
-    expiredAt: null,
-    remainingTime: '',
-  });
+  const [expiredAt, SetExpiredAt] = useState(null);
+  const [remainingTime, setRemainingTime] = useState('3:00');
   const [usernameState, setUsernameState] = useState({
     isVerifying: false,
-    isVerfied: false,
     username: '',
   });
-  const [usernameMessage, setUsernameMessage] = useState('');
-  const [codeMessage, setCodeMessage] = useState('');
+  const [usernameMessage, setUsernameMessage] = useState({
+    color: 'red-400',
+    content: '',
+  });
+  const [codeMessage, setCodeMessage] = useState({
+    color: 'red-400',
+    content: '',
+  });
   const [nicknameMessage, setNicknameMessage] = useState('');
   const [passwordMessage, setPasswordMessage] = useState('');
 
-  // 닉네임, 비밀번호 검증
+  // 이메일, 코드, 닉네임, 비밀번호 입력값 검증
   const checkUsername = (value) => /\S+@\S+\.\S+/.test(value);
+  const checkFourDigit = (value) => /^\d{4}$/.test(value);
   const checkNickname = (value) => /^[가-힣a-zA-Z0-9]{2,15}$/.test(value);
   const checkPassword = (value) => /^(?=.*[A-Za-z])(?=.*\d)(?=.*[#?!]).{8,}$/.test(value);
   const checkMinLength = (value) => value.length >= 8;
@@ -46,6 +50,7 @@ export default function Signup() {
     navigate('/');
   };
 
+  // 회원가입 폼 입력 감지 및 검증
   const handleFormInput = (e) => {
     const { name, value } = e.target;
 
@@ -55,7 +60,7 @@ export default function Signup() {
     }));
 
     if (name === 'username') {
-      setUsernameMessage('');
+      setUsernameMessage({ color: '', content: '' });
     } else if (name === 'nickname') {
       setValidation((prev) => ({
         ...prev,
@@ -75,6 +80,7 @@ export default function Signup() {
     }
   };
 
+  // 비밀번호 확인 입력 감지 및 검증
   const handleVerifyPassword = (e) => {
     const { value } = e.target;
 
@@ -90,42 +96,148 @@ export default function Signup() {
     }));
   };
 
+  // 이메일 발송 요청
   const verifyEmail = async () => {
-    setUsernameMessage('');
+    setUsernameMessage({ color: '', content: '' });
+
+    if (!formData.username) return;
+
+    if (!checkUsername(formData.username)) {
+      setUsernameMessage({ color: 'red-400', content: '유효한 이메일 주소를 입력해주세요.' });
+      return;
+    }
 
     try {
-      if (!formData.username) return;
-
-      if (!checkUsername(formData.username)) {
-        setUsernameMessage('유효한 이메일 주소를 입력해주세요.');
-        return;
-      }
-
       const response = await authApi.verifyEmail(formData.username);
       const expiredAt = response.data.expiredAt;
+      // const expiredAt = '2025-03-18T16:56:04.1917653'; // api 완성 전까지 테스트를 위한 임시 코드
 
-      setUsernameState((prev) => ({
-        ...prev,
+      setUsernameState({
         isVerifying: true,
         username: formData.username,
-      }));
-      setTime();
+      });
+      SetExpiredAt(expiredAt);
+      setUsernameMessage({
+        color: 'primary',
+        content: '인증번호가 전송되었습니다. 메일함을 확인해주세요.',
+      });
     } catch (error) {
-      if (error.code === 'EXIST_EMAIL') {
-        setUsernameMessage(error.message);
+      const errordata = error.response.data;
+
+      if (errordata.code === 'EXIST_EMAIL') {
+        setUsernameMessage({ color: 'red-400', content: errordata.message });
       } else {
-        setUsernameMessage('인증 코드 발송에 실패했습니다.');
+        setUsernameMessage({ color: 'red-400', content: '인증 코드 발송에 실패했습니다.' });
       }
-    } finally {
     }
   };
 
+  // 인증번호 만료까지 남은 시간 계산
+  const calculateRemainingTime = (expiredAt) => {
+    const now = new Date();
+    const expireTime = new Date(expiredAt);
+
+    const remainingMs = expireTime - now;
+
+    if (remainingMs <= 0) return '0:00';
+
+    const minutes = Math.floor(remainingMs / (1000 * 60));
+    const seconds = Math.floor((remainingMs % (1000 * 60)) / 1000);
+
+    const formattedSeconds = String(seconds).padStart(2, '0');
+
+    return `${minutes}:${formattedSeconds}`;
+  };
+
+  // 인증번호 만료까지 남은 시간 표시
+  useEffect(() => {
+    if (!expiredAt) return;
+
+    let interval;
+
+    const updateRemainingTime = () => {
+      const remainingTime = calculateRemainingTime(expiredAt);
+      setRemainingTime(remainingTime);
+
+      if (validation.username.isValid) {
+        clearInterval(interval);
+        setRemainingTime('');
+        return;
+      }
+
+      if (remainingTime === '0:00') {
+        setUsernameState((prev) => ({
+          ...prev,
+          isVerifying: false,
+        }));
+        setCodeMessage({
+          color: 'red-400',
+          content: '인증 시간이 만료되었습니다. 다시 인증해주세요.',
+        });
+        clearInterval(interval);
+      }
+    };
+
+    updateRemainingTime();
+
+    interval = setInterval(updateRemainingTime, 1000);
+
+    return () => clearInterval(interval);
+  }, [expiredAt, validation.username.isValid]);
+
+  // 인증번호 발송 후 이메일 입력값 변경 감지
+  useEffect(() => {
+    if (usernameState.isVerifying && formData.username !== usernameState.username) {
+      setUsernameState((prev) => ({
+        ...prev,
+        isVerifying: false,
+      }));
+      setFormData((prev) => ({
+        ...prev,
+        code: '',
+      }));
+      SetExpiredAt(null);
+      setRemainingTime('3:00');
+      setCodeMessage({
+        color: 'red-400',
+        content: '이메일이 변경되었습니다. 인증을 다시 진행해주세요.',
+      });
+      setUsernameMessage({ color: '', content: '' });
+    }
+  }, [formData.username, usernameState]);
+
+  // 인증번호 확인
   const verifyEmailCode = async () => {
-    setCodeMessage('');
+    setCodeMessage({ color: '', content: '' });
+
+    if (!formData.code) return;
+
+    if (!checkFourDigit(formData.code)) {
+      setCodeMessage({ color: 'red-400', content: '인증번호를 확인해주세요.' });
+      return;
+    }
 
     try {
-      if (!formData.code) return;
-    } catch (error) {}
+      await authApi.verifyEmailCode(formData.username, formData.code);
+
+      setValidation((prev) => ({
+        ...prev,
+        username: { isValid: true },
+      }));
+      setUsernameMessage({ color: '', content: '' });
+      setCodeMessage({
+        color: 'primary',
+        content: '인증되었습니다.',
+      });
+    } catch (error) {
+      const errordata = error.response.data;
+
+      if (errordata.code === 'BAD_REQUEST' || errordata.code === 'TIME_OUT') {
+        setCodeMessage({ color: 'red-400', content: errordata.message });
+      } else {
+        setCodeMessage({ color: 'red-400', content: '이메일 인증에 실패했습니다.' });
+      }
+    }
   };
 
   // 테일윈드 class
@@ -134,16 +246,16 @@ export default function Signup() {
   const explainTextStyle = 'mb-5 text-2xl ';
   const inputButtonDiv = 'flex justify-between';
   const inputStyle = 'w-100 mx-1 px-2 focus:outline-none text-xl';
-  const timeStyle = 'pr-3 self-center text-primary';
-  const buttonStyle =
-    'w-25 border-2 border-primary rounded-full px-2 py-1 text-primary hover:bg-primary hover:text-white cursor-pointer';
+  const timeStyle = 'w-10 pr-3 self-center text-primary';
+  const buttonStyle = 'w-25 border-2 rounded-full px-2 py-1';
+  const able = 'border-primary text-primary hover:bg-primary hover:text-white cursor-pointer';
+  const disable = 'border-gray-300 text-gray-300 hover:none';
   const lineStyle = 'mt-2';
-  const messageStyle = 'mb-2 pl-2 text-red-400';
+  const messageStyle = 'mb-2 pl-2 font-semibold';
   const invalid = 'text-gray-300 font-semibold';
   const valid = 'text-primary font-semibold';
   const wrong = 'text-red-400 font-semibold';
-  const signupButton =
-    'block mt-10 mx-auto border-2 border-primary rounded-2xl px-8 py-2 text-2xl text-primary hover:bg-primary hover:text-white cursor-pointer';
+  const signupButton = 'block mt-10 mx-auto border-2 rounded-2xl px-8 py-2 text-2xl';
 
   return (
     <div className={displayStyle}>
@@ -162,12 +274,14 @@ export default function Signup() {
               placeholder="이메일 주소"
               className={inputStyle}
               onChange={handleFormInput}
+              disabled={validation.username.isValid}
               required
             />
-            <p className={timeStyle}>3:00</p>
+            <p className={timeStyle}>{remainingTime}</p>
             <button
               type="button"
-              className={buttonStyle}
+              className={`${buttonStyle} ${validation.username.isValid ? disable : able}`}
+              disabled={validation.username.isValid}
               onMouseDown={(e) => e.preventDefault()}
               onClick={verifyEmail}
             >
@@ -175,7 +289,9 @@ export default function Signup() {
             </button>
           </div>
           <hr className={lineStyle} />
-          <p className={messageStyle}>{usernameMessage || '\u00A0'}</p>
+          <p className={`${messageStyle} text-${usernameMessage.color}`}>
+            {usernameMessage.content || '\u00A0'}
+          </p>
 
           <div className={inputButtonDiv}>
             <input
@@ -186,11 +302,13 @@ export default function Signup() {
               placeholder="인증번호 입력"
               className={inputStyle}
               onChange={handleFormInput}
+              disabled={validation.username.isValid}
               required
             />
             <button
               type="button"
-              className={buttonStyle}
+              className={`${buttonStyle} ${validation.username.isValid ? disable : able}`}
+              disabled={validation.username.isValid}
               onMouseDown={(e) => e.preventDefault()}
               onClick={verifyEmailCode}
             >
@@ -198,7 +316,9 @@ export default function Signup() {
             </button>
           </div>
           <hr className={lineStyle} />
-          <p className={messageStyle}>{codeMessage || '\u00A0'}</p>
+          <p className={`${messageStyle} text-${codeMessage.color}`}>
+            {codeMessage.content || '\u00A0'}
+          </p>
 
           <div className={inputButtonDiv}>
             <input
@@ -211,12 +331,17 @@ export default function Signup() {
               onChange={handleFormInput}
               required
             />
-            <button type="button" className={buttonStyle}>
+            <button
+              type="button"
+              className={`${buttonStyle} ${validation.nickname.isValid ? disable : able}`}
+            >
               중복확인
             </button>
           </div>
           <hr className={lineStyle} />
-          <p className={messageStyle}>{nicknameMessage || '\u00A0'}</p>
+          <p className={`${messageStyle} !text-${nicknameMessage.color}`}>
+            {nicknameMessage.content || '\u00A0'}
+          </p>
 
           <input
             type="password"
@@ -251,7 +376,7 @@ export default function Signup() {
             required
           />
           <hr className={lineStyle} />
-          <p className={messageStyle}>{passwordMessage || '\u00A0'}</p>
+          <p className={`${messageStyle} text-red-400`}>{passwordMessage || '\u00A0'}</p>
 
           <button className={`${signupButton}`}>회원가입</button>
         </form>
