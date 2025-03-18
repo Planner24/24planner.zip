@@ -16,7 +16,7 @@ export default function Login() {
     username: '',
     password: '',
   });
- 
+
   // 로고 클릭 시 메인 페이지로 이동
   const toHome = () => {
     navigate('/');
@@ -75,7 +75,7 @@ export default function Login() {
   const logoStyle = 'w-64 text-center cursor-pointer';
   const loginWrapperStyle = 'w-full h-1/2 flex flex-col justify-center items-center';
   const loginFormStyle =
-    'w-130 h-3/4 flex flex-col justify-between items-center box-border pt-15 pb-3';
+    'w-140 h-3/4 flex flex-col justify-between items-center box-border pt-15 pb-3';
   const inputWrapperStyle = 'w-full';
   const inputStyle = 'w-full text-xl pl-3 focus:outline-none focus:placeholder-transparent mt-5';
   const lineStyle = 'mt-3';
