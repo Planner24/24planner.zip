@@ -1,5 +1,7 @@
 import axios from "axios";
 import authApi from './authApi';
+import store from '../store/store';
+import { logout } from '../store/slices/authSlice';
 
 const api = axios.create({
   baseURL: '/api',
@@ -55,8 +57,9 @@ api.interceptors.response.use(
 
         // 서버에 로그아웃 요청
         await authApi.logout();
-        // localStorage에서 accessToken 삭제
-        localStorage.removeItem('accessToken');
+
+        // redux와 localStorage에서 accessToken 삭제
+        store.dispatch(logout());
 
         return Promise.reject(error);
       }
