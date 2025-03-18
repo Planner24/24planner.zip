@@ -123,9 +123,11 @@ export default function Signup() {
       return;
     }
 
+    if (usernameState.isVerifying) return;
+
     try {
       const response = await authApi.verifyEmail(formData.username);
-      const expiredAt = response.data.expiredAt;
+      const expiredAt = response.data.data.expiredAt;
 
       setUsernameState({
         isVerifying: true,

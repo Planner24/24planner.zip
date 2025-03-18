@@ -5,7 +5,7 @@ const ENDPOINT = "/auth";
 const authApi = {
   // 이메일 인증 요청
   verifyEmail: async (username) => {
-    const response = await api.post(`${ENDPOINT}/verify-email`, username);
+    const response = await api.post(`${ENDPOINT}/verify-email`, { username });
     return response;
   },
 
