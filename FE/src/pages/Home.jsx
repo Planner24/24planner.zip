@@ -1,104 +1,44 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import HomeWithAnimation from '../component/home/HomeWithAnimation';
+import HomeWithoutAnimation from '../component/home/HomeWithoutAnimation';
 
 export default function Home() {
-  let isAlreadyVisited = null;
-
-  const [charClass1, setCharClass1] = useState('');
-  const [charClass2, setCharClass2] = useState('');
-  const [charClass3, setCharClass3] = useState('');
-  const [charClass4, setCharClass4] = useState('');
-  const [charClass5, setCharClass5] = useState('');
-
-  const [textClass1, setTextClass1] = useState('text-primary');
-  const [textClass2, setTextClass2] = useState('text-primary');
-  const [textClass3, setTextClass3] = useState('');
-  const [textClass4, setTextClass4] = useState('');
-  const [textClass5, setTextClass5] = useState('');
+  // 처음부터 false로 하면 두 번째 방문 이후 순간적인 레이아웃 변형이 있어, 아무 레이아웃도 나타내지 않는 null로 지정
+  const [isAlreadyVisited, setIsAlreadyVisited] = useState(null);
 
   const flexStyle = 'flex justify-center item-center';
   const flexColStyle = 'flex flex-col justify-center item-center';
 
+  // localStorage의 getItem이 즉각적으로 동작하지 않아, setTimeout과 연계 시 timer가 제대로 동작하지 않음
+  // 따라서 첫 방문 여부에 따라 출력 Component 구분
+  // useEffect는 한 번만 실행되어야 하나, setIsAlreadyVisited(() => false); 때문에 한 번 더 실행됨
+  // 이 때문에 visitCount가 2회가 될 때까지를 첫 방문으로 가정
+  // TODO: 개발 모드가 아닌 경우의 동작에 따라 수정이 요구될 수 있음
   useEffect(() => {
-    isAlreadyVisited = localStorage.getItem('isAlreadyVisited');
-    if (!isAlreadyVisited) {
-      localStorage.setItem('isAlreadyVisited', 'true');
-
-      setCharClass1(() => 'relative animate-main-char1');
-      setCharClass2(() => 'relative animate-main-char2');
-      setCharClass3(() => 'relative animate-main-char3');
-      setCharClass4(() => 'relative animate-main-char4');
-      setCharClass5(() => 'relative animate-main-char5');
-
-      setTextClass1(() => 'text-primary invisible');
-      setTextClass2(() => 'text-primary invisible');
-      setTextClass3(() => 'invisible');
-      setTextClass4(() => 'invisible');
-      setTextClass5(() => 'invisible animate-main-string');
+    if (!localStorage.getItem('visitCount')) {
+      localStorage.setItem('visitCount', '1');
+      setIsAlreadyVisited(() => false);
+    } else if (localStorage.getItem('visitCount') === '1') {
+      localStorage.setItem('visitCount', '2');
+      setIsAlreadyVisited(() => false);
+    } else {
+      setIsAlreadyVisited(() => true);
     }
-  }, []);
-
-  // timer를 별도의 useEffect에서 설정하지 않으면, setTimeout이 localStorage.getItem과 충돌이 생겨 딜레이가 적용되지 않는 문제 존재
-  useEffect(() => {
-    const timers = [];
-
-    timers.push(
-      setTimeout(() => {
-        setTextClass1('text-primary');
-      }, 1100),
-    );
-
-    timers.push(
-      setTimeout(() => {
-        setTextClass2('text-primary');
-      }, 1600),
-    );
-
-    timers.push(
-      setTimeout(() => {
-        setTextClass3('');
-      }, 2100),
-    );
-
-    timers.push(
-      setTimeout(() => {
-        setTextClass4('');
-      }, 2600),
-    );
-
-    timers.push(
-      setTimeout(() => {
-        setTextClass5('animate-main-string');
-      }, 3600),
-    );
-
-    return () => {
-      timers.forEach((timer) => {
-        clearTimeout(timer);
-      });
-    };
   }, []);
 
   return (
     <main className={`${flexStyle} h-full`}>
-      <div className={flexColStyle}>
-        <div className={`${flexStyle} text-6xl font-extrabold p-8`}>
-          <span className={charClass1}>흩</span>
-          <span className={charClass2}>어</span>
-          <span className={charClass3}>져</span>
-          <span>&nbsp;</span>
-          <span className={charClass4}>있</span>
-          <span className={charClass5}>는</span>
-          <span>&nbsp;</span>
-          <span className={textClass1}>이</span>
-          <span className={textClass2}>사</span>
-          <span className={textClass3}>의</span>
-          <span>&nbsp;</span>
-          <span className={textClass4}>모든 것</span>
-        </div>
-        <div className={`${flexStyle} text-4xl p-8`}>
-          <span className={textClass5}>막막한 이사, 이사모음.zip과 깐깐하게 함께 해요!</span>
-        </div>
+      <div className={`${flexColStyle}`}>
+        {isAlreadyVisited !== null ? (
+          isAlreadyVisited ? (
+            <HomeWithoutAnimation />
+          ) : (
+            <HomeWithAnimation />
+          )
+        ) : (
+          <></>
+        )}
         <div className={`${flexStyle} p-12`}>
           <Link to="/login">
             <button className="w-60 h-20 bg-white border-4 border-primary rounded-3xl text-primary text-4xl font-bold cursor-pointer hover:bg-primary hover:text-white">
