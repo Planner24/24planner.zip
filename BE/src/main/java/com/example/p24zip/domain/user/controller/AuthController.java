@@ -2,6 +2,7 @@ package com.example.p24zip.domain.user.controller;
 
 import com.example.p24zip.domain.user.dto.request.LoginRequestDto;
 import com.example.p24zip.domain.user.dto.request.SignupRequestDto;
+import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestCodeDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestDto;
 import com.example.p24zip.domain.user.dto.response.VerifyEmailDataResponseDto;
 import com.example.p24zip.domain.user.dto.response.AccessTokenResponseDto;
@@ -50,6 +51,15 @@ public class AuthController {
 
         return ResponseEntity.ok(
             ApiResponse.ok("OK", "인증 번호를 전송했습니다.", authService.sendEmail(requestDto.getUsername(), subject, text, code))
+        );
+    }
+
+    @PostMapping("/verify-email-code")
+    public ResponseEntity<ApiResponse<Void>> verifyEmailCode(@RequestBody @Valid VerifyEmailRequestCodeDto requestDto) {
+        authService.checkCode(requestDto);
+
+        return ResponseEntity.ok(
+            ApiResponse.ok("OK", "인증에 성공했습니다.", null)
         );
     }
 

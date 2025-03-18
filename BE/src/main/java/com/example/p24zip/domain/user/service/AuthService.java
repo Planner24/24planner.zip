@@ -3,6 +3,7 @@ package com.example.p24zip.domain.user.service;
 
 import com.example.p24zip.domain.user.dto.request.LoginRequestDto;
 import com.example.p24zip.domain.user.dto.request.SignupRequestDto;
+import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestCodeDto;
 import com.example.p24zip.domain.user.dto.response.VerifyEmailDataResponseDto;
 import com.example.p24zip.domain.user.dto.response.AccessTokenResponseDto;
 import com.example.p24zip.domain.user.dto.response.LoginResponseDto;
@@ -53,6 +54,7 @@ public class AuthService {
     /**
      * @param requestDto
      *    username(email), password, nickname
+     * @return null
      * **/
     @Transactional
     public void signup(@Valid SignupRequestDto requestDto) {
@@ -97,6 +99,35 @@ public class AuthService {
 
     }
 
+    /**
+     * @param requestDto 인증한 이메일, 인증한 코드(랜덤한 숫자 4자리)
+     * @return null
+     * **/
+    public void checkCode(@Valid VerifyEmailRequestCodeDto requestDto) {
+        String username = requestDto.getUsername();
+        String code = requestDto.getCode();
+
+        if(!redisTemplate.hasKey(username)) {
+            throw new CustomException("BAD_REQUEST", "인증번호가 틀렸습니다.");
+        }
+        // -2: 시간 만료
+        if(redisTemplate.getExpire(username)!=-2){
+            if(!code.equals(redisTemplate.opsForValue().get(username))){
+               throw new CustomException("BAD_REQUEST", "인증번호가 틀렸습니다.");
+            }else{
+                redisTemplate.delete(username);
+            }
+        }
+        else{
+            throw new CustomException("TIME_OUT", "시간이 초과되었습니다.");
+        }
+
+    }
+
+    /**
+     * @param nickname
+     * @return null
+     * **/
     public void checkExistNickname(String nickname) {
         boolean checkExistNickname = userRepository.existsByNickname(nickname);
 
