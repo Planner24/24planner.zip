@@ -5,7 +5,7 @@ export default function HeaderRight() {
     <ul className="flex flex-6 justify-end">
       {/*
       <li className="relative group flex items-center p-4">
-        <span className="text-secondary">이사 플랜 1</span>
+        <span className="text-secondary cursor-pointer">이사 플랜 1</span>
         <ul className="absolute text-xl text-center px-6 top-15 space-y-4 left-0 right-0 w-full py-4 bg-gray-100 shadow-sm opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
           <li>
             <Link to="/plans">이사 목록</Link>
