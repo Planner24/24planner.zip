@@ -51,7 +51,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className={`${flexStyle} h-full`}>
+    <main className={`${flexStyle} h-full`}>
       <div className={`${flexColStyle}`}>
         <div className={`${flexStyle} text-6xl font-extrabold p-8`}>
           <span className="relative animate-main-char1">흩</span>
@@ -80,6 +80,6 @@ export default function Home() {
           </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

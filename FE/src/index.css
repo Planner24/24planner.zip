@@ -73,3 +73,7 @@
     }
   }
 }
+
+/* 일부 환경에서 hover가 동작하지 않는 문제 수정을 위한 설정 */
+/* https://tailwindcss.com/docs/upgrade-guide#hover-styles-on-mobile */
+@custom-variant hover (&:hover);
