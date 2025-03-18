@@ -41,7 +41,7 @@ public class AuthController {
         );
     }
 
-    @PostMapping(value = "/verify-email")
+    @PostMapping("/verify-email")
     public ResponseEntity<ApiResponse<VerifyEmailDataResponseDto>> verifyEmail(@RequestBody @Valid VerifyEmailRequestDto requestDto){
 
         return ResponseEntity.ok(
