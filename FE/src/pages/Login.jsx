@@ -11,7 +11,7 @@ export default function Login() {
 
   // 상태 관리 데이터
   const [errorMessage, setErrorMessage] = useState('');
-  const [emptyFields, setEmptyFields] = useState({ username: '', password: '' });
+  const [inputRequestMessage, setInputRequestMessage] = useState({ username: '', password: '' });
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -32,7 +32,7 @@ export default function Login() {
 
     // 입력값이 비어 있으면 입력 요청 메세지 표시 후 중단
     if (Object.keys(errors).length) {
-      setEmptyFields(errors);
+      setInputRequestMessage(errors);
       return;
     }
 
@@ -57,9 +57,9 @@ export default function Login() {
   const handleInput = (e) => {
     const { name, value } = e.target;
 
-    // 입력값 존재 시 emptyFields 초기화
+    // 입력값 존재 시 inputRequestMessage 초기화
     if (value) {
-      setEmptyFields((prev) => ({ ...prev, [name]: '' }));
+      setInputRequestMessage((prev) => ({ ...prev, [name]: '' }));
     }
 
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -103,7 +103,9 @@ export default function Login() {
               className={inputStyle}
             />
             <hr className={lineStyle} />
-            <div className={inputRequestMessageStyle}>{emptyFields.username || '\u00A0'}</div>
+            <div className={inputRequestMessageStyle}>
+              {inputRequestMessage.username || '\u00A0'}
+            </div>
           </div>
           <div className={inputWrapperStyle}>
             <input
@@ -116,7 +118,9 @@ export default function Login() {
               className={inputStyle}
             />
             <hr className={lineStyle} />
-            <div className={inputRequestMessageStyle}>{emptyFields.password || '\u00A0'}</div>
+            <div className={inputRequestMessageStyle}>
+              {inputRequestMessage.password || '\u00A0'}
+            </div>
           </div>
           <div className={loginErrorMessageStyle}>{errorMessage || '\u00A0'}</div>
           <button className={buttonStyle}>로그인</button>
