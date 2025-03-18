@@ -41,7 +41,7 @@ export default function Signup() {
   // 이메일, 코드, 닉네임, 비밀번호 입력값 검증
   const checkUsername = (value) => /\S+@\S+\.\S+/.test(value);
   const checkFourDigit = (value) => /^\d{4}$/.test(value);
-  const checkNickname = (value) => /^[가-힣a-zA-Z0-9]{2,15}$/.test(value);
+  const checkNickname = (value) => /^[가-힣a-zA-Z0-9]{2,17}$/.test(value);
   const checkPassword = (value) => /^(?=.*[A-Za-z])(?=.*\d)(?=.*[#?!]).{8,}$/.test(value);
   const checkMinLength = (value) => value.length >= 8;
   const checkLetter = (value) => /[a-zA-Z]/.test(value);
@@ -73,10 +73,18 @@ export default function Signup() {
     if (name === 'username') {
       setUsernameMessage({ color: '', content: '' });
     } else if (name === 'nickname') {
+      setValidation((prev) => ({
+        ...prev,
+        nickname: { isValid: false },
+      }));
+
       if (!value || checkNickname(value)) {
-        setNicknameMessage('');
+        setNicknameMessage({ color: '', content: '' });
       } else {
-        setNicknameMessage('특수문자 제외, 2자 이상 17자 이하여야 합니다.');
+        setNicknameMessage({
+          color: 'red-400',
+          content: '특수문자 제외, 2자 이상 17자 이하여야 합니다.',
+        });
       }
     } else if (name === 'password') {
       setValidation((prev) => ({
@@ -106,7 +114,7 @@ export default function Signup() {
 
   // 이메일 발송 요청
   const verifyEmail = async () => {
-    setUsernameMessage({ color: '', content: '' });
+    setCodeMessage({ color: '', content: '' });
 
     if (!formData.username) return;
 
@@ -118,7 +126,6 @@ export default function Signup() {
     try {
       const response = await authApi.verifyEmail(formData.username);
       const expiredAt = response.data.expiredAt;
-      // const expiredAt = '2025-03-18T16:56:04.1917653'; // api 완성 전까지 테스트를 위한 임시 코드
 
       setUsernameState({
         isVerifying: true,
@@ -216,8 +223,6 @@ export default function Signup() {
 
   // 인증번호 확인
   const verifyEmailCode = async () => {
-    setCodeMessage({ color: '', content: '' });
-
     if (!formData.code) return;
 
     if (!checkFourDigit(formData.code)) {
@@ -247,18 +252,17 @@ export default function Signup() {
 
   // 닉네임 중복 확인
   const verifyNickname = async () => {
-    setNicknameMessage({ color: '', content: '' });
-
-    if (!formData.nickname) return;
+    if (!formData.nickname || !checkNickname(formData.nickname)) return;
 
     try {
-      await authApi.verifyNickname(formData.nickname);
+      const response = await authApi.verifyNickname(formData.nickname);
+      const data = response.data;
 
       setValidation((prev) => ({
         ...prev,
         nickname: { isValid: true },
       }));
-      setNicknameMessage({ color: 'primary', content: '인증되었습니다.' });
+      setNicknameMessage({ color: 'primary', content: data.message });
     } catch (error) {
       const errordata = error.response.data;
 
@@ -367,13 +371,13 @@ export default function Signup() {
               placeholder="인증번호 입력"
               className={inputStyle}
               onChange={handleFormInput}
-              disabled={validation.username.isValid}
+              disabled={validation.username.isValid || !usernameState.isVerifying}
               required
             />
             <button
               type="button"
-              className={`${buttonStyle} ${validation.username.isValid ? disable : able}`}
-              disabled={validation.username.isValid}
+              className={`${buttonStyle} ${validation.username.isValid || !usernameState.isVerifying ? disable : able}`}
+              disabled={validation.username.isValid || !usernameState.isVerifying}
               onMouseDown={(e) => e.preventDefault()}
               onClick={verifyEmailCode}
             >
@@ -394,7 +398,6 @@ export default function Signup() {
               placeholder="닉네임"
               className={inputStyle}
               onChange={handleFormInput}
-              disabled={validation.nickname.isValid}
               required
             />
             <button
