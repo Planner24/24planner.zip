@@ -45,10 +45,10 @@ export default function Login() {
       dispatch(login({ accessToken }));
 
       navigate('/plans');
-    } catch (error) {
+    } catch (error) {     
       // 로그인 실패 시 메세지
-      if (error.code == 'INVALID_CREDENTIALS') {
-        setErrorMessage(error.message);
+      if (error.response.data.code == 'INVALID_CREDENTIALS') {
+        setErrorMessage(error.response.data.message);
       }
     }
   };
@@ -80,7 +80,7 @@ export default function Login() {
   const inputStyle = 'w-full text-xl pl-3 focus:outline-none focus:placeholder-transparent mt-5';
   const lineStyle = 'mt-3';
   const inputRequestMessageStyle = 'text-red-400 mt-1';
-  const loginErrorMessageStyle = 'text-red-400 m-2';
+  const loginErrorMessageStyle = 'text-red-400 mb-5';
   const buttonStyle =
     'px-12 py-3 text-2xl text-primary cursor-pointer border-3 border-solid rounded-3xl border-primary hover:bg-primary hover:text-white';
   const signupRequestStyle = 'w-1/3 flex justify-center gap-1 mt-3 pt-2';
