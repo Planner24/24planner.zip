@@ -65,6 +65,7 @@ public class AuthService {
         if (checkUsername) {
             throw new CustomException("EXIST_EMAIL", "이미 사용중인 이메일입니다.");
         }
+        checkExistNickname(requestDto.getNickname());
 
         User user = requestDto.toEntity();
         String encryptedPassword = passwordEncoder.encode(requestDto.getPassword());
@@ -133,7 +134,7 @@ public class AuthService {
     }
 
     /**
-     * 중복 닉네임 확인
+     * 닉네임 확인
      * @param nickname
      * @return null
      * **/
@@ -142,6 +143,9 @@ public class AuthService {
 
         if(checkExistNickname) {
             throw new CustomException("EXIST_NICKNAME","이미 사용중인 닉네임입니다.");
+        }
+        if(!(nickname.length()>=2 && nickname.length()<=17)){
+            throw new CustomException("BAD_REQUEST", "필수값이 누락되거나 형식이 올바르지 않습니다.");
         }
     }
 
