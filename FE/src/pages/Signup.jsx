@@ -115,6 +115,8 @@ export default function Signup() {
 
   // 이메일 발송 요청
   const verifyEmail = async () => {
+    if (usernameState.isVerifying) return;
+
     setCodeMessage({ color: '', content: '' });
 
     if (!formData.username) return;
@@ -124,16 +126,15 @@ export default function Signup() {
       return;
     }
 
-    if (usernameState.isVerifying) return;
+    setUsernameState({
+      isVerifying: true,
+      username: formData.username,
+    });
 
     try {
       const response = await authApi.verifyEmail(formData.username);
       const expiredAt = response.data.data.expiredAt;
 
-      setUsernameState({
-        isVerifying: true,
-        username: formData.username,
-      });
       SetExpiredAt(expiredAt);
       setUsernameMessage({
         color: 'primary',
