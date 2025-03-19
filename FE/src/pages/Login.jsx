@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import logo from '../../public/logo.png';
+import logo from '../logo.png';
 import { useState } from 'react';
 import authApi from '../api/authApi';
 import { useDispatch } from 'react-redux';
