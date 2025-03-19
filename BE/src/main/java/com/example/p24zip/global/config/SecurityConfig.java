@@ -33,7 +33,7 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler accessDeniedHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    @Value("${origin}")
+    @Value("${ORIGIN}")
     private String origin;
 
     @Bean
@@ -68,7 +68,6 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:5173");
         configuration.addAllowedOrigin(origin);
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
