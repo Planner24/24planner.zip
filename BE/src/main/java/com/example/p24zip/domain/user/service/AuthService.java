@@ -17,9 +17,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -82,7 +79,7 @@ public class AuthService {
     // subject 보내질 이메일 제목
     // text 보내질 이메일 본문 내용
     // code 보내질 인증 코드 랜덤한 4자리 수
-    public VerifyEmailDataResponseDto sendEmail(@NotNull @Email String username) {
+    public VerifyEmailDataResponseDto sendEmail(String username) {
         String subject = "회원가입 인증 메일입니다.";
         Random random = new Random();
         int code = random.nextInt(9000) +1000;
