@@ -12,8 +12,8 @@ export default function Signup() {
     code: '',
     nickname: '',
     password: '',
+    verifyPassword: '',
   });
-  const [verifyPassword, setVerifyPassword] = useState('');
   const [validation, setValidation] = useState({
     username: { isValid: false },
     nickname: { isValid: false },
@@ -74,6 +74,7 @@ export default function Signup() {
     if (name === 'username') {
       setUsernameMessage({ color: '', content: '' });
     } else if (name === 'nickname') {
+      // 닉네임 중복확인 후 닉네임 변경 시 검증 상태 변경
       setValidation((prev) => ({
         ...prev,
         nickname: { isValid: false },
@@ -90,27 +91,26 @@ export default function Signup() {
     } else if (name === 'password') {
       setValidation((prev) => ({
         ...prev,
-        password: { ...prev.password, isValid: checkPassword(value) },
+        password: { isValid: checkPassword(value), isEqual: value === formData.verifyPassword },
       }));
+
+      if (value === formData.verifyPassword || !formData.verifyPassword) {
+        setPasswordMessage('');
+      } else {
+        setPasswordMessage('비밀번호가 일치하지 않습니다.');
+      }
+    } else if (name === 'verifyPassword') {
+      setValidation((prev) => ({
+        ...prev,
+        password: { ...prev.password, isEqual: value === formData.password },
+      }));
+
+      if (!value || value === formData.password) {
+        setPasswordMessage('');
+      } else if (value != formData.password) {
+        setPasswordMessage('비밀번호가 일치하지 않습니다.');
+      }
     }
-  };
-
-  // 비밀번호 확인 입력 감지 및 검증
-  const handleVerifyPassword = (e) => {
-    const { value } = e.target;
-
-    setVerifyPassword(value);
-
-    if (!value || value === formData.password) {
-      setPasswordMessage('');
-    } else if (value != formData.password) {
-      setPasswordMessage('비밀번호가 일치하지 않습니다.');
-    }
-
-    setValidation((prev) => ({
-      ...prev,
-      password: { ...prev.password, isEqual: value === formData.password },
-    }));
   };
 
   // 이메일 발송 요청
@@ -282,7 +282,7 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { code, ...signupData } = formData;
+    const { code, verifyPassword, ...signupData } = formData;
 
     try {
       await authApi.signup(signupData);
@@ -296,8 +296,7 @@ export default function Signup() {
       }
 
       // 회원가입 실패 시 폼 상태 초기화
-      setFormData({ username: '', code: '', nickname: '', password: '' });
-      setVerifyPassword('');
+      setFormData({ username: '', code: '', nickname: '', password: '', verifyPassword: '' });
       setValidation({
         username: { isValid: false },
         nickname: { isValid: false },
@@ -431,10 +430,40 @@ export default function Signup() {
           />
           <hr className={lineStyle} />
           <ul className="flex justify-between ml-2 mt-1 mb-3">
-            <li className={checkMinLength(formData.password) ? valid : invalid}>✓ 8자 이상</li>
-            <li className={checkLetter(formData.password) ? valid : invalid}>✓ 영문</li>
-            <li className={checkNumber(formData.password) ? valid : invalid}>✓ 숫자</li>
-            <li className={checkSpecialChar(formData.password) ? valid : invalid}>
+            <li
+              className={
+                checkMinLength(formData.password) && !checkInvalidChar(formData.password)
+                  ? valid
+                  : invalid
+              }
+            >
+              ✓ 8자 이상
+            </li>
+            <li
+              className={
+                checkLetter(formData.password) && !checkInvalidChar(formData.password)
+                  ? valid
+                  : invalid
+              }
+            >
+              ✓ 영문
+            </li>
+            <li
+              className={
+                checkNumber(formData.password) && !checkInvalidChar(formData.password)
+                  ? valid
+                  : invalid
+              }
+            >
+              ✓ 숫자
+            </li>
+            <li
+              className={
+                checkSpecialChar(formData.password) && !checkInvalidChar(formData.password)
+                  ? valid
+                  : invalid
+              }
+            >
               ✓ 특수문자(@$!%*#?&)
             </li>
             <li className={checkInvalidChar(formData.password) ? wrong : invalid}>
@@ -446,10 +475,10 @@ export default function Signup() {
             type="password"
             id="verifyPassword"
             name="verifyPassword"
-            value={verifyPassword}
+            value={formData.verifyPassword}
             placeholder="비밀번호 확인"
             className={`${inputStyle} mt-2`}
-            onChange={handleVerifyPassword}
+            onChange={handleFormInput}
             required
           />
           <hr className={lineStyle} />
