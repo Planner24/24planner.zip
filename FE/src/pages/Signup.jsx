@@ -282,6 +282,11 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // 회원가입 필수값 최종 검증 후 api 요청
+    checkUsername(formData.username);
+    checkNickname(formData.nickname);
+    checkPassword(formData.password);
+
     const { code, verifyPassword, ...signupData } = formData;
 
     try {
