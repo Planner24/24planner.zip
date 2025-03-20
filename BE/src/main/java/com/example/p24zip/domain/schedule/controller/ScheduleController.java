@@ -1,19 +1,22 @@
 package com.example.p24zip.domain.schedule.controller;
 
-import com.example.p24zip.domain.schedule.dto.request.ScheduleCreateRequestDto;
+import com.example.p24zip.domain.schedule.dto.request.ScheduleRequestDto;
 import com.example.p24zip.domain.schedule.dto.response.DayScheduleListResponseDto;
 import com.example.p24zip.domain.schedule.dto.response.MonthScheduleListResponseDto;
 import com.example.p24zip.domain.schedule.dto.response.ScheduleResponseDto;
 import com.example.p24zip.domain.schedule.service.ScheduleService;
+import com.example.p24zip.domain.user.entity.User;
 import com.example.p24zip.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,9 +32,10 @@ public class ScheduleController {
     // 할 일 생성
     @PostMapping
     public ResponseEntity<ApiResponse<ScheduleResponseDto>> createSchedule(
-        @RequestBody @Valid ScheduleCreateRequestDto requestDto,
-        @PathVariable Long movingPlanId
-        ){
+        @RequestBody @Valid ScheduleRequestDto requestDto,
+        @PathVariable Long movingPlanId,
+        @AuthenticationPrincipal User user
+    ){
         return ResponseEntity.ok(ApiResponse.ok(
             "CREATED",
             "할 일이 생성되었습니다.",
@@ -43,7 +47,9 @@ public class ScheduleController {
     @GetMapping("/month")
     public ResponseEntity<ApiResponse<MonthScheduleListResponseDto>> getSchedules(
         @PathVariable Long movingPlanId,
-        @RequestParam YearMonth month){
+        @RequestParam YearMonth month,
+        @AuthenticationPrincipal User user
+    ){
         return ResponseEntity.ok(ApiResponse.ok(
             "OK",
             "할 일 목록 조회에 성공했습니다.",
@@ -55,11 +61,28 @@ public class ScheduleController {
     @GetMapping("/date")
     public ResponseEntity<ApiResponse<DayScheduleListResponseDto>> getScheduleById(
         @PathVariable Long movingPlanId,
-        @RequestParam LocalDate date){
+        @RequestParam LocalDate date,
+        @AuthenticationPrincipal User user
+    ){
         return ResponseEntity.ok(ApiResponse.ok(
             "OK",
             "할 일 목록 조회에 성공했습니다.",
             scheduleService.getScheduleById(movingPlanId, date)
+        ));
+    }
+
+    // 할 일 수정
+    @PutMapping("/{scheduleId}")
+    public ResponseEntity<ApiResponse<ScheduleResponseDto>> updateSchedule(
+        @Valid @RequestBody ScheduleRequestDto requestDto,
+        @PathVariable Long scheduleId,
+        @PathVariable Long movingPlanId,
+        @AuthenticationPrincipal User user
+        ){
+        return ResponseEntity.ok(ApiResponse.ok(
+            "UPDATED",
+            "할 일 수정에 성공했습니다.",
+            scheduleService.updateSchedule(requestDto, scheduleId)
         ));
     }
 

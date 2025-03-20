@@ -2,7 +2,7 @@ package com.example.p24zip.domain.schedule.service;
 
 import com.example.p24zip.domain.movingPlan.entity.MovingPlan;
 import com.example.p24zip.domain.movingPlan.repository.MovingPlanRepository;
-import com.example.p24zip.domain.schedule.dto.request.ScheduleCreateRequestDto;
+import com.example.p24zip.domain.schedule.dto.request.ScheduleRequestDto;
 import com.example.p24zip.domain.schedule.dto.response.DayScheduleListResponseDto;
 import com.example.p24zip.domain.schedule.dto.response.DayScheduleResponseDto;
 import com.example.p24zip.domain.schedule.dto.response.MonthScheduleListResponseDto;
@@ -30,7 +30,7 @@ public class ScheduleService {
 
     // 할 일 생성
     @Transactional
-    public ScheduleResponseDto createSchedule(ScheduleCreateRequestDto requestDto, Long movingPlanId){
+    public ScheduleResponseDto createSchedule(ScheduleRequestDto requestDto, Long movingPlanId){
 
         // 시작 날짜가 종료 날짜 이후인 경우
         if(requestDto.getStartDate().isAfter(requestDto.getEndDate())){
@@ -73,7 +73,23 @@ public class ScheduleService {
             .toList();
 
         return DayScheduleListResponseDto.from(date, scheduleInDate);
+    }
 
+    // 할 일 수정
+    @Transactional
+    public ScheduleResponseDto updateSchedule(ScheduleRequestDto requestDto, Long scheduleId){
+
+        // 시작 날짜가 종료 날짜 이후인 경우
+        if(requestDto.getStartDate().isAfter(requestDto.getEndDate())){
+            throw new CustomException("INVALID_DATE", "시작 날짜는 종료 날짜보다 이전이어야 합니다.");
+        }
+
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+            .orElseThrow(ResourceNotFoundException::new);
+
+        Schedule updatedSchedule = schedule.update(requestDto);
+
+        return ScheduleResponseDto.from(updatedSchedule);
     }
 
     // 해당 달의 스케줄인지 확인

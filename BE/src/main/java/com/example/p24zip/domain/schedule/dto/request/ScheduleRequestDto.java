@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ScheduleCreateRequestDto {
+public class ScheduleRequestDto {
 
     @NotBlank
     private String content;

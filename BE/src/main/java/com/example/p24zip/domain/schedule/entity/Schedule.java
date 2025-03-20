@@ -1,6 +1,7 @@
 package com.example.p24zip.domain.schedule.entity;
 
 import com.example.p24zip.domain.movingPlan.entity.MovingPlan;
+import com.example.p24zip.domain.schedule.dto.request.ScheduleRequestDto;
 import com.example.p24zip.global.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,5 +52,14 @@ public class Schedule extends BaseTimeEntity {
         this.endDate = endDate;
         this.color = color;
         this.movingPlan = movingPlan;
+    }
+
+    public Schedule update(ScheduleRequestDto requestDto){
+        this.content = requestDto.getContent();
+        this.startDate = requestDto.getStartDate();
+        this.endDate = requestDto.getEndDate();
+        this.color = requestDto.getColor();
+
+        return this;
     }
 }
