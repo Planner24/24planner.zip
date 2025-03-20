@@ -4,6 +4,7 @@ package com.example.p24zip.domain.user.service;
 import com.example.p24zip.domain.user.dto.request.LoginRequestDto;
 import com.example.p24zip.domain.user.dto.request.SignupRequestDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestCodeDto;
+import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestDto;
 import com.example.p24zip.domain.user.dto.response.VerifyEmailDataResponseDto;
 import com.example.p24zip.domain.user.dto.response.AccessTokenResponseDto;
 import com.example.p24zip.domain.user.dto.response.LoginResponseDto;
@@ -73,17 +74,28 @@ public class AuthService {
 
     /**
      * 이메일 인증(이메일 전송)
-     * @param username 입력한 email
+     * @param requestDto 입력한 email을 가지고 있는 DTO
      * @return 만료일 가진 responseDto
      * **/
     // subject 보내질 이메일 제목
     // text 보내질 이메일 본문 내용
     // code 보내질 인증 코드 랜덤한 4자리 수
-    public VerifyEmailDataResponseDto sendEmail(String username) {
+    public VerifyEmailDataResponseDto sendEmail(VerifyEmailRequestDto requestDto) {
+        String username = requestDto.getUsername();
+
+        if(redisTemplate.hasKey(username)){
+            LocalDateTime checkAccessTime = LocalDateTime.parse(
+            redisTemplate.opsForValue().get(username + "_createdAt"));
+
+            if(!checkAccessTime.plusSeconds(5).isBefore(LocalDateTime.now())){
+                throw new CustomException("TOOMANY_REQUEST","5초안에 다시 요청했습니다.");
+            }
+        }
+
         String subject = "회원가입 인증 메일입니다.";
         Random random = new Random();
-        int code = random.nextInt(9000) +1000;
-        String text = "인증 코드는" + code + "입니다.";
+        int codeNum = random.nextInt(9000) +1000;
+        String text = "인증 코드는" + codeNum + "입니다.";
 
         boolean checkUsername = checkExistsUsername(username);
         if (checkUsername) {
@@ -98,7 +110,7 @@ public class AuthService {
         mailSender.send(message);
 
         // redis인증 코드 저장
-        ZonedDateTime expiredAt = saveCodeToRedis(username, String.valueOf(code));
+        ZonedDateTime expiredAt = saveCodeToRedis(username, codeNum);
 
         return VerifyEmailDataResponseDto.from(expiredAt);
 
@@ -109,7 +121,7 @@ public class AuthService {
      * @param requestDto 인증한 이메일, 인증한 코드(랜덤한 숫자 4자리)
      * @return null
      * **/
-    public void checkCode(@Valid VerifyEmailRequestCodeDto requestDto) {
+    public void checkCode(VerifyEmailRequestCodeDto requestDto) {
         String username = requestDto.getUsername();
         String code = requestDto.getCode();
 
@@ -122,6 +134,7 @@ public class AuthService {
                throw new CustomException("BAD_REQUEST", "인증번호가 틀렸습니다.");
             }else{
                 redisTemplate.delete(username);
+                redisTemplate.delete(username + "_createdAt");
             }
         }
         else{
@@ -259,20 +272,23 @@ public class AuthService {
         return userRepository.existsByUsername(userName);
     }
 
-
+  
     /**
      * 4자리의 랜덤 수를 redis에 저장
      *
      * @param username 입력한 email
-     * @param code     4자리의 랜덤 수
-     * @return LocalDateTime expiredAt
-     **/
-    public ZonedDateTime saveCodeToRedis(String username, String code) {
 
-        redisTemplate.opsForValue().set(username, code, 3, TimeUnit.MINUTES);
+     * @param codeNum     4자리의 랜덤 수
+     * @return ZonedDateTime expiredAt
+     **/
+    public ZonedDateTime saveCodeToRedis(String username, int codeNum) {
+
+        String key = username;
+        String code = String.valueOf(codeNum);
+        String createdAt = key + "_createdAt";
+
+        redisTemplate.opsForValue().set(key, code, 3, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(createdAt, String.valueOf(LocalDateTime.now()), 3, TimeUnit.MINUTES); // 생성시간
         return ZonedDateTime.now(ZoneId.of("Asia/Seoul")).plusMinutes(3);
     }
-
-
-
 }
