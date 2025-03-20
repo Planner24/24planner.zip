@@ -9,6 +9,7 @@ import com.example.p24zip.domain.schedule.dto.response.ScheduleListResponseDto;
 import com.example.p24zip.domain.schedule.dto.response.ScheduleResponseDto;
 import com.example.p24zip.domain.schedule.entity.Schedule;
 import com.example.p24zip.domain.schedule.repository.ScheduleRepository;
+import com.example.p24zip.global.exception.CustomException;
 import com.example.p24zip.global.exception.ResourceNotFoundException;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -31,6 +32,11 @@ public class ScheduleService {
     @Transactional
     public ScheduleResponseDto createSchedule(ScheduleCreateRequestDto requestDto, Long movingPlanId){
 
+        // 시작 날짜가 종료 날짜 이후인 경우
+        if(requestDto.getStartDate().isAfter(requestDto.getEndDate())){
+            throw new CustomException("INVALID_DATE", "시작 날짜는 종료 날짜보다 이전이어야 합니다.");
+        }
+
         MovingPlan movingPlan = movingPlanRepository.findById(movingPlanId)
             .orElseThrow(ResourceNotFoundException::new);
 
@@ -46,6 +52,7 @@ public class ScheduleService {
 
         int monthValue = month.getMonthValue();
 
+        // 해당 월의 스케줄만 가져오기
         List<ScheduleResponseDto> scheduleInMonth = allSchedules.stream()
             .filter(schedule -> isScheduleInMonth(schedule, monthValue))
             .map(ScheduleResponseDto :: from)
@@ -59,6 +66,7 @@ public class ScheduleService {
 
         List<Schedule> allSchedules = scheduleRepository.findAllByMovingPlanId(movingPlanId);
 
+        // 해당 날짜의 스케줄만 가져오기
         List<DayScheduleResponseDto> scheduleInDate = allSchedules.stream()
             .filter(schedule -> isScheduleInDay(schedule, date))
             .map(DayScheduleResponseDto :: from)
@@ -68,14 +76,14 @@ public class ScheduleService {
 
     }
 
-    // 검색한 달의 스케줄인지 확인
+    // 해당 달의 스케줄인지 확인
     private boolean isScheduleInMonth(Schedule schedule, int monthValue){
 
         return schedule.getStartDate().getMonthValue() == monthValue
             || schedule.getEndDate().getMonthValue() == monthValue;
     }
 
-    // 검색한 날짜의 스케줄인지 확인
+    // 해당 날짜의 스케줄인지 확인
     private boolean isScheduleInDay(Schedule schedule, LocalDate date){
 
         int startDateResult = date.compareTo(schedule.getStartDate());
