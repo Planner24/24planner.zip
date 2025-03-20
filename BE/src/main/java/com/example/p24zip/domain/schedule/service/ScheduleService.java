@@ -77,7 +77,7 @@ public class ScheduleService {
 
     // 할 일 수정
     @Transactional
-    public ScheduleResponseDto updateSchedule(ScheduleRequestDto requestDto, Long movingPlanId, Long scheduleId){
+    public ScheduleResponseDto updateSchedule(ScheduleRequestDto requestDto, Long scheduleId, Long movingPlanId){
 
         // 시작 날짜가 종료 날짜 이후인 경우
         if(requestDto.getStartDate().isAfter(requestDto.getEndDate())){
