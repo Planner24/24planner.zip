@@ -5,7 +5,7 @@ import com.example.p24zip.domain.movingPlan.repository.MovingPlanRepository;
 import com.example.p24zip.domain.schedule.dto.request.ScheduleCreateRequestDto;
 import com.example.p24zip.domain.schedule.dto.response.DayScheduleListResponseDto;
 import com.example.p24zip.domain.schedule.dto.response.DayScheduleResponseDto;
-import com.example.p24zip.domain.schedule.dto.response.ScheduleListResponseDto;
+import com.example.p24zip.domain.schedule.dto.response.MonthScheduleListResponseDto;
 import com.example.p24zip.domain.schedule.dto.response.ScheduleResponseDto;
 import com.example.p24zip.domain.schedule.entity.Schedule;
 import com.example.p24zip.domain.schedule.repository.ScheduleRepository;
@@ -46,7 +46,7 @@ public class ScheduleService {
     }
 
     // 할 일 전체 조회 (월별 조회)
-    public ScheduleListResponseDto getSchedules(Long movingPlanId, YearMonth month){
+    public MonthScheduleListResponseDto getSchedules(Long movingPlanId, YearMonth month){
 
         List<Schedule> allSchedules = scheduleRepository.findAllByMovingPlanId(movingPlanId);
 
@@ -58,7 +58,7 @@ public class ScheduleService {
             .map(ScheduleResponseDto :: from)
             .toList();
 
-        return ScheduleListResponseDto.from(month, scheduleInMonth);
+        return MonthScheduleListResponseDto.from(month, scheduleInMonth);
     }
 
     // 할 일 날짜별 조회

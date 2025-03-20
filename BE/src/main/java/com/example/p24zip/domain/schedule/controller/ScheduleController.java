@@ -2,7 +2,7 @@ package com.example.p24zip.domain.schedule.controller;
 
 import com.example.p24zip.domain.schedule.dto.request.ScheduleCreateRequestDto;
 import com.example.p24zip.domain.schedule.dto.response.DayScheduleListResponseDto;
-import com.example.p24zip.domain.schedule.dto.response.ScheduleListResponseDto;
+import com.example.p24zip.domain.schedule.dto.response.MonthScheduleListResponseDto;
 import com.example.p24zip.domain.schedule.dto.response.ScheduleResponseDto;
 import com.example.p24zip.domain.schedule.service.ScheduleService;
 import com.example.p24zip.global.response.ApiResponse;
@@ -41,7 +41,7 @@ public class ScheduleController {
 
     // 할 일 전체 조회 (월별 조회)
     @GetMapping("/month")
-    public ResponseEntity<ApiResponse<ScheduleListResponseDto>> getSchedules(
+    public ResponseEntity<ApiResponse<MonthScheduleListResponseDto>> getSchedules(
         @PathVariable Long movingPlanId,
         @RequestParam YearMonth month){
         return ResponseEntity.ok(ApiResponse.ok(

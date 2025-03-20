@@ -7,13 +7,13 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ScheduleListResponseDto {
+public class MonthScheduleListResponseDto {
 
     private final YearMonth month;
     private final List<ScheduleResponseDto> schedules;
 
-    public static ScheduleListResponseDto from(YearMonth month, List<ScheduleResponseDto> scheduleInMonth){
-        return ScheduleListResponseDto.builder()
+    public static MonthScheduleListResponseDto from(YearMonth month, List<ScheduleResponseDto> scheduleInMonth){
+        return MonthScheduleListResponseDto.builder()
             .month(month)
             .schedules(scheduleInMonth)
             .build();
