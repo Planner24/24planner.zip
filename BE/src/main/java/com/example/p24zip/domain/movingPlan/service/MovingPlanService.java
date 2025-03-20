@@ -2,8 +2,10 @@ package com.example.p24zip.domain.movingPlan.service;
 
 import com.example.p24zip.domain.movingPlan.dto.request.MovingPlanRequestDto;
 import com.example.p24zip.domain.movingPlan.dto.response.MovingPlanResponseDto;
+import com.example.p24zip.domain.movingPlan.entity.MovingPlan;
 import com.example.p24zip.domain.movingPlan.repository.MovingPlanRepository;
 import com.example.p24zip.domain.user.entity.User;
+import com.example.p24zip.global.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,5 +28,13 @@ public class MovingPlanService {
         return movingPlanRepository.findAllByUserOrderByCreatedAtDesc(user).stream()
                 .map(MovingPlanResponseDto::from)
                 .toList();
+    }
+
+    @Transactional
+    public MovingPlanResponseDto updateMovingPlan(Long id, MovingPlanRequestDto requestDto, User user) {
+        MovingPlan movingPlan = movingPlanRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException());
+        movingPlan.update(requestDto);
+
+        return MovingPlanResponseDto.from(movingPlan);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.p24zip.domain.movingPlan.entity;
 
+import com.example.p24zip.domain.movingPlan.dto.request.MovingPlanRequestDto;
 import com.example.p24zip.domain.user.entity.User;
 import com.example.p24zip.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -26,5 +27,11 @@ public class MovingPlan extends BaseTimeEntity {
     public MovingPlan(String title, User user) {
         this.title = title;
         this.user = user;
+    }
+
+    public MovingPlan update(MovingPlanRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+
+        return this;
     }
 }

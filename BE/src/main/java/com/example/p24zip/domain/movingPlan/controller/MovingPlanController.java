@@ -50,4 +50,17 @@ public class MovingPlanController {
                 wrappedData
         ));
     }
+
+    @PutMapping("/{movingPlanId}")
+    public ResponseEntity<ApiResponse<MovingPlanResponseDto>> updateMovingPlan(
+            @PathVariable Long movingPlanId,
+            @RequestBody MovingPlanRequestDto requestDto,
+            @AuthenticationPrincipal User user) {
+
+        return ResponseEntity.ok(ApiResponse.ok(
+                "UPDATED",
+                "플랜 제목을 수정했습니다.",
+                movingPlanService.updateMovingPlan(movingPlanId, requestDto, user)
+        ));
+    }
 }
