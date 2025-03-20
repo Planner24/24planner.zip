@@ -97,6 +97,21 @@ public class ScheduleService {
         return ScheduleResponseDto.from(updatedSchedule);
     }
 
+    // 할 일 삭제
+    @Transactional
+    public void deleteSchedule(Long scheduleId, Long movingPlanId){
+
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+            .orElseThrow(ResourceNotFoundException::new);
+
+        // 할 일의 이사 플랜 아이디와 입력 받은 이사 플랜 아이디 값이 다른 경우
+        if(!schedule.getMovingPlan().getId().equals(movingPlanId)){
+            throw new CustomException("UNMATCHED_ID", "할 일을 작성한 이사 플랜에서 삭제할 수 있습니다.");
+        }
+
+        scheduleRepository.delete(schedule);
+    }
+
     // 해당 달의 스케줄인지 확인
     private boolean isScheduleInMonth(Schedule schedule, int monthValue){
 
