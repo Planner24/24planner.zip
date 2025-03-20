@@ -77,7 +77,7 @@ public class ScheduleService {
 
     // 할 일 수정
     @Transactional
-    public ScheduleResponseDto updateSchedule(ScheduleRequestDto requestDto, Long scheduleId){
+    public ScheduleResponseDto updateSchedule(ScheduleRequestDto requestDto, Long movingPlanId, Long scheduleId){
 
         // 시작 날짜가 종료 날짜 이후인 경우
         if(requestDto.getStartDate().isAfter(requestDto.getEndDate())){
@@ -86,6 +86,11 @@ public class ScheduleService {
 
         Schedule schedule = scheduleRepository.findById(scheduleId)
             .orElseThrow(ResourceNotFoundException::new);
+
+        // 할 일의 이사 플랜 아이디와 입력 받은 이사 플랜 아이디 값이 다른 경우
+        if(!schedule.getMovingPlan().getId().equals(movingPlanId)){
+            throw new CustomException("UNMATCHED_ID", "할 일을 작성한 이사 플랜에서 수정할 수 있습니다.");
+        }
 
         Schedule updatedSchedule = schedule.update(requestDto);
 

@@ -82,7 +82,7 @@ public class ScheduleController {
         return ResponseEntity.ok(ApiResponse.ok(
             "UPDATED",
             "할 일 수정에 성공했습니다.",
-            scheduleService.updateSchedule(requestDto, scheduleId)
+            scheduleService.updateSchedule(requestDto, movingPlanId, scheduleId)
         ));
     }
 
