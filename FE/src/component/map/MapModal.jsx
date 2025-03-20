@@ -1,6 +1,11 @@
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import mapApi from '../../api/mapApi';
 
 export default function CalendarModal({ modalClose }) {
+  
+  const { movingPlanId } = useParams();
+  
   const [address, setAddress] = useState('');
 
   const [formData, setFormData] = useState({
@@ -75,8 +80,11 @@ export default function CalendarModal({ modalClose }) {
     }).open();
   };
 
-  const test = () => {
+  const test = async () => {
     console.log(formData);
+
+    console.log(movingPlanId);
+    
 
     const errors = {};
     if (!formData.nickname) errors.nickname = '별명을 지어주세요.';
@@ -88,7 +96,15 @@ export default function CalendarModal({ modalClose }) {
       return;
     }
 
-    modalClose();
+    try {
+      await mapApi.mapCreate(movingPlanId, formData);
+      modalClose();
+
+    } catch (error) {
+      console.log(error);
+      
+    }
+
   };
 
   return (
