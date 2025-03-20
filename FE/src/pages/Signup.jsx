@@ -158,15 +158,10 @@ export default function Signup() {
 
     const remainingMs = expireTime - now;
 
-    // 디버깅용 로그
-    console.log('현재 시간: ', now, '  ', now.toISOString());
-    console.log('만료 시간: ', expireTime, '  ', expireTime.toISOString(), expiredAt);
-    console.log('남은 시간(ms): ', remainingMs);
-
     if (remainingMs <= 0) return '0:00';
 
     const minutes = Math.floor(remainingMs / (1000 * 60));
-    const seconds = Math.floor((remainingMs % (1000 * 60)) / 1000) - 2;
+    const seconds = Math.floor((remainingMs % (1000 * 60)) / 1000) - 1;
 
     const formattedSeconds = String(seconds).padStart(2, '0');
 
