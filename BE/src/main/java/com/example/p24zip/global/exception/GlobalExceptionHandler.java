@@ -1,13 +1,14 @@
 package com.example.p24zip.global.exception;
 
 import com.example.p24zip.global.response.ApiResponse;
-import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -54,5 +55,25 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error("INVALID_CREDENTIALS", "이메일 또는 비밀번호가 올바르지 않습니다."));
     }
 
+    @ExceptionHandler(GeocoderExceptionHandler.class)
+    public ResponseEntity<ApiResponse<Void>> GeoCoder_handler(GeocoderExceptionHandler ex) {
+        return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(ApiResponse.error(ex.getCode(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(WebClientRequestException.class)
+    public ResponseEntity<ApiResponse<Void>> GeocoderConnectHandler(WebClientRequestException ex) {
+        return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(ApiResponse.error("GEOCODER_API_CONNECT_ERROR","좌표 변경 API에서 연결 오류가 발생했습니다."));
+    }
+
+    @ExceptionHandler(WebClientResponseException.class)
+    public ResponseEntity<ApiResponse<Void>> GeocoderConnectHandler(WebClientResponseException ex) {
+        return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(ApiResponse.error("GEOCODER_API_CONNECT_ERROR","좌표 변경 API에서 연결 오류가 발생했습니다."));
+    }
 }
 

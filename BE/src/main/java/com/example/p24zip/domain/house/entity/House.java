@@ -29,24 +29,26 @@ public class House extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "movingPlan_id")
-    private MovingPlan movingPlanID;
+    private MovingPlan movingPlan;
     @NotBlank
     private String nickname;
     @NotBlank
-    private String address;
+    private String address1;
+    private String address2; // 상세 주소
+    @NotNull
+    private double longtitude; // 경도
     @NotNull
     private double latitude; // 위도
-    @NotNull
-    private double longtiude; // 경도
     private String content;
 
     @Builder
-    public House(MovingPlan movingPlanID, String nickname, String address, double latitude, double longtitude, String content) {
-        this.movingPlanID = movingPlanID;
+    public House(MovingPlan movingPlan, String nickname, String address1,String address2, double latitude, double longtitude, String content) {
+        this.movingPlan = movingPlan;
         this.nickname = nickname;
-        this.address = address;
+        this.address1 = address1;
+        this.address2 = address2;
         this.latitude = latitude;
-        this.longtiude = longtitude;
+        this.longtitude = longtitude;
         this.content = content;
 
     }
