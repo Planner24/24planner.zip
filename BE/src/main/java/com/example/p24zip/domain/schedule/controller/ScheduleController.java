@@ -1,11 +1,13 @@
 package com.example.p24zip.domain.schedule.controller;
 
 import com.example.p24zip.domain.schedule.dto.request.ScheduleCreateRequestDto;
+import com.example.p24zip.domain.schedule.dto.response.DayScheduleListResponseDto;
 import com.example.p24zip.domain.schedule.dto.response.ScheduleListResponseDto;
 import com.example.p24zip.domain.schedule.dto.response.ScheduleResponseDto;
 import com.example.p24zip.domain.schedule.service.ScheduleService;
 import com.example.p24zip.global.response.ApiResponse;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +39,7 @@ public class ScheduleController {
         ));
     }
 
-    // 할 일 전체 조회
+    // 할 일 전체 조회 (월별 조회)
     @GetMapping("/month")
     public ResponseEntity<ApiResponse<ScheduleListResponseDto>> getSchedules(
         @PathVariable Long movingPlanId,
@@ -46,6 +48,18 @@ public class ScheduleController {
             "OK",
             "할 일 목록 조회에 성공했습니다.",
             scheduleService.getSchedules(movingPlanId, month)
+        ));
+    }
+
+    // 할 일 날짜별 조회
+    @GetMapping("/date")
+    public ResponseEntity<ApiResponse<DayScheduleListResponseDto>> getScheduleById(
+        @PathVariable Long movingPlanId,
+        @RequestParam LocalDate date){
+        return ResponseEntity.ok(ApiResponse.ok(
+            "OK",
+            "할 일 목록 조회에 성공했습니다.",
+            scheduleService.getScheduleById(movingPlanId, date)
         ));
     }
 

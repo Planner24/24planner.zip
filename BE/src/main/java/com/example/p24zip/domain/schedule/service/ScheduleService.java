@@ -3,11 +3,14 @@ package com.example.p24zip.domain.schedule.service;
 import com.example.p24zip.domain.movingPlan.entity.MovingPlan;
 import com.example.p24zip.domain.movingPlan.repository.MovingPlanRepository;
 import com.example.p24zip.domain.schedule.dto.request.ScheduleCreateRequestDto;
+import com.example.p24zip.domain.schedule.dto.response.DayScheduleListResponseDto;
+import com.example.p24zip.domain.schedule.dto.response.DayScheduleResponseDto;
 import com.example.p24zip.domain.schedule.dto.response.ScheduleListResponseDto;
 import com.example.p24zip.domain.schedule.dto.response.ScheduleResponseDto;
 import com.example.p24zip.domain.schedule.entity.Schedule;
 import com.example.p24zip.domain.schedule.repository.ScheduleRepository;
 import com.example.p24zip.global.exception.ResourceNotFoundException;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +39,7 @@ public class ScheduleService {
         return ScheduleResponseDto.from(newSchedule);
     }
 
-    // 할 일 전체 조회
+    // 할 일 전체 조회 (월별 조회)
     public ScheduleListResponseDto getSchedules(Long movingPlanId, YearMonth month){
 
         List<Schedule> allSchedules = scheduleRepository.findAllByMovingPlanId(movingPlanId);
@@ -51,9 +54,33 @@ public class ScheduleService {
         return ScheduleListResponseDto.from(month, scheduleInMonth);
     }
 
+    // 할 일 날짜별 조회
+    public DayScheduleListResponseDto getScheduleById(Long movingPlanId, LocalDate date){
+
+        List<Schedule> allSchedules = scheduleRepository.findAllByMovingPlanId(movingPlanId);
+
+        List<DayScheduleResponseDto> scheduleInDate = allSchedules.stream()
+            .filter(schedule -> isScheduleInDay(schedule, date))
+            .map(DayScheduleResponseDto :: from)
+            .toList();
+
+        return DayScheduleListResponseDto.from(date, scheduleInDate);
+
+    }
+
     // 검색한 달의 스케줄인지 확인
     private boolean isScheduleInMonth(Schedule schedule, int monthValue){
+
         return schedule.getStartDate().getMonthValue() == monthValue
             || schedule.getEndDate().getMonthValue() == monthValue;
+    }
+
+    // 검색한 날짜의 스케줄인지 확인
+    private boolean isScheduleInDay(Schedule schedule, LocalDate date){
+
+        int startDateResult = date.compareTo(schedule.getStartDate());
+        int endDateResult = date.compareTo(schedule.getEndDate());
+
+        return startDateResult >= 0 && endDateResult <= 0;
     }
 }
