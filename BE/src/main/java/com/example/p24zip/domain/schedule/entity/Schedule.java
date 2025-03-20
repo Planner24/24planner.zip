@@ -1,15 +1,19 @@
 package com.example.p24zip.domain.schedule.entity;
 
+import com.example.p24zip.domain.movingPlan.entity.MovingPlan;
 import com.example.p24zip.global.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,4 +39,17 @@ public class Schedule extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String color;
+
+    @ManyToOne
+    @JoinColumn(name = "movingPlan_id")
+    private MovingPlan movingPlan;
+
+    @Builder
+    public Schedule(String content, LocalDate startDate, LocalDate endDate, String color, MovingPlan movingPlan){
+        this.content = content;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.color = color;
+        this.movingPlan = movingPlan;
+    }
 }
