@@ -60,7 +60,21 @@ public class MovingPlanController {
         return ResponseEntity.ok(ApiResponse.ok(
                 "UPDATED",
                 "플랜 제목을 수정했습니다.",
-                movingPlanService.updateMovingPlan(movingPlanId, requestDto, user)
+                movingPlanService.updateMovingPlan(movingPlanId, requestDto)
+        ));
+    }
+
+    @DeleteMapping("/{movingPlanId}")
+    public ResponseEntity<ApiResponse<Object>> deleteMovingPlan(
+            @PathVariable Long movingPlanId,
+            @AuthenticationPrincipal User user) {
+
+        movingPlanService.deleteMovingPlan(movingPlanId);
+
+        return ResponseEntity.ok(ApiResponse.ok(
+                "DELETED",
+                "플랜을 삭제했습니다.",
+                null
         ));
     }
 }

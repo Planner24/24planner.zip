@@ -31,10 +31,19 @@ public class MovingPlanService {
     }
 
     @Transactional
-    public MovingPlanResponseDto updateMovingPlan(Long id, MovingPlanRequestDto requestDto, User user) {
-        MovingPlan movingPlan = movingPlanRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException());
+    public MovingPlanResponseDto updateMovingPlan(Long id, MovingPlanRequestDto requestDto) {
+        MovingPlan movingPlan = movingPlanRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException());
         movingPlan.update(requestDto);
 
         return MovingPlanResponseDto.from(movingPlan);
+    }
+
+    @Transactional
+    public void deleteMovingPlan(Long id) {
+        MovingPlan movingPlan = movingPlanRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException());
+
+        movingPlanRepository.delete(movingPlan);
     }
 }
