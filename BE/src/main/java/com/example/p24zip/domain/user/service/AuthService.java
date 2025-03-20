@@ -79,10 +79,11 @@ public class AuthService {
     // text 보내질 이메일 본문 내용
     // code 보내질 인증 코드 랜덤한 4자리 수
     public VerifyEmailDataResponseDto sendEmail(VerifyEmailRequestDto requestDto) {
+        String username = requestDto.getUsername();
 
-        if(redisTemplate.hasKey(requestDto.getUsername())){
+        if(redisTemplate.hasKey(username)){
             LocalDateTime checkAccessTime = LocalDateTime.parse(
-            redisTemplate.opsForValue().get(requestDto.getUsername() + "_createdAt"));
+            redisTemplate.opsForValue().get(username + "_createdAt"));
 
             if(!checkAccessTime.plusSeconds(5).isBefore(LocalDateTime.now())){
                 throw new CustomException("TOOMANY_REQUEST","5초안에 다시 요청했습니다.");
@@ -94,20 +95,20 @@ public class AuthService {
         int codeNum = random.nextInt(9000) +1000;
         String text = "인증 코드는" + codeNum + "입니다.";
 
-        boolean checkUsername = checkExistsUsername(requestDto.getUsername());
+        boolean checkUsername = checkExistsUsername(username);
         if (checkUsername) {
             throw new CustomException("EXIST_EMAIL", "이미 사용중인 이메일입니다.");
         }
 
         // 정의된 SMTP 메일 객체로 메일 전송
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(requestDto.getUsername());
+        message.setTo(username);
         message.setSubject(subject);
         message.setText(text);
         mailSender.send(message);
 
         // redis인증 코드 저장
-        LocalDateTime expiredAt = saveCodeToRedis(requestDto, codeNum);
+        LocalDateTime expiredAt = saveCodeToRedis(username, codeNum);
 
         return VerifyEmailDataResponseDto.from(expiredAt);
 
@@ -118,7 +119,7 @@ public class AuthService {
      * @param requestDto 인증한 이메일, 인증한 코드(랜덤한 숫자 4자리)
      * @return null
      * **/
-    public void checkCode(@Valid VerifyEmailRequestCodeDto requestDto) {
+    public void checkCode(VerifyEmailRequestCodeDto requestDto) {
         String username = requestDto.getUsername();
         String code = requestDto.getCode();
 
@@ -273,13 +274,13 @@ public class AuthService {
     /**
      * 4자리의 랜덤 수를 redis에 저장
      *
-     * @param requestDto 입력한 email을 가지고 있는 DTO
+     * @param username 입력한 email
      * @param codeNum     4자리의 랜덤 수
      * @return LocalDateTime expiredAt
      **/
-    public LocalDateTime saveCodeToRedis(VerifyEmailRequestDto requestDto, int codeNum) {
+    public LocalDateTime saveCodeToRedis(String username, int codeNum) {
 
-        String key = requestDto.getUsername();
+        String key = username;
         String code = String.valueOf(codeNum);
         String createdAt = key + "_createdAt";
 
