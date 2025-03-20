@@ -153,15 +153,20 @@ export default function Signup() {
 
   // 인증번호 만료까지 남은 시간 계산
   const calculateRemainingTime = (expiredAt) => {
-    const now = new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });;
+    const now = new Date();
     const expireTime = new Date(expiredAt);
 
     const remainingMs = expireTime - now;
 
+    // 디버깅용 로그
+    console.log('현재 시간: ', now, '  ', now.toISOString());
+    console.log('만료 시간: ', expireTime, '  ', expireTime.toISOString());
+    console.log('남은 시간(ms): ', remainingMs);
+
     if (remainingMs <= 0) return '0:00';
 
     const minutes = Math.floor(remainingMs / (1000 * 60));
-    const seconds = Math.floor((remainingMs % (1000 * 60)) / 1000);
+    const seconds = Math.floor((remainingMs % (1000 * 60)) / 1000) - 2;
 
     const formattedSeconds = String(seconds).padStart(2, '0');
 

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feature/P24-44-FE-signup-verify-email
 
 jobs:
   deploy: # Job 이름
