@@ -79,13 +79,13 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    transition: background-color 5000s ease-in-out 0s;
-    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
 }
 
 /* number 타입 input의 화살표 제거 */
 /* Firefox */
-input[type=number] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 
@@ -99,3 +99,33 @@ input::-webkit-inner-spin-button {
 /* 일부 환경에서 hover가 동작하지 않는 문제 수정을 위한 설정 */
 /* https://tailwindcss.com/docs/upgrade-guide#hover-styles-on-mobile */
 @custom-variant hover (&:hover);
+
+/* 달력 관련 CSS 지정 */
+:root {
+  --fc-neutral-bg-color: #ffffff;
+  --fc-today-bg-color: #ffffff;
+}
+
+.fc-col-header-cell {
+  background-color: #f3f3f3;
+}
+
+.fc-day-disabled {
+  background-color: #ffffff;
+}
+
+.fc-day-sun {
+  color: red;
+}
+
+.fc-day-sat {
+  color: blue;
+}
+
+.fc .fc-daygrid-day-top {
+  flex-direction: row;
+}
+
+.fc-day-today .fc-daygrid-day-number {
+  background-color: #69db7c;
+}
