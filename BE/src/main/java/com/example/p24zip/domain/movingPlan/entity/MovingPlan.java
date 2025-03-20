@@ -3,10 +3,7 @@ package com.example.p24zip.domain.movingPlan.entity;
 import com.example.p24zip.domain.user.entity.User;
 import com.example.p24zip.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
@@ -24,4 +21,10 @@ public class MovingPlan extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Builder
+    public MovingPlan(String title, User user) {
+        this.title = title;
+        this.user = user;
+    }
 }
