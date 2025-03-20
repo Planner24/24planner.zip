@@ -41,7 +41,7 @@ public class Schedule extends BaseTimeEntity {
     private String color;
 
     @ManyToOne
-    @JoinColumn(name = "movingPlan_id")
+    @JoinColumn(name = "moving_plan_id")
     private MovingPlan movingPlan;
 
     @Builder
