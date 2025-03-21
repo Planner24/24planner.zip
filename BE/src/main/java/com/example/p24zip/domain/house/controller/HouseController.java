@@ -2,6 +2,7 @@ package com.example.p24zip.domain.house.controller;
 
 import com.example.p24zip.domain.house.dto.request.AddHouseRequestDto;
 import com.example.p24zip.domain.house.dto.response.AddHouseResponseDto;
+import com.example.p24zip.domain.house.dto.response.GetHouseDetailsResponseDto;
 import com.example.p24zip.domain.house.dto.response.HouseListResponseDto;
 import com.example.p24zip.domain.house.service.HouseService;
 import com.example.p24zip.global.response.ApiResponse;
@@ -32,6 +33,13 @@ public class HouseController {
     public ResponseEntity<ApiResponse<HouseListResponseDto>> getHouses(@PathVariable Long movingPlanId) {
         return ResponseEntity.ok(
           ApiResponse.ok("OK", "집 목록을 조회에 성공했습니다.", houseService.getHouses(movingPlanId))
+        );
+    }
+
+    @GetMapping("/{houseId}")
+    public ResponseEntity<ApiResponse<GetHouseDetailsResponseDto>> getHouseDetails(@PathVariable Long houseId) {
+        return ResponseEntity.ok(
+            ApiResponse.ok("OK", "집 조회에 성공했습니다.",  houseService.getHouseDetails(houseId))
         );
     }
 

@@ -2,6 +2,7 @@ package com.example.p24zip.domain.house.service;
 
 import com.example.p24zip.domain.house.dto.request.AddHouseRequestDto;
 import com.example.p24zip.domain.house.dto.response.AddHouseResponseDto;
+import com.example.p24zip.domain.house.dto.response.GetHouseDetailsResponseDto;
 import com.example.p24zip.domain.house.dto.response.HouseListResponseDto;
 import com.example.p24zip.domain.house.dto.response.KaKaoGeocodeResponse;
 import com.example.p24zip.domain.house.dto.response.KaKaoGeocodeResponse.Document;
@@ -63,6 +64,11 @@ public class HouseService {
         List<House> houseList = houseRepository.findAllByMovingPlan(movingPlan);
         return HouseListResponseDto.from(houseList);
     }
+
+    public GetHouseDetailsResponseDto getHouseDetails(Long houseId) {
+        return GetHouseDetailsResponseDto.from(houseRepository.findById(houseId).orElseThrow());
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////////
     // 보조 메서드
