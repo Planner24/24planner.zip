@@ -7,12 +7,12 @@ import lombok.Getter;
 @Getter
 @Builder
 public class AddHouseResponseDto {
-    private Long id;
-    private String nickname;
-    private String address1;
-    private String address2;
-    private double longtitude;
-    private double latitude;
+    private final Long id;
+    private final String nickname;
+    private final String address1;
+    private final String address2;
+    private final double longitude;
+    private final double latitude;
 
     public static AddHouseResponseDto from (House house){
         return AddHouseResponseDto.builder()
@@ -20,7 +20,7 @@ public class AddHouseResponseDto {
             .nickname(house.getNickname())
             .address1(house.getAddress1())
             .address2(house.getAddress2())
-            .longtitude(house.getLongtitude())
+            .longitude(house.getLongitude())
             .latitude(house.getLatitude())
             .build();
     }

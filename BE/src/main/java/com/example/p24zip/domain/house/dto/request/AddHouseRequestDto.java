@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 
 @Getter
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AddHouseRequestDto {
     @NotBlank
+    @Length(max = 5)
     private String nickname;
     @NotBlank
     private String address1;

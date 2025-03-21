@@ -2,6 +2,7 @@ package com.example.p24zip.domain.house.entity;
 
 import com.example.p24zip.domain.movingPlan.entity.MovingPlan;
 import com.example.p24zip.global.entity.BaseTimeEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,6 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "house")
@@ -28,30 +30,32 @@ public class House extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "movingPlan_id")
+    @JoinColumn(name = "movingPlan_id", nullable = false)
     private MovingPlan movingPlan;
+
     @NotBlank
+    @Length(max = 5)
     private String nickname;
     @NotBlank
     private String address1;
     private String address2; // 상세 주소
     @NotNull
-    private double longtitude; // 경도
+    private double longitude; // 경도
     @NotNull
     private double latitude; // 위도
+    @Column(length = 1000)
     private String content;
 
     @Builder
-    public House(MovingPlan movingPlan, String nickname, String address1,String address2, double latitude, double longtitude, String content) {
+    public House(MovingPlan movingPlan, String nickname, String address1,String address2,
+        double latitude, double longitude, String content) {
         this.movingPlan = movingPlan;
         this.nickname = nickname;
         this.address1 = address1;
         this.address2 = address2;
         this.latitude = latitude;
-        this.longtitude = longtitude;
+        this.longitude = longitude;
         this.content = content;
-
     }
-
 
 }
