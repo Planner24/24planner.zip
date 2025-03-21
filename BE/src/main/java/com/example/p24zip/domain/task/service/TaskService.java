@@ -32,22 +32,16 @@ public class TaskService {
         TaskGroup taskGroup = taskGroupRepository.findById(taskGroupId)
                 .orElseThrow(ResourceNotFoundException::new);
 
-        if (!taskGroup.getMovingPlan().getId().equals(movingPlanId)) {
-            throw new ResourceNotFoundException();
-        }
+        isMovingPlanIdMatched(movingPlanId, taskGroup);
 
         return TaskResponseDto.from(taskRepository.save(requestDto.toEntity(movingPlan, taskGroup)));
     }
 
     public TaskListResponseDto readTasks(Long movingPlanId, Long taskGroupId) {
-        MovingPlan movingPlan = movingPlanRepository.findById(movingPlanId)
-                .orElseThrow(ResourceNotFoundException::new);
         TaskGroup taskGroup = taskGroupRepository.findById(taskGroupId)
                 .orElseThrow(ResourceNotFoundException::new);
 
-        if (!taskGroup.getMovingPlan().getId().equals(movingPlanId)) {
-            throw new ResourceNotFoundException();
-        }
+        isMovingPlanIdMatched(movingPlanId, taskGroup);
 
         List<Task> tasks = taskRepository.findByTaskGroup(taskGroup);
         long totalCount = tasks.size();
@@ -58,23 +52,29 @@ public class TaskService {
     }
 
     @Transactional
-    public TaskResponseDto updateTask(Long movingPlanId, Long taskGroupId, Long taskId, TaskRequestDto requestDto) {
-        MovingPlan movingPlan = movingPlanRepository.findById(movingPlanId)
-                .orElseThrow(ResourceNotFoundException::new);
+    public TaskResponseDto updateTaskContent(Long movingPlanId, Long taskGroupId, Long taskId, TaskRequestDto requestDto) {
         TaskGroup taskGroup = taskGroupRepository.findById(taskGroupId)
                 .orElseThrow(ResourceNotFoundException::new);
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(ResourceNotFoundException::new);
 
-        if (!taskGroup.getMovingPlan().getId().equals(movingPlanId)) {
-            throw new ResourceNotFoundException();
-        }
-        if (!task.getTaskGroup().getId().equals(taskGroupId)) {
-            throw new ResourceNotFoundException();
-        }
+        isMovingPlanIdMatched(movingPlanId, taskGroup);
+        isTaskGroupIdMatched(taskGroupId, task);
 
         task.update(requestDto);
 
         return TaskResponseDto.from(task);
+    }
+
+    private void isMovingPlanIdMatched(Long movingPlanId, TaskGroup taskGroup) {
+        if (!taskGroup.getMovingPlan().getId().equals(movingPlanId)) {
+            throw new ResourceNotFoundException();
+        }
+    }
+
+    private void isTaskGroupIdMatched(Long taskGroupId, Task task) {
+        if (!task.getTaskGroup().getId().equals(taskGroupId)) {
+            throw new ResourceNotFoundException();
+        }
     }
 }

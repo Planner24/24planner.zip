@@ -45,7 +45,7 @@ public class TaskController {
                 taskService.readTasks(movingPlanId, taskGroupId)
         ));
     }
-    
+
     @PatchMapping("/{taskId}/content")
     public ResponseEntity<ApiResponse<TaskResponseDto>> updateTaskContent(
             @PathVariable Long movingPlanId,
@@ -57,7 +57,7 @@ public class TaskController {
         return ResponseEntity.ok(ApiResponse.ok(
            "UPDATED",
                 "체크포인트 내용 수정에 성공했습니다.",
-                taskService.updateTask(movingPlanId, taskGroupId, taskId, requestDto)
+                taskService.updateTaskContent(movingPlanId, taskGroupId, taskId, requestDto)
         ));
     }
 }
