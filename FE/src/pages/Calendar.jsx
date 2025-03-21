@@ -7,38 +7,81 @@ export default function Calendar() {
   const [selectDate, setSelectDate] = useState(
     parseDate(now.getFullYear(), now.getMonth() + 1, now.getDate()),
   );
+  const [eventList, setEventList] = useState([]);
 
   // TODO: 테스트용 데이터이므로 API 연결 후 삭제 예정
   const scheduleList = [
     {
       color: '#69db7c',
-      content: '1차 서류 제출 기간',
+      content: '테스트',
       startDate: '2025-02-27',
-      endDate: '2025-03-04',
+      endDate: '2025-03-01',
     },
     {
-      color: '#4dabf7',
-      content: '2차 서류 제출 기간',
-      startDate: '2025-03-04',
-      endDate: '2025-03-11',
+      color: '#69db7c',
+      content: '테스트',
+      startDate: '2025-02-27',
+      endDate: '2025-03-02',
     },
     {
-      color: '#2f9e44',
-      content: '집보기 15:00',
-      startDate: '2025-03-06',
-      endDate: '2025-03-07',
+      color: '#69db7c',
+      content: '테스트',
+      startDate: '2025-02-27',
+      endDate: '2025-03-31',
     },
     {
-      color: '#2f9e44',
-      content: '집보기 16:00',
-      startDate: '2025-03-21',
-      endDate: '2025-03-22',
+      color: '#69db7c',
+      content: '테스트',
+      startDate: '2025-02-27',
+      endDate: '2025-04-01',
     },
     {
-      color: '#fcc2d7',
-      content: '일이삼사오육칠팔구십일이삼사',
-      startDate: '2025-03-22',
-      endDate: '2025-03-23',
+      color: '#69db7c',
+      content: '테스트',
+      startDate: '2025-02-27',
+      endDate: '2025-04-02',
+    },
+    {
+      color: '#69db7c',
+      content: '테스트',
+      startDate: '2025-03-01',
+      endDate: '2025-03-03',
+    },
+    {
+      color: '#69db7c',
+      content: '테스트',
+      startDate: '2025-03-28',
+      endDate: '2025-03-31',
+    },
+    {
+      color: '#69db7c',
+      content: '테스트',
+      startDate: '2025-03-28',
+      endDate: '2025-04-01',
+    },
+    {
+      color: '#69db7c',
+      content: '테스트',
+      startDate: '2025-03-31',
+      endDate: '2025-04-02',
+    },
+    {
+      color: '#69db7c',
+      content: '테스트',
+      startDate: '2025-04-01',
+      endDate: '2025-04-02',
+    },
+    {
+      color: '#69db7c',
+      content: '테스트',
+      startDate: '2025-04-08',
+      endDate: '2025-04-09',
+    },
+    {
+      color: '#69db7c',
+      content: '테스트',
+      startDate: '2025-04-08',
+      endDate: '2025-04-09',
     },
   ];
 
@@ -46,7 +89,12 @@ export default function Calendar() {
 
   return (
     <main className={calendarMainStyle}>
-      <CalendarContent setSelectDate={setSelectDate} scheduleList={scheduleList} />
+      <CalendarContent
+        setSelectDate={setSelectDate}
+        scheduleList={scheduleList}
+        eventList={eventList}
+        setEventList={setEventList}
+      />
       <CalendarSidebar selectDate={selectDate} scheduleList={scheduleList} />
     </main>
   );

@@ -6,12 +6,10 @@ import interactionPlugin from '@fullcalendar/interaction';
 import koLocale from '@fullcalendar/core/locales/ko';
 
 import CalendarModal from './CalendarModal';
-import CalendarPopover from './CalendarPopover';
 import ChevronLeftSvg from './svg/ChevronLeftSvg';
 import ChevronRightSvg from './svg/ChevronRightSvg';
 
-// TODO: 일정에 대한 Popover 기능 추가 예정
-export default function CalendarContent({ setSelectDate, scheduleList }) {
+export default function CalendarContent({ setSelectDate, scheduleList, eventList, setEventList }) {
   const calendarRef = useRef(null);
 
   const [showModal, setShowModal] = useState(false);
@@ -47,17 +45,6 @@ export default function CalendarContent({ setSelectDate, scheduleList }) {
   const handleCalendarModal = () => {
     setShowModal(() => true);
   };
-
-  // color가 아닌, backgroundColor와 borderColor를 각각 지정해야 일정 간 간격을 띄울 수 있음
-  const eventList = scheduleList.map((schedule) => {
-    return {
-      title: schedule.content,
-      start: schedule.startDate,
-      end: schedule.endDate,
-      backgroundColor: schedule.color,
-      borderColor: '#FFFFFF',
-    };
-  });
 
   const calendarContentStyle = 'flex flex-col flex-2 h-full w-full border-r-1 border-gray-300 my-4';
   const calendarPaddingStyle = 'px-8';
@@ -126,16 +113,43 @@ export default function CalendarContent({ setSelectDate, scheduleList }) {
             initialView="dayGridMonth"
             showNonCurrentDates={false}
             locale={koLocale}
-            dateClick={handleDateCellClick}
             events={eventList}
+            dateClick={handleDateCellClick}
             dayCellContent={(arg) => ({
               // 한국어 사용 시, 일수가 기본적으로 "n일" 형태로 표현되므로 직접 숫자만 출력
               html: `${arg.date.getDate()}`,
             })}
-            // 스타일 수정을 위해 헤더를 외부에서 정의했으므로, 월을 바꿀 때마다 해당 년도와 월을 state에 지정해야 표시됨
             datesSet={(dateInfo) => {
-              setYearState(() => dateInfo.start.getFullYear());
-              setMonthState(() => dateInfo.start.getMonth() + 1);
+              const nowYear = dateInfo.start.getFullYear();
+              const nowMonth = dateInfo.start.getMonth() + 1;
+              const startDate = dateInfo.start.getDate();
+              const endDate = new Date(dateInfo.end - 86400000).getDate();
+
+              // 스타일 수정을 위해 헤더를 외부에서 정의했으므로, 월을 바꿀 때마다 해당 년도와 월을 state에 지정해야 표시됨
+              setYearState(() => nowYear);
+              setMonthState(() => nowMonth);
+
+              const startInt = nowYear * 10000 + nowMonth * 100 + startDate;
+              const endInt = endInt - startDate + endDate;
+
+              // 월 단위로 스케줄 가져오기
+              const newEventList = [];
+              scheduleList.forEach((schedule) => {
+                const scheduleStartInt = parseIntFromDate(schedule.startDate);
+                const scheduleEndInt = parseIntFromDate(schedule.endDate);
+                if (scheduleEndInt > startInt && scheduleStartInt <= endInt) {
+                  // color가 아니라 backgroundColor와 borderColor를 각각 지정해야 일정 간 간격을 띄울 수 있음
+                  newEventList.push({
+                    title: schedule.content,
+                    start: schedule.startDate,
+                    end: schedule.endDate,
+                    backgroundColor: schedule.color,
+                    borderColor: '#FFFFFF',
+                  });
+                }
+              });
+
+              setEventList(() => newEventList);
             }}
             // 달력 헤더 스타일 수정을 위해, 달력 기본 헤더를 비활성
             headerToolbar={{
@@ -152,4 +166,12 @@ export default function CalendarContent({ setSelectDate, scheduleList }) {
 
 function parseDate(year, month, day) {
   return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+}
+
+function parseIntFromDate(date) {
+  return (
+    Number.parseInt(date.substring(0, 4)) * 10000 +
+    Number.parseInt(date.substring(5, 7)) * 100 +
+    Number.parseInt(date.substring(8, 10))
+  );
 }

@@ -16,6 +16,18 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
   const inputStyle = 'focus:outline-none w-full p-2';
   const addButtonStyle = 'flex justify-center items-center mx-2 px-7 bg-primary rounded-3xl h-11';
 
+  const dailyScheduleList = [];
+  if (selectDate) {
+    const selectDateInt = parseIntFromDate(selectDate);
+    scheduleList.forEach((schedule) => {
+      let startInt = parseIntFromDate(schedule.startDate);
+      let endInt = parseIntFromDate(schedule.endDate);
+      if (selectDateInt >= startInt && selectDateInt < endInt) {
+        dailyScheduleList.push(schedule);
+      }
+    });
+  }
+
   return (
     <section className={calendarSidebarStyle}>
       {selectDate ? (
@@ -26,7 +38,7 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
             {Number.parseInt(selectDate.substring(8, 10))}일
           </div>
           <div className={scheduleListStyle}>
-            {scheduleList.map((schedule, i) => {
+            {dailyScheduleList.map((schedule, i) => {
               return (
                 <div key={i} className={scheduleElementDivStyle}>
                   <div className={`${scheduleElementContentStyle} bg-[${schedule.color}]`}>
@@ -53,5 +65,13 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
         <></>
       )}
     </section>
+  );
+}
+
+function parseIntFromDate(date) {
+  return (
+    Number.parseInt(date.substring(0, 4)) * 10000 +
+    Number.parseInt(date.substring(5, 7)) * 100 +
+    Number.parseInt(date.substring(8, 10))
   );
 }
