@@ -37,7 +37,6 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
   };
 
   const handleDateCellClick = (e) => {
-    console.log(e.dateStr);
     setSelectDate(() => e.dateStr);
   };
 
