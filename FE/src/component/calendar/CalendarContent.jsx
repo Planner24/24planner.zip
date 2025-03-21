@@ -15,7 +15,6 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
   const [showModal, setShowModal] = useState(false);
   const [yearState, setYearState] = useState(0);
   const [monthState, setMonthState] = useState(0);
-  const [pointerPosition, setPointerPosition] = useState({ x: -1, y: -1 });
 
   const moveToCurrentMonth = () => {
     calendarRef.current.getApi().gotoDate(new Date());
@@ -64,17 +63,6 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
     <>
       {showModal &&
         createPortal(<CalendarModal modalClose={() => setShowModal(false)} />, document.body)}
-      {pointerPosition.x >= 0 ? (
-        createPortal(
-          <CalendarPopover
-            pointerPosition={pointerPosition}
-            setPointerPosition={setPointerPosition}
-          />,
-          document.body,
-        )
-      ) : (
-        <></>
-      )}
       <section className={calendarContentStyle}>
         <div className={calendarPaddingStyle}>
           <div className={calendarHeaderStyle}>
@@ -130,7 +118,7 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
               setMonthState(() => nowMonth);
 
               const startInt = nowYear * 10000 + nowMonth * 100 + startDate;
-              const endInt = endInt - startDate + endDate;
+              const endInt = startInt - startDate + endDate;
 
               // 월 단위로 스케줄 가져오기
               const newEventList = [];
