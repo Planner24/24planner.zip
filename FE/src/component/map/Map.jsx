@@ -1,9 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import MapModal from './MapModal';
+import mapApi from '../../api/mapApi';
+import { useParams } from 'react-router-dom';
 
 export default function Map() {
+  const { movingPlanId } = useParams();
+
   const [showModal, setShowModal] = useState(false);
+
+  const [addressData, setAddressData] = useState({
+    centerlatitude: null,
+    centerlongitude: null,
+  });
+
+  const [maplists, setMapLists] = useState([]);
 
   const mapStyle = 'flex flex-col flex-2 h-full w-full border-r-1 border-gray-300 m-4';
   const mapPlusStyle = 'w-25 h-12 border-2 rounded-xl px-2 py-1 bg-primary text-white me-2';
@@ -16,10 +27,24 @@ export default function Map() {
 
   const container = useRef(null);
 
+  const mapButton = (e) => {
+
+    const { latitude, longitude } = e.target.dataset;
+    
+    setAddressData((prev) => ({
+      ...prev,
+      "centerlatitude": latitude,
+      "centerlongitude": longitude
+    }));
+    
+  };
+
   useEffect(() => {
     const { kakao } = window;
 
-    if (!container.current) return;
+    console.log(addressData);
+
+    const { centerlatitude, centerlongitude } = addressData;
 
     // 지도 생성
     let position = new kakao.maps.LatLng(33.450701, 126.570667);
@@ -29,51 +54,68 @@ export default function Map() {
     };
     const map = new kakao.maps.Map(container.current, options);
 
-    // map.addOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC);
+    // 지도 중심지 설정
+    if (centerlatitude == null || centerlongitude == null) {
+      position = new kakao.maps.LatLng(33.450701, 126.570667);
+      map.setCenter(position);
+    } else {
+      position = new kakao.maps.LatLng(centerlatitude, centerlongitude);
+      map.setCenter(position);
+    }
 
-    // const response = await mapApi.maplist(movingPlanId);
+    async function fetchMapMarker() {
+      let responses = await mapApi.maplist(movingPlanId);
 
-    // responses = response.data;
+      responses = responses.data.data.houses;
+      setMapLists(responses);
 
-    // setMap(responses)
+      responses.map((response) => {
+        const { latitude, longitude } = response;
 
-    // responses.map((response) => {
-    //   const { 위도, 경도 } = response;
-    // });
+        // 마커 생성
+        const markerPosition = new kakao.maps.LatLng(latitude, longitude);
+        const marker = new kakao.maps.Marker({
+          position: markerPosition,
+        });
 
-    // 마커 생성
-    const markerPosition = new kakao.maps.LatLng(33.450701, 126.570667);
-    const marker = new kakao.maps.Marker({
-      position: markerPosition,
-    });
-
-    // 지도에 마커 추가
-    marker.setMap(map);
-
-    // position = new kakao.maps.LatLng(33.45091, 126.57199);
-    // map.setCenter(position);
-  }, []);
+        // 지도에 마커 추가
+        marker.setMap(map);
+      });
+    }
+    fetchMapMarker();
+  }, [addressData]);
 
   return (
     <>
       {showModal &&
-        createPortal(<MapModal modalClose={() => setShowModal(false)} />, document.body)}
+        createPortal(
+          <MapModal modalClose={() => setShowModal(false)} setAddressData={setAddressData} />,
+          document.body,
+        )}
       <section className={mapStyle}>
-        <div className='flex'>
+        <div className="flex">
           <button className={mapPlusStyle} onClick={handleCalendarModal}>
             +
           </button>
           <div className="mb-4 w-155 h-21 overflow-x-auto whitespace-nowrap">
-            <button className={mapButtonStyle}>빨간 문</button>
-            <button className={mapButtonStyle}>빨간 문</button>
-            <button className={mapButtonStyle}>빨간 문</button>
-            <button className={mapButtonStyle}>빨간 문</button>
-            <button className={mapButtonStyle}>빨간 문</button>
-            <button className={mapButtonStyle}>빨간 문</button>
-            <button className={mapButtonStyle}>빨간 문</button>
+            {maplists.map((maplist) => {
+              const { latitude, longitude, nickname } = maplist;
+
+              return (
+                <button
+                  className={mapButtonStyle}
+                  id={latitude}
+                  data-latitude={latitude}
+                  data-longitude={longitude}
+                  onClick={mapButton}
+                >
+                  {nickname}
+                </button>
+              );
+            })}
           </div>
         </div>
-        <div style={{ width: '730px', height: '620px' }}  ref={container}></div>
+        <div style={{ width: '730px', height: '620px' }} ref={container}></div>
       </section>
     </>
   );
