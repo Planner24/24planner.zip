@@ -60,6 +60,16 @@ export default function CalendarContent({ setSelectDate, scheduleList }) {
   });
 
   const calendarContentStyle = 'flex flex-col flex-2 h-full w-full border-r-1 border-gray-300 my-4';
+  const calendarPaddingStyle = 'px-8';
+  const calendarHeaderStyle = 'flex justify-between w-full pt-4';
+  const calendarHeaderLeftStyle = 'flex flex-1 justify-start';
+  const calendarHeaderCenterStyle = 'flex flex-2 justify-center';
+  const calendarHeaderRightStyle = 'flex flex-1 justify-end';
+  const calendarHeaderCenterPrevDivStyle = 'flex flex-1 justify-end';
+  const calendarHeaderCenterDateDivStyle = 'flex flex-3 justify-center mx-5';
+  const calendarHeaderCenterDateTextStyle = 'text-3xl';
+  const calendarHeaderCenterDivClickableStyle = 'cursor-pointer';
+  const calendarHeaderCenterNextDivStyle = 'flex flex-1 justify-start';
   const buttonStyle =
     'w-20 h-10 bg-white border-2 border-primary rounded-xl text-primary text-lg font-semibold cursor-pointer hover:bg-primary hover:text-white ml-2';
 
@@ -79,37 +89,35 @@ export default function CalendarContent({ setSelectDate, scheduleList }) {
         <></>
       )}
       <section className={calendarContentStyle}>
-        <div className="px-8">
-          <div className="w-full">
-            <section className="pt-4 flex justify-between">
-              {/* 중앙 정렬용 태그 */}
-              <nav className="flex flex-1 justify-start" />
-              <nav className="flex flex-2 justify-center items-center">
-                <div className="flex flex-1 justify-end">
-                  <div className="cursor-pointer" onClick={moveToPrevMonth}>
-                    <ChevronLeftSvg />
-                  </div>
+        <div className={calendarPaddingStyle}>
+          <div className={calendarHeaderStyle}>
+            {/* 헤더 중앙 정렬용 태그 */}
+            <nav className={calendarHeaderLeftStyle} />
+            <nav className={calendarHeaderCenterStyle}>
+              <div className={calendarHeaderCenterPrevDivStyle}>
+                <div className={calendarHeaderCenterDivClickableStyle} onClick={moveToPrevMonth}>
+                  <ChevronLeftSvg />
                 </div>
-                <div className="mx-5 flex flex-3 justify-center">
-                  <h2 className="text-3xl">
-                    {yearState}년 {monthState}월
-                  </h2>
+              </div>
+              <div className={calendarHeaderCenterDateDivStyle}>
+                <h2 className={calendarHeaderCenterDateTextStyle}>
+                  {yearState}년 {monthState}월
+                </h2>
+              </div>
+              <div className={calendarHeaderCenterNextDivStyle} onClick={moveToNextMonth}>
+                <div className={calendarHeaderCenterDivClickableStyle} onClick={moveToNextMonth}>
+                  <ChevronRightSvg />
                 </div>
-                <div className="flex flex-1 justify-start" onClick={moveToNextMonth}>
-                  <div className="cursor-pointer" onClick={moveToNextMonth}>
-                    <ChevronRightSvg />
-                  </div>
-                </div>
-              </nav>
-              <nav className="flex flex-1 justify-end">
-                <button className={buttonStyle} onClick={moveToCurrentMonth}>
-                  오늘
-                </button>
-                <button className={buttonStyle} onClick={handleCalendarModal}>
-                  추가
-                </button>
-              </nav>
-            </section>
+              </div>
+            </nav>
+            <nav className={calendarHeaderRightStyle}>
+              <button className={buttonStyle} onClick={moveToCurrentMonth}>
+                오늘
+              </button>
+              <button className={buttonStyle} onClick={handleCalendarModal}>
+                추가
+              </button>
+            </nav>
           </div>
           {/* TODO: 현재 브라우저 세로 길이가 작으면 달력이 Footer까지 넘어오는 문제 존재 */}
           <FullCalendar

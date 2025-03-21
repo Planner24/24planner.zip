@@ -3,46 +3,49 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
   // TODO: 임시적인 목록이므로, 추후 변경될 수 있음
   const tempUsingColor = ['bg-[#69db7c]', 'bg-[#4dabf7]', 'bg-[#2f9e44]', 'bg-[#fcc2d7]'];
 
-  const calendarSidebar = 'flex flex-1 flex-col items-center m-4';
+  const calendarSidebarStyle = 'flex flex-1 flex-col items-center m-4';
+  const scheduleDateStyle = 'text-2xl mt-12';
+  const scheduleListStyle = 'flex flex-col w-full mt-8';
+  const scheduleElementDivStyle = 'flex items-center';
+  const scheduleElementContentStyle =
+    'flex justify-center items-center rounded-3xl text-xl w-full p-2 m-2';
+  const imgDivStyle = 'p-2';
+  const imgStyle = 'w-8 h-7';
+  const inputDivStyle =
+    'flex justify-center items-center border-1 border-gray-300 rounded-3xl w-full m-2 h-11';
+  const inputStyle = 'focus:outline-none w-full p-2';
+  const addButtonStyle = 'flex justify-center items-center mx-2 px-7 bg-primary rounded-3xl h-11';
 
   return (
-    <section className={calendarSidebar}>
+    <section className={calendarSidebarStyle}>
       {selectDate ? (
         <>
-          <div className="text-2xl mt-12">
+          <div className={scheduleDateStyle}>
             {Number.parseInt(selectDate.substring(0, 4))}년{' '}
             {Number.parseInt(selectDate.substring(5, 7))}월{' '}
             {Number.parseInt(selectDate.substring(8, 10))}일
           </div>
-          <div className="flex flex-col w-full mt-8">
+          <div className={scheduleListStyle}>
             {scheduleList.map((schedule, i) => {
               return (
-                <div key={i} className="flex items-center">
-                  <div
-                    className={`flex justify-center items-center bg-[${schedule.color}] rounded-3xl text-xl w-full p-2 m-2`}
-                  >
+                <div key={i} className={scheduleElementDivStyle}>
+                  <div className={`${scheduleElementContentStyle} bg-[${schedule.color}]`}>
                     {schedule.content}
                   </div>
-                  <div className="p-2">
-                    <img src="/pencil.png" className="w-8 h-7" />
+                  <div className={imgDivStyle}>
+                    <img src="/pencil.png" className={imgStyle} />
                   </div>
-                  <div className="p-2">
-                    <img src="/bin.png" className="w-8 h-7" />
+                  <div className={imgDivStyle}>
+                    <img src="/bin.png" className={imgStyle} />
                   </div>
                 </div>
               );
             })}
-            <div className="flex items-center">
-              <div className="flex justify-center items-center border-1 border-gray-300 rounded-3xl w-full m-2 h-11">
-                <input
-                  type="text"
-                  placeholder="할 일 추가"
-                  className="focus:outline-none w-full p-2"
-                ></input>
+            <div className={scheduleElementDivStyle}>
+              <div className={inputDivStyle}>
+                <input type="text" placeholder="할 일 추가" className={inputStyle}></input>
               </div>
-              <div className="flex justify-center items-center mx-2 px-7 bg-primary rounded-3xl h-11">
-                +
-              </div>
+              <div className={addButtonStyle}>+</div>
             </div>
           </div>
         </>
