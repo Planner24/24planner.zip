@@ -57,7 +57,7 @@ public class MovingPlanController {
 
         return ResponseEntity.ok(ApiResponse.ok(
                 "UPDATED",
-                "플랜 제목을 수정했습니다.",
+                "플랜 제목 수정에 성공했습니다.",
                 movingPlanService.updateMovingPlan(movingPlanId, requestDto)
         ));
     }
@@ -71,7 +71,7 @@ public class MovingPlanController {
 
         return ResponseEntity.ok(ApiResponse.ok(
                 "DELETED",
-                "플랜을 삭제했습니다.",
+                "플랜 삭제에 성공했습니다.",
                 null
         ));
     }
