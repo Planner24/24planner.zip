@@ -70,11 +70,19 @@ public class HouseService {
         return HouseListResponseDto.from(houseList);
     }
 
-
+    /**
+     * @param houseId : 집 테이블의 id
+     * @return responseDto (id, nickname, address1, address2, content)
+     * **/
     public GetHouseDetailsResponseDto getHouseDetails(Long houseId) {
         return GetHouseDetailsResponseDto.from(houseRepository.findById(houseId).orElseThrow());
     }
 
+    /**
+     * @param houseId : 집 테이블의 id
+     * @param requestDto : nickname
+     * @return responseDto (id, nickname)
+     * **/
     @Transactional
     public ChangeHouseNicknameResponseDto changeHouseNickname(Long houseId, ChangeHouseNicknameRequestDto requestDto) {
         House house = houseRepository.findById(houseId).orElseThrow();
@@ -83,12 +91,26 @@ public class HouseService {
         return ChangeHouseNicknameResponseDto.from(house);
     }
 
+    /**
+     * @param houseId : 집 테이블의 id
+     * @param requestDto : content
+     * @return responseDto (id, nickname)
+     * **/
     @Transactional
     public ChangeHouseContentResponseDto changeHouseContent(Long houseId, ChangeHouseContentRequestDto requestDto) {
         House house = houseRepository.findById(houseId).orElseThrow();
         house.updateContent(requestDto);
 
         return ChangeHouseContentResponseDto.from(house);
+    }
+
+    /**
+     * @param houseId : 집 테이블의 id
+     * @return null
+     * **/
+    @Transactional
+    public void deleteHouse(Long houseId) {
+        houseRepository.deleteById(houseId);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -117,7 +139,5 @@ public class HouseService {
             throw new GeocoderExceptionHandler("GEOCODER_API_CONVERT_ERROR","좌표 변경 API에서 변환 오류가 발생했습니다.");
         }
     }
-
-
 
 }

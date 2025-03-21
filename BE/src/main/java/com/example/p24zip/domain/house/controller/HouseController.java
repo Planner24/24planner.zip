@@ -13,6 +13,7 @@ import com.example.p24zip.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,5 +62,14 @@ public class HouseController {
             ApiResponse.ok("UPDATED", "집 상세 내용 수정에 성공했습니다.", houseService.changeHouseContent(houseId, requestDto))
         );
     }
+    @DeleteMapping("/{houseId}")
+    public ResponseEntity<ApiResponse<Void>> deleteHouse(@PathVariable Long houseId){
+        houseService.deleteHouse(houseId);
+
+        return ResponseEntity.ok(
+            ApiResponse.ok("DELETED", "집 삭제에 성공했습니다.", null)
+        );
+    }
+
 
 }
