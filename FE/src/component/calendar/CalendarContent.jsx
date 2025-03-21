@@ -48,6 +48,7 @@ export default function CalendarContent({ setSelectDate, scheduleList }) {
     setShowModal(() => true);
   };
 
+  // color가 아닌, backgroundColor와 borderColor를 각각 지정해야 일정 간 간격을 띄울 수 있음
   const eventList = scheduleList.map((schedule) => {
     return {
       title: schedule.content,
