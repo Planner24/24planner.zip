@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-
+      - feature/*
 jobs:
   deploy: # Job 이름
     runs-on: ubuntu-24.04
@@ -39,6 +39,7 @@ jobs:
           echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" >> .env
           echo "DOMAIN=${{ secrets.DOMAIN }}" >> .env
           echo "ORIGIN=${{ secrets.ORIGIN }}" >> .env
+          echo "KAKAO_RESTAPI_KEY=${{ secrets.KAKAO_RESTAPI_KEY }}" >> .env
 
       - name: Add Remote Server Fingerprint to Known Hosts
         run: ssh-keyscan -H -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts || true
