@@ -31,7 +31,7 @@ public class TaskGroupController {
     // 체크 그룹 생성
     @PostMapping
     public ResponseEntity<ApiResponse<TaskGroupResponseDto>> createTaskGroup(
-        @RequestBody @Valid TaskGroupRequestDto requestDto,
+        @Valid @RequestBody TaskGroupRequestDto requestDto,
         @PathVariable Long movingPlanId,
         @AuthenticationPrincipal User user
     ){
