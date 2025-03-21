@@ -2,6 +2,7 @@ package com.example.p24zip.domain.taskGroup.controller;
 
 import com.example.p24zip.domain.taskGroup.dto.request.TaskGroupMemoUpdateRequestDto;
 import com.example.p24zip.domain.taskGroup.dto.request.TaskGroupRequestDto;
+import com.example.p24zip.domain.taskGroup.dto.response.TaskGroupListResponseDto;
 import com.example.p24zip.domain.taskGroup.dto.response.TaskGroupMemoUpdateResponseDto;
 import com.example.p24zip.domain.taskGroup.dto.response.TaskGroupResponseDto;
 import com.example.p24zip.domain.taskGroup.service.TaskGroupService;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +39,19 @@ public class TaskGroupController {
             "CREATED",
             "체크 그룹 생성에 성공했습니다.",
             taskGroupService.createTaskGroup(requestDto, movingPlanId)
+        ));
+    }
+
+    // 체크 그룹 전체 조회
+    @GetMapping
+    public ResponseEntity<ApiResponse<TaskGroupListResponseDto>> getTaskGroups(
+        @PathVariable Long movingPlanId,
+        @AuthenticationPrincipal User user
+    ){
+        return ResponseEntity.ok(ApiResponse.ok(
+            "OK",
+            "체크 그룹 리스트 조회에 성공했습니다.",
+            taskGroupService.getTaskGroups(movingPlanId)
         ));
     }
 
