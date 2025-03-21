@@ -5,6 +5,7 @@ import com.example.p24zip.domain.taskGroup.entity.TaskGroup;
 import com.example.p24zip.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,4 +30,11 @@ public class Task extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name="moving_plan_id")
     private MovingPlan movingPlan;
+
+    @Builder
+    public Task(String content, TaskGroup taskGroup, MovingPlan movingPlan) {
+        this.content = content;
+        this.taskGroup = taskGroup;
+        this.movingPlan = movingPlan;
+    }
 }
