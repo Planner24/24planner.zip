@@ -5,6 +5,7 @@ import com.example.p24zip.domain.task.entity.Task;
 import com.example.p24zip.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,4 +33,9 @@ public class TaskGroup extends BaseTimeEntity {
 
     @OneToMany(mappedBy="taskGroup")
     private List<Task> tasks = new ArrayList<>();
+
+    @Builder
+    public TaskGroup(String title, MovingPlan movingPlan){
+        this.title = title;
+    }
 }
