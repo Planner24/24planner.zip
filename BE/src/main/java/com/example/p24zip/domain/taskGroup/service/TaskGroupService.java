@@ -2,10 +2,16 @@ package com.example.p24zip.domain.taskGroup.service;
 
 import com.example.p24zip.domain.movingPlan.entity.MovingPlan;
 import com.example.p24zip.domain.movingPlan.repository.MovingPlanRepository;
+import com.example.p24zip.domain.schedule.dto.request.ScheduleRequestDto;
+import com.example.p24zip.domain.schedule.dto.response.ScheduleResponseDto;
+import com.example.p24zip.domain.schedule.entity.Schedule;
+import com.example.p24zip.domain.taskGroup.dto.request.TaskGroupMemoUpdateRequestDto;
 import com.example.p24zip.domain.taskGroup.dto.request.TaskGroupRequestDto;
+import com.example.p24zip.domain.taskGroup.dto.response.TaskGroupMemoUpdateResponseDto;
 import com.example.p24zip.domain.taskGroup.dto.response.TaskGroupResponseDto;
 import com.example.p24zip.domain.taskGroup.entity.TaskGroup;
 import com.example.p24zip.domain.taskGroup.repository.TaskGroupRepository;
+import com.example.p24zip.global.exception.CustomException;
 import com.example.p24zip.global.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +35,39 @@ public class TaskGroupService {
         TaskGroup newTaskGroup = taskGroupRepository.save(requestDto.toEntity(movingPlan));
 
         return TaskGroupResponseDto.from(newTaskGroup);
+    }
 
+    // 체크 그룹 제목 수정
+    @Transactional
+    public TaskGroupResponseDto updateTaskGroupTitle(TaskGroupRequestDto requestDto, Long taskGroupId, Long movingPlanId){
+
+        TaskGroup taskGroup = taskGroupRepository.findById(taskGroupId)
+            .orElseThrow(ResourceNotFoundException::new);
+
+        // 할 일의 이사 플랜 아이디와 입력 받은 이사 플랜 아이디 값이 다른 경우
+        if(!taskGroup.getMovingPlan().getId().equals(movingPlanId)){
+            throw new CustomException("UNMATCHED_ID", "체크 그룹을 작성한 이사 플랜에서 수정 가능합니다.");
+        }
+
+        TaskGroup newTaskGroup = taskGroup.updateTitle(requestDto);
+
+        return TaskGroupResponseDto.from(newTaskGroup);
+    }
+
+    // 체크 그룹 메모 수정
+    @Transactional
+    public TaskGroupMemoUpdateResponseDto updateTaskGroupMemo(TaskGroupMemoUpdateRequestDto requestDto, Long taskGroupId, Long movingPlanId){
+
+        TaskGroup taskGroup = taskGroupRepository.findById(taskGroupId)
+            .orElseThrow(ResourceNotFoundException::new);
+
+        // 할 일의 이사 플랜 아이디와 입력 받은 이사 플랜 아이디 값이 다른 경우
+        if(!taskGroup.getMovingPlan().getId().equals(movingPlanId)){
+            throw new CustomException("UNMATCHED_ID", "체크 그룹을 작성한 이사 플랜에서 수정 가능합니다.");
+        }
+
+        TaskGroup newTaskGroup = taskGroup.updateMemo(requestDto);
+
+        return TaskGroupMemoUpdateResponseDto.from(newTaskGroup);
     }
 }
