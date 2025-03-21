@@ -1,7 +1,5 @@
 package com.example.p24zip.domain.taskGroup.controller;
 
-import com.example.p24zip.domain.schedule.dto.request.ScheduleRequestDto;
-import com.example.p24zip.domain.schedule.dto.response.ScheduleResponseDto;
 import com.example.p24zip.domain.taskGroup.dto.request.TaskGroupMemoUpdateRequestDto;
 import com.example.p24zip.domain.taskGroup.dto.request.TaskGroupRequestDto;
 import com.example.p24zip.domain.taskGroup.dto.response.TaskGroupMemoUpdateResponseDto;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,7 +36,7 @@ public class TaskGroupController {
         return ResponseEntity.ok(ApiResponse.ok(
             "CREATED",
             "체크 그룹 생성에 성공했습니다.",
-            taskGroupService.createSchedule(requestDto, movingPlanId)
+            taskGroupService.createTaskGroup(requestDto, movingPlanId)
         ));
     }
 

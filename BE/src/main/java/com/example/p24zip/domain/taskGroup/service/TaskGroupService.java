@@ -2,9 +2,6 @@ package com.example.p24zip.domain.taskGroup.service;
 
 import com.example.p24zip.domain.movingPlan.entity.MovingPlan;
 import com.example.p24zip.domain.movingPlan.repository.MovingPlanRepository;
-import com.example.p24zip.domain.schedule.dto.request.ScheduleRequestDto;
-import com.example.p24zip.domain.schedule.dto.response.ScheduleResponseDto;
-import com.example.p24zip.domain.schedule.entity.Schedule;
 import com.example.p24zip.domain.taskGroup.dto.request.TaskGroupMemoUpdateRequestDto;
 import com.example.p24zip.domain.taskGroup.dto.request.TaskGroupRequestDto;
 import com.example.p24zip.domain.taskGroup.dto.response.TaskGroupMemoUpdateResponseDto;
@@ -27,7 +24,7 @@ public class TaskGroupService {
 
     // 체크 그룹 생성
     @Transactional
-    public TaskGroupResponseDto createSchedule(TaskGroupRequestDto requestDto, Long movingPlanId){
+    public TaskGroupResponseDto createTaskGroup(TaskGroupRequestDto requestDto, Long movingPlanId){
 
         MovingPlan movingPlan = movingPlanRepository.findById(movingPlanId)
             .orElseThrow(ResourceNotFoundException::new);
