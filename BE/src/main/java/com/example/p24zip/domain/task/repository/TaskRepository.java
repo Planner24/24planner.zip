@@ -7,11 +7,18 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
+    List<Task> findByTaskGroup(TaskGroup taskGroup);
+  
     long countByMovingPlanId(Long movingPlanId);
+  
     long countByMovingPlanIdAndIsCompletedTrue(Long movingPlanId);
 
-    long countByTaskGroup(TaskGroup taskGroupId);
-    long countByTaskGroupAndIsCompletedTrue(TaskGroup taskGroupId);
+    long countByTaskGroupAndIsCompletedTrue(TaskGroup taskGroup);
+
+    long countByTaskGroup(TaskGroup taskGroup);
+
 }
