@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import mapApi from '../../api/mapApi';
 
-export default function CalendarModal({ modalClose }) {
+export default function MapModal({ modalClose }) {
   
   const { movingPlanId } = useParams();
   
