@@ -52,7 +52,8 @@ public class TaskService {
         List<Task> tasks = taskRepository.findByTaskGroup(taskGroup);
         long totalCount = tasks.size();
         long completeCount = taskRepository.countByTaskGroupAndIsCompletedTrue(taskGroup);
+        String memo = taskGroup.getMemo() != null ? taskGroup.getMemo() : "";
 
-        return TaskListResponseDto.from(totalCount, completeCount, tasks, taskGroup.getMemo());
+        return TaskListResponseDto.from(totalCount, completeCount, tasks, memo);
     }
 }
