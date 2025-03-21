@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,4 +73,18 @@ public class TaskGroupController {
         ));
     }
 
+    // 체크 그룹 삭제
+    @DeleteMapping("/{taskGroupId}")
+    public ResponseEntity<ApiResponse<Object>> deleteTaskGroup(
+        @PathVariable Long taskGroupId,
+        @PathVariable Long movingPlanId,
+        @AuthenticationPrincipal User user
+    ){
+        taskGroupService.deleteTaskGroup(taskGroupId, movingPlanId);
+        return ResponseEntity.ok(ApiResponse.ok(
+            "DELETED",
+            "체크 그룹 삭제에 성공했습니다.",
+            null
+        ));
+    }
 }

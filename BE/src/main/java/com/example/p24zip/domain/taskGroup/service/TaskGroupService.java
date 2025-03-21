@@ -44,7 +44,7 @@ public class TaskGroupService {
         TaskGroup taskGroup = taskGroupRepository.findById(taskGroupId)
             .orElseThrow(ResourceNotFoundException::new);
 
-        // 할 일의 이사 플랜 아이디와 입력 받은 이사 플랜 아이디 값이 다른 경우
+        // 체크 그룹의 이사 플랜 아이디와 입력 받은 이사 플랜 아이디 값이 다른 경우
         if(!taskGroup.getMovingPlan().getId().equals(movingPlanId)){
             throw new CustomException("UNMATCHED_ID", "체크 그룹을 작성한 이사 플랜에서 수정 가능합니다.");
         }
@@ -61,7 +61,7 @@ public class TaskGroupService {
         TaskGroup taskGroup = taskGroupRepository.findById(taskGroupId)
             .orElseThrow(ResourceNotFoundException::new);
 
-        // 할 일의 이사 플랜 아이디와 입력 받은 이사 플랜 아이디 값이 다른 경우
+        // 체크 그룹의 이사 플랜 아이디와 입력 받은 이사 플랜 아이디 값이 다른 경우
         if(!taskGroup.getMovingPlan().getId().equals(movingPlanId)){
             throw new CustomException("UNMATCHED_ID", "체크 그룹을 작성한 이사 플랜에서 수정 가능합니다.");
         }
@@ -69,5 +69,20 @@ public class TaskGroupService {
         TaskGroup newTaskGroup = taskGroup.updateMemo(requestDto);
 
         return TaskGroupMemoUpdateResponseDto.from(newTaskGroup);
+    }
+
+    // 체크 그룹 삭제
+    @Transactional
+    public void deleteTaskGroup(Long taskGroupId, Long movingPlanId){
+
+        TaskGroup taskGroup = taskGroupRepository.findById(taskGroupId)
+            .orElseThrow(ResourceNotFoundException::new);
+
+        // 체크 그룹의 이사 플랜 아이디와 입력 받은 이사 플랜 아이디 값이 다른 경우
+        if(!taskGroup.getMovingPlan().getId().equals(movingPlanId)){
+            throw new CustomException("UNMATCHED_ID", "체크 그룹을 작성한 이사 플랜에서 삭제 가능합니다.");
+        }
+
+        taskGroupRepository.delete(taskGroup);
     }
 }
