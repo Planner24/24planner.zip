@@ -29,8 +29,14 @@ export default function Calendar() {
       endDate: '2025-03-07',
     },
     {
+      color: '#2f9e44',
+      content: '집보기 16:00',
+      startDate: '2025-03-21',
+      endDate: '2025-03-22',
+    },
+    {
       color: '#fcc2d7',
-      content: '일이삼사오육칠팔구십일이삼사오육칠팔',
+      content: '일이삼사오육칠팔구십일이삼사',
       startDate: '2025-03-22',
       endDate: '2025-03-23',
     },

@@ -53,11 +53,12 @@ export default function CalendarContent({ setSelectDate, scheduleList }) {
       title: schedule.content,
       start: schedule.startDate,
       end: schedule.endDate,
-      color: schedule.color,
+      backgroundColor: schedule.color,
+      borderColor: '#FFFFFF',
     };
   });
 
-  const calendarContentStyle = 'flex flex-col flex-2 h-full w-full border-r-1 border-gray-300 m-4';
+  const calendarContentStyle = 'flex flex-col flex-2 h-full w-full border-r-1 border-gray-300 my-4';
   const buttonStyle =
     'w-20 h-10 bg-white border-2 border-primary rounded-xl text-primary text-lg font-semibold cursor-pointer hover:bg-primary hover:text-white ml-2';
 
@@ -77,10 +78,11 @@ export default function CalendarContent({ setSelectDate, scheduleList }) {
         <></>
       )}
       <section className={calendarContentStyle}>
-        <div className="px-4">
+        <div className="px-8">
           <div className="w-full">
             <section className="pt-4 flex justify-between">
-              <nav className="flex flex-1 justify-start"></nav>
+              {/* 중앙 정렬용 태그 */}
+              <nav className="flex flex-1 justify-start" />
               <nav className="flex flex-2 justify-center items-center">
                 <div className="flex flex-1 justify-end">
                   <div className="cursor-pointer" onClick={moveToPrevMonth}>

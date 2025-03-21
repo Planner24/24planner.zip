@@ -129,3 +129,9 @@ input::-webkit-inner-spin-button {
 .fc-day-today .fc-daygrid-day-number {
   background-color: #69db7c;
 }
+
+.fc-sticky {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

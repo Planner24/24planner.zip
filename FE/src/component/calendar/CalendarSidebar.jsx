@@ -17,26 +17,30 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
           <div className="flex flex-col w-full mt-8">
             {scheduleList.map((schedule, i) => {
               return (
-                <div key={i} className="flex">
+                <div key={i} className="flex items-center">
                   <div
-                    className={`flex justify-center items-center bg-[${schedule.color}] rounded-3xl w-full m-2`}
+                    className={`flex justify-center items-center bg-[${schedule.color}] rounded-3xl text-xl w-full p-2 m-2`}
                   >
                     {schedule.content}
                   </div>
-                  <div className="p-2">수정</div>
-                  <div className="p-2">삭제</div>
+                  <div className="p-2">
+                    <img src="/pencil.png" className="w-8 h-7" />
+                  </div>
+                  <div className="p-2">
+                    <img src="/bin.png" className="w-8 h-7" />
+                  </div>
                 </div>
               );
             })}
             <div className="flex items-center">
-              <div className="flex justify-center items-center border-1 border-gray-300 rounded-3xl w-full m-2">
+              <div className="flex justify-center items-center border-1 border-gray-300 rounded-3xl w-full m-2 h-11">
                 <input
                   type="text"
                   placeholder="할 일 추가"
                   className="focus:outline-none w-full p-2"
                 ></input>
               </div>
-              <div className="flex justify-center items-center mx-2 px-7 bg-primary rounded-3xl h-10">
+              <div className="flex justify-center items-center mx-2 px-7 bg-primary rounded-3xl h-11">
                 +
               </div>
             </div>
