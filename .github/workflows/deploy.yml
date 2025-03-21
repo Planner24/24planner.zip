@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - feature/*
+
 jobs:
   deploy: # Job 이름
     runs-on: ubuntu-24.04
