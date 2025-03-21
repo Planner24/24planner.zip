@@ -1,7 +1,9 @@
 package com.example.p24zip.domain.house.controller;
 
 import com.example.p24zip.domain.house.dto.request.AddHouseRequestDto;
+import com.example.p24zip.domain.house.dto.request.ChangeHouseNicknameRequestDto;
 import com.example.p24zip.domain.house.dto.response.AddHouseResponseDto;
+import com.example.p24zip.domain.house.dto.response.ChangeHouseNicknameResponseDto;
 import com.example.p24zip.domain.house.dto.response.GetHouseDetailsResponseDto;
 import com.example.p24zip.domain.house.dto.response.HouseListResponseDto;
 import com.example.p24zip.domain.house.service.HouseService;
@@ -10,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +43,13 @@ public class HouseController {
     public ResponseEntity<ApiResponse<GetHouseDetailsResponseDto>> getHouseDetails(@PathVariable Long houseId) {
         return ResponseEntity.ok(
             ApiResponse.ok("OK", "집 조회에 성공했습니다.",  houseService.getHouseDetails(houseId))
+        );
+    }
+
+    @PatchMapping("/{houseId}/nickname")
+    public ResponseEntity<ApiResponse<ChangeHouseNicknameResponseDto>> changeHouseNickname(@PathVariable Long houseId, @RequestBody @Valid ChangeHouseNicknameRequestDto requestDto) {
+        return ResponseEntity.ok(
+            ApiResponse.ok("UPDATED", "집 별칭 수정에 성공했습니다.", houseService.changeHouseNickname(houseId, requestDto))
         );
     }
 

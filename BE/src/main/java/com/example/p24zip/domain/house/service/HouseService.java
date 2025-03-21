@@ -1,7 +1,9 @@
 package com.example.p24zip.domain.house.service;
 
 import com.example.p24zip.domain.house.dto.request.AddHouseRequestDto;
+import com.example.p24zip.domain.house.dto.request.ChangeHouseNicknameRequestDto;
 import com.example.p24zip.domain.house.dto.response.AddHouseResponseDto;
+import com.example.p24zip.domain.house.dto.response.ChangeHouseNicknameResponseDto;
 import com.example.p24zip.domain.house.dto.response.GetHouseDetailsResponseDto;
 import com.example.p24zip.domain.house.dto.response.HouseListResponseDto;
 import com.example.p24zip.domain.house.dto.response.KaKaoGeocodeResponse;
@@ -54,6 +56,7 @@ public class HouseService {
 
     }
 
+
     /**
      * @param movingPlanId : 집 관련 테이블과 연관관계를 가진 테이블의 id
      * @return 집 정보를 가진 리스트
@@ -65,10 +68,18 @@ public class HouseService {
         return HouseListResponseDto.from(houseList);
     }
 
+
     public GetHouseDetailsResponseDto getHouseDetails(Long houseId) {
         return GetHouseDetailsResponseDto.from(houseRepository.findById(houseId).orElseThrow());
     }
 
+    @Transactional
+    public ChangeHouseNicknameResponseDto changeHouseNickname(Long houseId, ChangeHouseNicknameRequestDto requestDto) {
+        House house = houseRepository.findById(houseId).orElseThrow();
+        house.update(requestDto);
+
+        return ChangeHouseNicknameResponseDto.from(house);
+    }
 
     ///////////////////////////////////////////////////////////////////////////////
     // 보조 메서드

@@ -1,5 +1,6 @@
 package com.example.p24zip.domain.house.entity;
 
+import com.example.p24zip.domain.house.dto.request.ChangeHouseNicknameRequestDto;
 import com.example.p24zip.domain.movingPlan.entity.MovingPlan;
 import com.example.p24zip.global.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
@@ -56,6 +57,11 @@ public class House extends BaseTimeEntity {
         this.latitude = latitude;
         this.longitude = longitude;
         this.content = content;
+    }
+
+    public House update(ChangeHouseNicknameRequestDto requestDto) {
+        this.nickname = requestDto.getNickname();
+        return this;
     }
 
 }
