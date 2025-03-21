@@ -89,15 +89,20 @@ export default function MapModal({ modalClose, setAddressData }) {
 
   const test = async () => {
 
+    console.log("1111111111");
+    
+
     const errors = {};
     if (!formData.nickname) errors.nickname = '별명을 지어주세요.';
     if (!formData.address1) errors.address1 = '주소를 넣어주세요.';
-    if (!formData.address2) errors.address2 = '상세주소를 넣어주세요.';
 
     if (Object.keys(errors).length) {
       setInputRequestMessage(errors);
       return;
     }
+
+    console.log("222222222");
+    
 
     try {
       let response = await mapApi.mapCreate(movingPlanId, formData);

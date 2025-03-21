@@ -16,6 +16,8 @@ export default function Map() {
 
   const [maplists, setMapLists] = useState([]);
 
+  const [selectedButton, setSelectedButton] = useState(null);
+
   const mapStyle = 'flex flex-col flex-2 h-full w-full border-r-1 border-gray-300 m-4';
   const mapPlusStyle = 'w-25 h-12 border-2 rounded-xl px-2 py-1 bg-primary text-white me-2';
   const mapButtonStyle =
@@ -28,15 +30,15 @@ export default function Map() {
   const container = useRef(null);
 
   const mapButton = (e) => {
-
     const { latitude, longitude } = e.target.dataset;
-    
+
     setAddressData((prev) => ({
       ...prev,
-      "centerlatitude": latitude,
-      "centerlongitude": longitude
+      centerlatitude: latitude,
+      centerlongitude: longitude,
     }));
-    
+
+    setSelectedButton(`${latitude},${longitude}`);
   };
 
   useEffect(() => {
@@ -80,6 +82,16 @@ export default function Map() {
 
         // 지도에 마커 추가
         marker.setMap(map);
+
+        // 마커 클릭 이벤트 추가
+        kakao.maps.event.addListener(marker, 'click', function () {
+          alert("버튼을 클릭했습니다!");
+          setAddressData({
+            centerlatitude: latitude,
+            centerlongitude: longitude,
+          });
+          setSelectedButton(`${latitude},${longitude}`);
+        });
       });
     }
     fetchMapMarker();
@@ -101,10 +113,12 @@ export default function Map() {
             {maplists.map((maplist) => {
               const { latitude, longitude, nickname } = maplist;
 
+              const isSelected = selectedButton === `${latitude},${longitude}`;
+
               return (
                 <button
-                  className={mapButtonStyle}
-                  id={latitude}
+                  className={`${mapButtonStyle} ${isSelected ? 'bg-white text-primary' : ''}`}
+                  id=""
                   data-latitude={latitude}
                   data-longitude={longitude}
                   onClick={mapButton}
