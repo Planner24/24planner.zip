@@ -1,8 +1,10 @@
 package com.example.p24zip.domain.house.service;
 
 import com.example.p24zip.domain.house.dto.request.AddHouseRequestDto;
+import com.example.p24zip.domain.house.dto.request.ChangeHouseContentRequestDto;
 import com.example.p24zip.domain.house.dto.request.ChangeHouseNicknameRequestDto;
 import com.example.p24zip.domain.house.dto.response.AddHouseResponseDto;
+import com.example.p24zip.domain.house.dto.response.ChangeHouseContentResponseDto;
 import com.example.p24zip.domain.house.dto.response.ChangeHouseNicknameResponseDto;
 import com.example.p24zip.domain.house.dto.response.GetHouseDetailsResponseDto;
 import com.example.p24zip.domain.house.dto.response.HouseListResponseDto;
@@ -76,9 +78,17 @@ public class HouseService {
     @Transactional
     public ChangeHouseNicknameResponseDto changeHouseNickname(Long houseId, ChangeHouseNicknameRequestDto requestDto) {
         House house = houseRepository.findById(houseId).orElseThrow();
-        house.update(requestDto);
+        house.updateNickname(requestDto);
 
         return ChangeHouseNicknameResponseDto.from(house);
+    }
+
+    @Transactional
+    public ChangeHouseContentResponseDto changeHouseContent(Long houseId, ChangeHouseContentRequestDto requestDto) {
+        House house = houseRepository.findById(houseId).orElseThrow();
+        house.updateContent(requestDto);
+
+        return ChangeHouseContentResponseDto.from(house);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
