@@ -25,7 +25,11 @@ export default function PopoverUtilComponent({ children }) {
     <>
       {pointerPosition.x >= 0 &&
         createPortal(
-          <PopoverComponent pointerPosition={pointerPosition} popoverText={popoverText} />,
+          <PopoverComponent
+            pointerPosition={pointerPosition}
+            popoverText={popoverText}
+            setPointerPosition={setPointerPosition}
+          />,
           document.body,
         )}
       <div className="flex flex-col items-center h-full w-full" onMouseMove={handleMainMouseMove}>

@@ -1,4 +1,8 @@
-export default function PopoverComponent({ pointerPosition, popoverText }) {
+export default function PopoverComponent({ pointerPosition, popoverText, setPointerPosition }) {
+  const handlePopoverHover = () => {
+    setPointerPosition(() => ({ x: -1, y: -1 }));
+  };
+
   return (
     <div
       style={{
@@ -6,6 +10,7 @@ export default function PopoverComponent({ pointerPosition, popoverText }) {
         top: pointerPosition.y + 20 + 'px',
       }}
       className="w-fit h-fit absolute bg-red-500 z-10"
+      onMouseMove={handlePopoverHover}
     >
       {popoverText}
     </div>
