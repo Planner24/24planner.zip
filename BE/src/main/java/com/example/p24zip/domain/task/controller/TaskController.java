@@ -28,7 +28,7 @@ public class TaskController {
 
         return ResponseEntity.ok(ApiResponse.ok(
                 "CREATED",
-                "체크 포인트 생성에 성공했습니다.",
+                "체크포인트 생성에 성공했습니다.",
                 taskService.createTask(movingPlanId, taskGroupId, requestDto)
         ));
     }
@@ -43,6 +43,21 @@ public class TaskController {
                 "OK",
                 "체크포인트 목록 조회에 성공했습니다.",
                 taskService.readTasks(movingPlanId, taskGroupId)
+        ));
+    }
+    
+    @PatchMapping("/{taskId}/content")
+    public ResponseEntity<ApiResponse<TaskResponseDto>> updateTaskContent(
+            @PathVariable Long movingPlanId,
+            @PathVariable Long taskGroupId,
+            @PathVariable Long taskId,
+            @Valid @RequestBody TaskRequestDto requestDto,
+            @AuthenticationPrincipal User user) {
+
+        return ResponseEntity.ok(ApiResponse.ok(
+           "UPDATED",
+                "체크포인트 내용 수정에 성공했습니다.",
+                taskService.updateTask(movingPlanId, taskGroupId, taskId, requestDto)
         ));
     }
 }

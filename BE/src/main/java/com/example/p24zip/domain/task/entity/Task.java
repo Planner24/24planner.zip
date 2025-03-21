@@ -1,6 +1,7 @@
 package com.example.p24zip.domain.task.entity;
 
 import com.example.p24zip.domain.movingPlan.entity.MovingPlan;
+import com.example.p24zip.domain.task.dto.request.TaskRequestDto;
 import com.example.p24zip.domain.taskGroup.entity.TaskGroup;
 import com.example.p24zip.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -36,5 +37,11 @@ public class Task extends BaseTimeEntity {
         this.content = content;
         this.taskGroup = taskGroup;
         this.movingPlan = movingPlan;
+    }
+
+    public Task update(TaskRequestDto requestDto) {
+        this.content = requestDto.getContent();
+
+        return this;
     }
 }

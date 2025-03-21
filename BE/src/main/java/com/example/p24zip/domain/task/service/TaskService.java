@@ -56,4 +56,25 @@ public class TaskService {
 
         return TaskListResponseDto.from(totalCount, completeCount, tasks, memo);
     }
+
+    @Transactional
+    public TaskResponseDto updateTask(Long movingPlanId, Long taskGroupId, Long taskId, TaskRequestDto requestDto) {
+        MovingPlan movingPlan = movingPlanRepository.findById(movingPlanId)
+                .orElseThrow(ResourceNotFoundException::new);
+        TaskGroup taskGroup = taskGroupRepository.findById(taskGroupId)
+                .orElseThrow(ResourceNotFoundException::new);
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(ResourceNotFoundException::new);
+
+        if (!taskGroup.getMovingPlan().getId().equals(movingPlanId)) {
+            throw new ResourceNotFoundException();
+        }
+        if (!task.getTaskGroup().getId().equals(taskGroupId)) {
+            throw new ResourceNotFoundException();
+        }
+
+        task.update(requestDto);
+
+        return TaskResponseDto.from(task);
+    }
 }
