@@ -76,4 +76,20 @@ public class TaskController {
                 taskService.updateTaskIsCompleted(movingPlanId, taskGroupId, taskId, requestDto)
         ));
     }
+
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<ApiResponse<Object>> deleteTask(
+            @PathVariable Long movingPlanId,
+            @PathVariable Long taskGroupId,
+            @PathVariable Long taskId,
+            @AuthenticationPrincipal User user) {
+
+        taskService.deleteTask(movingPlanId, taskGroupId, taskId);
+
+        return ResponseEntity.ok(ApiResponse.ok(
+                "DELETED",
+                "체크포인트 삭제에 성공했습니다.",
+                null
+        ));
+    }
 }

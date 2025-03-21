@@ -82,6 +82,19 @@ public class TaskService {
         return TaskResponseDto.from(task);
     }
 
+    @Transactional
+    public void deleteTask(Long movingPlanId, Long taskGroupId, Long taskId) {
+        TaskGroup taskGroup = taskGroupRepository.findById(taskGroupId)
+                .orElseThrow(ResourceNotFoundException::new);
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(ResourceNotFoundException::new);
+
+        isMovingPlanIdMatched(movingPlanId, taskGroup);
+        isTaskGroupIdMatched(taskGroupId, task);
+
+        taskRepository.delete(task);
+    }
+
     private void isMovingPlanIdMatched(Long movingPlanId, TaskGroup taskGroup) {
         if (!taskGroup.getMovingPlan().getId().equals(movingPlanId)) {
             throw new ResourceNotFoundException();
