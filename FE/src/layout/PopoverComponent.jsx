@@ -1,14 +1,13 @@
-export default function PopoverComponent({ pointerPosition, setPointerPosition }) {
+export default function PopoverComponent({ pointerPosition, popoverText }) {
   return (
     <div
       style={{
         left: pointerPosition.x + 'px',
         top: pointerPosition.y + 20 + 'px',
       }}
-      className="w-10 h-10 absolute bg-red-500 z-10"
-      onMouseOver={() => setPointerPosition(() => ({ x: -1, y: -1 }))}
+      className="w-fit h-fit absolute bg-red-500 z-10"
     >
-      CalendarPopover
+      {popoverText}
     </div>
   );
 }
