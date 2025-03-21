@@ -1,6 +1,7 @@
 package com.example.p24zip.domain.task.entity;
 
 import com.example.p24zip.domain.movingPlan.entity.MovingPlan;
+import com.example.p24zip.domain.task.dto.request.TaskCompleteRequestDto;
 import com.example.p24zip.domain.task.dto.request.TaskRequestDto;
 import com.example.p24zip.domain.taskGroup.entity.TaskGroup;
 import com.example.p24zip.global.entity.BaseTimeEntity;
@@ -41,6 +42,12 @@ public class Task extends BaseTimeEntity {
 
     public Task update(TaskRequestDto requestDto) {
         this.content = requestDto.getContent();
+
+        return this;
+    }
+
+    public Task updateIsCompleted(TaskCompleteRequestDto requestDto) {
+        this.isCompleted = requestDto.getIsCompleted();
 
         return this;
     }

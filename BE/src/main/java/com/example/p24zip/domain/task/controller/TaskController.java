@@ -1,5 +1,6 @@
 package com.example.p24zip.domain.task.controller;
 
+import com.example.p24zip.domain.task.dto.request.TaskCompleteRequestDto;
 import com.example.p24zip.domain.task.dto.request.TaskRequestDto;
 import com.example.p24zip.domain.task.dto.response.TaskListResponseDto;
 import com.example.p24zip.domain.task.dto.response.TaskResponseDto;
@@ -58,6 +59,21 @@ public class TaskController {
            "UPDATED",
                 "체크포인트 내용 수정에 성공했습니다.",
                 taskService.updateTaskContent(movingPlanId, taskGroupId, taskId, requestDto)
+        ));
+    }
+
+    @PatchMapping("/{taskId}/isCompleted")
+    public ResponseEntity<ApiResponse<TaskResponseDto>> updateTaskIsCompleted(
+            @PathVariable Long movingPlanId,
+            @PathVariable Long taskGroupId,
+            @PathVariable Long taskId,
+            @Valid @RequestBody TaskCompleteRequestDto requestDto,
+            @AuthenticationPrincipal User user) {
+
+        return ResponseEntity.ok(ApiResponse.ok(
+                "UPDATED",
+                "체크포인트 완료 여부 수정에 성공했습니다.",
+                taskService.updateTaskIsCompleted(movingPlanId, taskGroupId, taskId, requestDto)
         ));
     }
 }
