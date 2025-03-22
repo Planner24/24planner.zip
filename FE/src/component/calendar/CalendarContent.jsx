@@ -48,7 +48,7 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
   const calendarPaddingStyle = 'px-8';
   const calendarHeaderStyle = 'flex justify-between w-full pt-4';
   const calendarHeaderLeftStyle = 'flex flex-1 justify-start';
-  const calendarHeaderCenterStyle = 'flex flex-2 justify-center';
+  const calendarHeaderCenterStyle = 'flex flex-2 justify-center items-center';
   const calendarHeaderRightStyle = 'flex flex-1 justify-end';
   const calendarHeaderCenterPrevDivStyle = 'flex flex-1 justify-end';
   const calendarHeaderCenterDateDivStyle = 'flex flex-3 justify-center mx-5';
