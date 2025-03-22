@@ -30,10 +30,7 @@ public class ScheduleService {
     @Transactional
     public ScheduleResponseDto createSchedule(ScheduleRequestDto requestDto, Long movingPlanId){
 
-        // 시작 날짜가 종료 날짜 이후인 경우
-        if(requestDto.getStartDate().isAfter(requestDto.getEndDate())){
-            throw new CustomException("INVALID_DATE", "시작 날짜는 종료 날짜보다 이전이어야 합니다.");
-        }
+        isDateValid(requestDto);
 
         MovingPlan movingPlan = movingPlanRepository.findById(movingPlanId)
             .orElseThrow(ResourceNotFoundException::new);
@@ -77,10 +74,7 @@ public class ScheduleService {
     @Transactional
     public ScheduleResponseDto updateSchedule(ScheduleRequestDto requestDto, Long scheduleId, Long movingPlanId){
 
-        // 시작 날짜가 종료 날짜 이후인 경우
-        if(requestDto.getStartDate().isAfter(requestDto.getEndDate())){
-            throw new CustomException("INVALID_DATE", "시작 날짜는 종료 날짜보다 이전이어야 합니다.");
-        }
+        isDateValid(requestDto);
 
         Schedule schedule = scheduleRepository.findById(scheduleId)
             .orElseThrow(ResourceNotFoundException::new);
@@ -124,5 +118,12 @@ public class ScheduleService {
         int endDateResult = date.compareTo(schedule.getEndDate());
 
         return startDateResult >= 0 && endDateResult <= 0;
+    }
+
+    // 시작 날짜가 종료 날짜 이후인 경우
+    private void isDateValid(ScheduleRequestDto requestDto){
+        if(requestDto.getStartDate().isAfter(requestDto.getEndDate())){
+            throw new CustomException("INVALID_DATE", "시작 날짜는 종료 날짜보다 이전이어야 합니다.");
+        }
     }
 }
