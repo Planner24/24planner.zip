@@ -79,10 +79,7 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findById(scheduleId)
             .orElseThrow(ResourceNotFoundException::new);
 
-        // 할 일의 이사 플랜 아이디와 입력 받은 이사 플랜 아이디 값이 다른 경우
-        if(!schedule.getMovingPlan().getId().equals(movingPlanId)){
-            throw new CustomException("UNMATCHED_ID", "할 일을 작성한 이사 플랜에서 수정할 수 있습니다.");
-        }
+        isMovingPlanIdMatched(movingPlanId, schedule);
 
         Schedule updatedSchedule = schedule.update(requestDto);
 
@@ -96,10 +93,7 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findById(scheduleId)
             .orElseThrow(ResourceNotFoundException::new);
 
-        // 할 일의 이사 플랜 아이디와 입력 받은 이사 플랜 아이디 값이 다른 경우
-        if(!schedule.getMovingPlan().getId().equals(movingPlanId)){
-            throw new CustomException("UNMATCHED_ID", "할 일을 작성한 이사 플랜에서 삭제할 수 있습니다.");
-        }
+        isMovingPlanIdMatched(movingPlanId, schedule);
 
         scheduleRepository.delete(schedule);
     }
@@ -124,6 +118,13 @@ public class ScheduleService {
     private void isDateValid(ScheduleRequestDto requestDto){
         if(requestDto.getStartDate().isAfter(requestDto.getEndDate())){
             throw new CustomException("INVALID_DATE", "시작 날짜는 종료 날짜보다 이전이어야 합니다.");
+        }
+    }
+
+    // 이사 플랜 아이디와 할 일의 이사 플랜 아이디 매칭 여부 검증
+    private void isMovingPlanIdMatched(Long movingPlanId, Schedule schedule){
+        if(!schedule.getMovingPlan().getId().equals(movingPlanId)){
+            throw new ResourceNotFoundException();
         }
     }
 }
