@@ -41,33 +41,30 @@ public class ScheduleService {
     }
 
     // 할 일 월별 조회
-    public MonthScheduleListResponseDto getSchedules(Long movingPlanId, YearMonth month){
+    public MonthScheduleListResponseDto getSchedulesInMonth(Long movingPlanId, YearMonth month){
 
-        List<Schedule> allSchedules = scheduleRepository.findAllByMovingPlanId(movingPlanId);
+        LocalDate startDate = month.atDay(1);
+        LocalDate endDate = month.atEndOfMonth();
 
-        int monthValue = month.getMonthValue();
+        List<Schedule> allSchedulesInMonth
+            = scheduleRepository.findAllByMonth(movingPlanId, startDate, endDate);
 
-        // 해당 월의 스케줄만 가져오기
-        List<ScheduleResponseDto> scheduleInMonth = allSchedules.stream()
-            .filter(schedule -> isScheduleInMonth(schedule, monthValue))
-            .map(ScheduleResponseDto :: from)
-            .toList();
+        List<ScheduleResponseDto> schedulesInMonth
+            = allSchedulesInMonth.stream().map(ScheduleResponseDto::from).toList();
 
-        return MonthScheduleListResponseDto.from(month, scheduleInMonth);
+        return MonthScheduleListResponseDto.from(month, schedulesInMonth);
     }
 
     // 할 일 날짜별 조회
-    public DayScheduleListResponseDto getScheduleById(Long movingPlanId, LocalDate date){
+    public DayScheduleListResponseDto getSchedulesInDay(Long movingPlanId, LocalDate date){
 
-        List<Schedule> allSchedules = scheduleRepository.findAllByMovingPlanId(movingPlanId);
+        List<Schedule> allSchedulesInDate
+            = scheduleRepository.findAllByStartDate(movingPlanId, date);
 
-        // 해당 날짜의 스케줄만 가져오기
-        List<DayScheduleResponseDto> scheduleInDate = allSchedules.stream()
-            .filter(schedule -> isScheduleInDay(schedule, date))
-            .map(DayScheduleResponseDto :: from)
-            .toList();
+        List<DayScheduleResponseDto> schedulesInDate
+            = allSchedulesInDate.stream().map(DayScheduleResponseDto::from).toList();
 
-        return DayScheduleListResponseDto.from(date, scheduleInDate);
+        return DayScheduleListResponseDto.from(date, schedulesInDate);
     }
 
     // 할 일 수정
@@ -96,22 +93,6 @@ public class ScheduleService {
         isMovingPlanIdMatched(movingPlanId, schedule);
 
         scheduleRepository.delete(schedule);
-    }
-
-    // 해당 달의 스케줄인지 확인
-    private boolean isScheduleInMonth(Schedule schedule, int monthValue){
-
-        return schedule.getStartDate().getMonthValue() == monthValue
-            || schedule.getEndDate().getMonthValue() == monthValue;
-    }
-
-    // 해당 날짜의 스케줄인지 확인
-    private boolean isScheduleInDay(Schedule schedule, LocalDate date){
-
-        int startDateResult = date.compareTo(schedule.getStartDate());
-        int endDateResult = date.compareTo(schedule.getEndDate());
-
-        return startDateResult >= 0 && endDateResult <= 0;
     }
 
     // 시작 날짜가 종료 날짜 이후인 경우

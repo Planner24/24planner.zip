@@ -46,7 +46,7 @@ public class ScheduleController {
 
     // 할 일 월별 조회
     @GetMapping("/month")
-    public ResponseEntity<ApiResponse<MonthScheduleListResponseDto>> getSchedules(
+    public ResponseEntity<ApiResponse<MonthScheduleListResponseDto>> getSchedulesInMonth(
         @PathVariable Long movingPlanId,
         @RequestParam YearMonth month,
         @AuthenticationPrincipal User user
@@ -54,13 +54,13 @@ public class ScheduleController {
         return ResponseEntity.ok(ApiResponse.ok(
             "OK",
             "할 일 월별 목록 조회에 성공했습니다.",
-            scheduleService.getSchedules(movingPlanId, month)
+            scheduleService.getSchedulesInMonth(movingPlanId, month)
         ));
     }
 
     // 할 일 날짜별 조회
     @GetMapping("/date")
-    public ResponseEntity<ApiResponse<DayScheduleListResponseDto>> getScheduleById(
+    public ResponseEntity<ApiResponse<DayScheduleListResponseDto>> getSchedulesInDay(
         @PathVariable Long movingPlanId,
         @RequestParam LocalDate date,
         @AuthenticationPrincipal User user
@@ -68,7 +68,7 @@ public class ScheduleController {
         return ResponseEntity.ok(ApiResponse.ok(
             "OK",
             "할 일 날짜별 목록 조회에 성공했습니다.",
-            scheduleService.getScheduleById(movingPlanId, date)
+            scheduleService.getSchedulesInDay(movingPlanId, date)
         ));
     }
 
