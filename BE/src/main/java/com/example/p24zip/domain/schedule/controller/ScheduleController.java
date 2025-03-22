@@ -39,12 +39,12 @@ public class ScheduleController {
     ){
         return ResponseEntity.ok(ApiResponse.ok(
             "CREATED",
-            "할 일이 생성되었습니다.",
+            "할 일 생성에 성공했습니다.",
             scheduleService.createSchedule(requestDto, movingPlanId)
         ));
     }
 
-    // 할 일 전체 조회 (월별 조회)
+    // 할 일 월별 조회
     @GetMapping("/month")
     public ResponseEntity<ApiResponse<MonthScheduleListResponseDto>> getSchedules(
         @PathVariable Long movingPlanId,
@@ -53,7 +53,7 @@ public class ScheduleController {
     ){
         return ResponseEntity.ok(ApiResponse.ok(
             "OK",
-            "할 일 목록 조회에 성공했습니다.",
+            "할 일 월별 목록 조회에 성공했습니다.",
             scheduleService.getSchedules(movingPlanId, month)
         ));
     }
@@ -67,7 +67,7 @@ public class ScheduleController {
     ){
         return ResponseEntity.ok(ApiResponse.ok(
             "OK",
-            "할 일 목록 조회에 성공했습니다.",
+            "할 일 날짜별 목록 조회에 성공했습니다.",
             scheduleService.getScheduleById(movingPlanId, date)
         ));
     }
@@ -97,7 +97,7 @@ public class ScheduleController {
         scheduleService.deleteSchedule(scheduleId, movingPlanId);
         return ResponseEntity.ok(ApiResponse.ok(
             "DELETED",
-            "할 일 삭제에 성공했습니다",
+            "할 일 삭제에 성공했습니다.",
             null
         ));
     }

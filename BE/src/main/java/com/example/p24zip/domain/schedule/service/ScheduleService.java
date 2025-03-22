@@ -15,11 +15,9 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -45,7 +43,7 @@ public class ScheduleService {
         return ScheduleResponseDto.from(newSchedule);
     }
 
-    // 할 일 전체 조회 (월별 조회)
+    // 할 일 월별 조회
     public MonthScheduleListResponseDto getSchedules(Long movingPlanId, YearMonth month){
 
         List<Schedule> allSchedules = scheduleRepository.findAllByMovingPlanId(movingPlanId);
