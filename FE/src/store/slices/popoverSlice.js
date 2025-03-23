@@ -6,6 +6,7 @@ const initialState = {
   popoverTitle: '',
   popoverStartDate: null,
   popoverEndDate: null,
+  popoverColor: null,
 };
 
 const popoverSlice = createSlice({
@@ -20,11 +21,13 @@ const popoverSlice = createSlice({
       state.popoverTitle = action.payload.title;
       state.popoverStartDate = action.payload.start;
       state.popoverEndDate = action.payload.end;
+      state.popoverColor = action.payload.color;
     },
     eventMouseLeaveReducer: (state) => {
       state.popoverTitle = '';
       state.popoverStartDate = null;
       state.popoverEndDate = null;
+      state.popoverColor = null;
     },
   },
 });

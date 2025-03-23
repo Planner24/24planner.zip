@@ -46,11 +46,15 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
   };
 
   const handleEventMouseEnter = (e) => {
+    const endDate = new Date(e.event.end - 86400000);
+    console.log(e.event.backgroundColor);
+
     dispatch(
       eventMouseHoverReducer({
         title: e.event.title,
         start: e.event.startStr,
-        end: e.event.endStr,
+        end: parseDate(endDate.getFullYear(), endDate.getMonth() + 1, endDate.getDate()),
+        color: e.event.backgroundColor,
       }),
     );
   };
