@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useDispatch } from 'react-redux';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -9,7 +10,11 @@ import CalendarModal from './CalendarModal';
 import ChevronLeftSvg from './svg/ChevronLeftSvg';
 import ChevronRightSvg from './svg/ChevronRightSvg';
 
+import { eventMouseHoverReducer, eventMouseLeaveReducer } from '../../store/slices/popoverSlice';
+
 export default function CalendarContent({ setSelectDate, scheduleList, eventList, setEventList }) {
+  const dispatch = useDispatch();
+
   const calendarRef = useRef(null);
 
   const [showModal, setShowModal] = useState(false);
@@ -38,6 +43,20 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
 
   const handleDateCellClick = (e) => {
     setSelectDate(() => e.dateStr);
+  };
+
+  const handleEventMouseEnter = (e) => {
+    dispatch(
+      eventMouseHoverReducer({
+        title: e.event.title,
+        start: e.event.startStr,
+        end: e.event.endStr,
+      }),
+    );
+  };
+
+  const handleEventMouseLeave = () => {
+    dispatch(eventMouseLeaveReducer());
   };
 
   const handleCalendarModal = () => {
@@ -101,6 +120,8 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
             showNonCurrentDates={false}
             locale={koLocale}
             events={eventList}
+            eventMouseEnter={handleEventMouseEnter}
+            eventMouseLeave={handleEventMouseLeave}
             dateClick={handleDateCellClick}
             dayCellContent={(arg) => ({
               // 한국어 사용 시, 일수가 기본적으로 "n일" 형태로 표현되므로 직접 숫자만 출력

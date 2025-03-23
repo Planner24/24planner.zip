@@ -1,18 +1,30 @@
-export default function PopoverComponent({ pointerPosition, popoverText, setPointerPosition }) {
+import { useSelector, useDispatch } from 'react-redux';
+import { mouseMoveReducer } from '../store/slices/popoverSlice';
+
+export default function PopoverComponent() {
+  const dispatch = useDispatch();
+  const pointerPositionX = useSelector((state) => state.popover.x);
+  const pointerPositionY = useSelector((state) => state.popover.y);
+  const popoverTitle = useSelector((state) => state.popover.popoverTitle);
+  const popoverStartDate = useSelector((state) => state.popover.popoverStartDate);
+  const popoverEndDate = useSelector((state) => state.popover.popoverEndDate);
+
   const handlePopoverHover = () => {
-    setPointerPosition(() => ({ x: -1, y: -1 }));
+    dispatch(mouseMoveReducer({ x: -1, y: -1 }));
   };
 
   return (
     <div
       style={{
-        left: pointerPosition.x + 'px',
-        top: pointerPosition.y + 20 + 'px',
+        left: pointerPositionX + 'px',
+        top: pointerPositionY + 20 + 'px',
       }}
       className="w-fit h-fit absolute bg-red-500 z-10"
       onMouseMove={handlePopoverHover}
     >
-      {popoverText}
+      <div>{popoverTitle}</div>
+      <div>{popoverStartDate}</div>
+      <div>{popoverEndDate}</div>
     </div>
   );
 }
