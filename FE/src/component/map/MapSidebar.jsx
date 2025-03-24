@@ -30,7 +30,7 @@ export default function MapSidebar({
   const nicknameupdateStyle =
     'w-40 text-xl text-black font-bold border-b-[1px] border-black outline-none px-1 inline-block';
   const addressupdateStyle =
-    'w-100 text- text-black font-bold border-b-[1px] border-black outline-none inline-block';
+    'w-100 text-black font-bold border-b-[1px] border-black outline-none inline-block';
 
   useEffect(() => {
     async function fetchHouseDetail() {
@@ -128,7 +128,7 @@ export default function MapSidebar({
               집 삭제
             </div>
           </div>
-          <div className="">
+          <div>
             <div className="flex items-center mb-2">
               {isnicknameEditing ? (
                 <input
