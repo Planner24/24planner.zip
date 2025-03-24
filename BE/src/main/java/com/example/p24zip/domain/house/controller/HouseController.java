@@ -50,16 +50,16 @@ public class HouseController {
     }
 
     @PatchMapping("/{houseId}/nickname")
-    public ResponseEntity<ApiResponse<ChangeHouseNicknameResponseDto>> changeHouseNickname(@PathVariable Long houseId, @RequestBody @Valid ChangeHouseNicknameRequestDto requestDto) {
+    public ResponseEntity<ApiResponse<ChangeHouseNicknameResponseDto>> updateHouseNickname(@PathVariable Long houseId, @RequestBody @Valid ChangeHouseNicknameRequestDto requestDto) {
         return ResponseEntity.ok(
-            ApiResponse.ok("UPDATED", "집 별칭 수정에 성공했습니다.", houseService.changeHouseNickname(houseId, requestDto))
+            ApiResponse.ok("UPDATED", "집 별칭 수정에 성공했습니다.", houseService.updateHouseNickname(houseId, requestDto))
         );
     }
 
     @PatchMapping("/{houseId}/content")
-    public ResponseEntity<ApiResponse<ChangeHouseContentResponseDto>> changeHouseContent(@PathVariable Long houseId, @RequestBody @Valid ChangeHouseContentRequestDto requestDto) {
+    public ResponseEntity<ApiResponse<ChangeHouseContentResponseDto>> updateHouseContent(@PathVariable Long houseId, @RequestBody @Valid ChangeHouseContentRequestDto requestDto) {
         return ResponseEntity.ok(
-            ApiResponse.ok("UPDATED", "집 상세 내용 수정에 성공했습니다.", houseService.changeHouseContent(houseId, requestDto))
+            ApiResponse.ok("UPDATED", "집 상세 내용 수정에 성공했습니다.", houseService.updateHouseContent(houseId, requestDto))
         );
     }
     @DeleteMapping("/{houseId}")

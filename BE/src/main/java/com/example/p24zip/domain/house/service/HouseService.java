@@ -84,7 +84,7 @@ public class HouseService {
      * @return responseDto (id, nickname)
      * **/
     @Transactional
-    public ChangeHouseNicknameResponseDto changeHouseNickname(Long houseId, ChangeHouseNicknameRequestDto requestDto) {
+    public ChangeHouseNicknameResponseDto updateHouseNickname(Long houseId, ChangeHouseNicknameRequestDto requestDto) {
         House house = houseRepository.findById(houseId).orElseThrow();
         house.updateNickname(requestDto);
 
@@ -97,7 +97,7 @@ public class HouseService {
      * @return responseDto (id, nickname)
      * **/
     @Transactional
-    public ChangeHouseContentResponseDto changeHouseContent(Long houseId, ChangeHouseContentRequestDto requestDto) {
+    public ChangeHouseContentResponseDto updateHouseContent(Long houseId, ChangeHouseContentRequestDto requestDto) {
         House house = houseRepository.findById(houseId).orElseThrow();
         house.updateContent(requestDto);
 
