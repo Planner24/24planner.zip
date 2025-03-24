@@ -47,7 +47,6 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
 
   const handleEventMouseEnter = (e) => {
     const endDate = new Date(e.event.end - 86400000);
-    console.log(e.event.backgroundColor);
 
     dispatch(
       eventMouseHoverReducer({
@@ -149,12 +148,18 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
               scheduleList.forEach((schedule) => {
                 const scheduleStartInt = parseIntFromDate(schedule.startDate);
                 const scheduleEndInt = parseIntFromDate(schedule.endDate);
-                if (scheduleEndInt > startInt && scheduleStartInt <= endInt) {
+                if (scheduleEndInt >= startInt && scheduleStartInt <= endInt) {
+                  // 달력에 일정을 출력하기 위해서는 종료일을 하루 뒤로 변경해야 함
+                  const nextDayOfEndDate = new Date(new Date(schedule.endDate) - 1 + 86400001);
                   // color가 아니라 backgroundColor와 borderColor를 각각 지정해야 일정 간 간격을 띄울 수 있음
                   newEventList.push({
                     title: schedule.content,
                     start: schedule.startDate,
-                    end: schedule.endDate,
+                    end: parseDate(
+                      nextDayOfEndDate.getFullYear(),
+                      nextDayOfEndDate.getMonth() + 1,
+                      nextDayOfEndDate.getDate(),
+                    ),
                     backgroundColor: schedule.color,
                     borderColor: '#FFFFFF',
                   });

@@ -15,13 +15,19 @@ export default function Calendar() {
       color: '#69db7c',
       content: '테스트',
       startDate: '2025-02-27',
+      endDate: '2025-02-28',
+    },
+    {
+      color: '#69db7c',
+      content: '테스트',
+      startDate: '2025-02-27',
       endDate: '2025-03-01',
     },
     {
       color: '#69db7c',
       content: '테스트',
       startDate: '2025-02-27',
-      endDate: '2025-03-02',
+      endDate: '2025-03-30',
     },
     {
       color: '#69db7c',
@@ -34,18 +40,18 @@ export default function Calendar() {
       content: '테스트',
       startDate: '2025-02-27',
       endDate: '2025-04-01',
-    },
-    {
-      color: '#69db7c',
-      content: '테스트',
-      startDate: '2025-02-27',
-      endDate: '2025-04-02',
     },
     {
       color: '#69db7c',
       content: '테스트',
       startDate: '2025-03-01',
-      endDate: '2025-03-03',
+      endDate: '2025-03-02',
+    },
+    {
+      color: '#69db7c',
+      content: '테스트',
+      startDate: '2025-03-28',
+      endDate: '2025-03-30',
     },
     {
       color: '#69db7c',
@@ -56,32 +62,26 @@ export default function Calendar() {
     {
       color: '#69db7c',
       content: '테스트',
-      startDate: '2025-03-28',
+      startDate: '2025-03-31',
       endDate: '2025-04-01',
     },
     {
       color: '#69db7c',
       content: '테스트',
-      startDate: '2025-03-31',
-      endDate: '2025-04-02',
-    },
-    {
-      color: '#69db7c',
-      content: '테스트',
       startDate: '2025-04-01',
-      endDate: '2025-04-02',
+      endDate: '2025-04-01',
     },
     {
       color: '#4dabf7',
       content: '테스트',
       startDate: '2025-04-08',
-      endDate: '2025-04-09',
+      endDate: '2025-04-08',
     },
     {
       color: '#69db7c',
       content: '일이삼사오육칠팔구십일이삼사',
       startDate: '2025-04-08',
-      endDate: '2025-04-09',
+      endDate: '2025-04-08',
     },
   ];
 

@@ -22,7 +22,7 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
     scheduleList.forEach((schedule) => {
       let startInt = parseIntFromDate(schedule.startDate);
       let endInt = parseIntFromDate(schedule.endDate);
-      if (selectDateInt >= startInt && selectDateInt < endInt) {
+      if (selectDateInt >= startInt && selectDateInt <= endInt) {
         dailyScheduleList.push(schedule);
       }
     });
