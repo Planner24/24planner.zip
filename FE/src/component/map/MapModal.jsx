@@ -101,7 +101,7 @@ export default function MapModal({ modalClose, setAddressData, setSelectedButton
       let response = await mapApi.mapCreate(movingPlanId, formData);
       response = response.data.data;
 
-      const { latitude, longitude } = response;
+      const { latitude, longitude, id } = response;
 
       setAddressData((prev) => ({
         ...prev,
@@ -109,7 +109,7 @@ export default function MapModal({ modalClose, setAddressData, setSelectedButton
         centerlongitude: longitude,
       }));
 
-      setSelectedButton(`${latitude},${longitude}`);
+      setSelectedButton(`${id}`);
 
       modalClose();
     } catch (error) {
