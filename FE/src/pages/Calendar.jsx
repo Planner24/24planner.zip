@@ -72,7 +72,7 @@ export default function Calendar() {
       endDate: '2025-04-02',
     },
     {
-      color: '#69db7c',
+      color: '#4dabf7',
       content: '테스트',
       startDate: '2025-04-08',
       endDate: '2025-04-09',

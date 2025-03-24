@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { mouseMoveReducer } from '../store/slices/popoverSlice';
+import { mouseMoveReducer } from '../../../store/slices/popoverSlice';
 
 export default function PopoverComponent() {
   // Tailwind CSS에서 사용할 색상 Class들을 미리 선언

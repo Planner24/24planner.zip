@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import Header from '../component/Header';
 import Footer from '../component/Footer';
-import PopoverUtilComponent from './PopoverUtilComponent';
+import PopoverUtilComponent from '../component/calendar/popover/PopoverUtilComponent';
 
 export default function RootLayout() {
   return (

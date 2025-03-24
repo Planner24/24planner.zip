@@ -1,6 +1,6 @@
 import { createPortal } from 'react-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { mouseMoveReducer } from '../store/slices/popoverSlice';
+import { mouseMoveReducer } from '../../../store/slices/popoverSlice';
 import PopoverComponent from './PopoverComponent';
 
 export default function PopoverUtilComponent({ children }) {
