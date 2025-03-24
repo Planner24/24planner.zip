@@ -115,7 +115,6 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
               </button>
             </nav>
           </div>
-          {/* TODO: 현재 브라우저 세로 길이가 작으면 달력이 Footer까지 넘어오는 문제 존재 */}
           <FullCalendar
             ref={calendarRef}
             plugins={[dayGridPlugin, interactionPlugin]}

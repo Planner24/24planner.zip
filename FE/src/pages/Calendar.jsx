@@ -85,7 +85,7 @@ export default function Calendar() {
     },
   ];
 
-  const calendarMainStyle = 'flex justify-center h-full p-6';
+  const calendarMainStyle = 'flex justify-center h-full px-2 pb-4';
 
   return (
     <main className={calendarMainStyle}>
