@@ -51,11 +51,6 @@ export default function Map({ setHouseId, maplists, setMapLists, addressData, se
     };
     const map = new kakao.maps.Map(container.current, options);
 
-    console.log(centerlatitude);
-    console.log(centerlongitude);
-    
-    
-
     // 지도 중심지 설정
     if (centerlatitude == null || centerlongitude == null ) {
       position = new kakao.maps.LatLng(33.450701, 126.570667);

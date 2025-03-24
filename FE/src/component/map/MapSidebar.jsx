@@ -5,12 +5,14 @@ import mapApi from '../../api/mapApi';
 export default function MapSidebar({ houseId, maplists, setMapLists, setAddressData }) {
   const { movingPlanId } = useParams();
 
-  const [housedetails, setHouseDetails] = useState([]);
+  const [housedetails, setHouseDetails] = useState('');
 
   const [mapselect, setSelect] = useState(false);
 
-  const { nickname, address1, address2, id } = housedetails;
 
+  const { nickname, address1, address2, content, id } = housedetails;
+
+  
   const calendarSidebar = 'w-full h-full flex flex-col justify-center flex-1 m-4';
   const houseDelete = 'text-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary';
   const adressStyle =
@@ -23,6 +25,7 @@ export default function MapSidebar({ houseId, maplists, setMapLists, setAddressD
 
       try {
         const response = await mapApi.housedetail(movingPlanId, houseId);
+
         setHouseDetails(response.data.data);
         setSelect(true);
       } catch (error) {
@@ -30,7 +33,7 @@ export default function MapSidebar({ houseId, maplists, setMapLists, setAddressD
       }
     }
     fetchHouseDetail();
-  }, [houseId]);
+  }, [houseId, id]);
 
   const housedelete = async (e) => {
     try {
@@ -44,6 +47,20 @@ export default function MapSidebar({ houseId, maplists, setMapLists, setAddressD
         centerlatitude: null,
         centerlongitude: null,
       }));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const contentChange = (e) => {
+    setHouseDetails((prev) => ({ ...prev, content: e.target.value }));
+  };
+
+  const contentUpdate = async (e) => {
+    try {
+      const { id } = e.target;
+
+      await mapApi.contentupdate(movingPlanId, id, { content });
     } catch (err) {
       console.log(err);
     }
@@ -75,7 +92,15 @@ export default function MapSidebar({ houseId, maplists, setMapLists, setAddressD
               </div>
             </div>
           </div>
-          <textarea className={textareaStyle}></textarea>
+          <textarea
+            key={id}
+            className={textareaStyle}
+            value={content}
+            id={id}
+            onChange={contentChange}
+            onBlur={contentUpdate}
+          >
+          </textarea>
         </>
       )}
     </section>

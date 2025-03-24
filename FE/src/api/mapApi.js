@@ -26,6 +26,15 @@ const mapApi = {
     const response = await api.delete(`${ENDPOINT}/${movingPlanId}/houses/${houseId}`);
     return response;
   },
+
+  // 집 상세 내용 수정
+  contentupdate: async (movingPlanId, houseId, detailcontent) => {
+    const response = await api.patch(
+      `${ENDPOINT}/${movingPlanId}/houses/${houseId}/content`,
+      detailcontent,
+    );
+    return response;
+  },
 };
 
 
