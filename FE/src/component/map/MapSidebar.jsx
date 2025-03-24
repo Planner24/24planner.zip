@@ -24,7 +24,7 @@ export default function MapSidebar({
   const mapSidebar = 'w-full h-full flex flex-col justify-center flex-1 pl-4 gap-2';
   const houseDelete = 'text-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary';
   const updateStyle =
-    'stext-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary inline ml-4';
+    'text-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary inline ml-4';
   const textareaStyle =
     'w-full h-full p-6 border-2 rounded-2xl border-black resize-none focus:outline-none';
   const nicknameupdateStyle =
