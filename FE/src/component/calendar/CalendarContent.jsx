@@ -22,7 +22,9 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
   const [monthState, setMonthState] = useState(0);
 
   const moveToCurrentMonth = () => {
-    calendarRef.current.getApi().gotoDate(new Date());
+    const now = new Date();
+    calendarRef.current.getApi().gotoDate(now);
+    setSelectDate(parseDateObject(now));
   };
 
   const moveToPrevMonth = () => {
@@ -46,13 +48,11 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
   };
 
   const handleEventMouseEnter = (e) => {
-    const endDate = new Date(e.event.end - 86400000);
-
     dispatch(
       eventMouseHoverReducer({
         title: e.event.title,
         start: e.event.startStr,
-        end: parseDate(endDate.getFullYear(), endDate.getMonth() + 1, endDate.getDate()),
+        end: parseDateObject(new Date(e.event.end - 86400000)),
         color: e.event.backgroundColor,
       }),
     );
@@ -155,11 +155,7 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
                   newEventList.push({
                     title: schedule.content,
                     start: schedule.startDate,
-                    end: parseDate(
-                      nextDayOfEndDate.getFullYear(),
-                      nextDayOfEndDate.getMonth() + 1,
-                      nextDayOfEndDate.getDate(),
-                    ),
+                    end: parseDateObject(nextDayOfEndDate),
                     backgroundColor: schedule.color,
                     borderColor: '#FFFFFF',
                   });
@@ -179,6 +175,10 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
       </section>
     </>
   );
+}
+
+function parseDateObject(date) {
+  return parseDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
 }
 
 function parseDate(year, month, day) {
