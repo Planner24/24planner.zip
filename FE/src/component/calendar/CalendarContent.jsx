@@ -121,6 +121,7 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
             initialView="dayGridMonth"
             showNonCurrentDates={false}
             locale={koLocale}
+            dayMaxEventRows={3}
             events={eventList}
             eventMouseEnter={handleEventMouseEnter}
             eventMouseLeave={handleEventMouseLeave}

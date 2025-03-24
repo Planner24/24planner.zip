@@ -134,4 +134,9 @@ input::-webkit-inner-spin-button {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 10px;
+}
+
+.fc-event {
+  height: 17px !important;
 }
