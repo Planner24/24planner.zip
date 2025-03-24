@@ -2,7 +2,7 @@ export default function TaskGroupMemo() {
   // CSS
   const memoWrapperStyle = 'w-full';
   const memoStyle =
-    'w-full min-h-100 border rounded-3xl border-primary border-2 p-10 resize-none focus:outline-none';
+    'w-full min-h-100 border rounded-3xl border-primary border-2 p-18 px-18 py-13 resize-none focus:outline-none';
 
   return (
     <section className={memoWrapperStyle}>
