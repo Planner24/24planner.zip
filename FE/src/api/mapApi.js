@@ -35,6 +35,16 @@ const mapApi = {
     );
     return response;
   },
+
+   // 집 별칭 수정
+  nicknameupdate: async (movingPlanId, houseId, nicknamecontent) => {
+
+    const response = await api.patch(
+      `${ENDPOINT}/${movingPlanId}/houses/${houseId}/nickname`,
+      nicknamecontent,
+    );
+    return response;
+  },
 };
 
 

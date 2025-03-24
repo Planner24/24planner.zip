@@ -4,12 +4,14 @@ import MapModal from './MapModal';
 import mapApi from '../../api/mapApi';
 import { useParams } from 'react-router-dom';
 
-export default function Map({ setHouseId, maplists, setMapLists, addressData, setAddressData }) {
+export default function Map({ setHouseId, maplists, setMapLists, addressData, setAddressData, nickname }) {
   const { movingPlanId } = useParams();
 
   const [showModal, setShowModal] = useState(false);
 
   const [selectedButton, setSelectedButton] = useState(null);
+
+  
 
   const mapStyle = 'flex flex-col flex-2 h-full w-full border-r-1 border-gray-300 m-4';
   const mapPlusStyle =
@@ -51,6 +53,7 @@ export default function Map({ setHouseId, maplists, setMapLists, addressData, se
     };
     const map = new kakao.maps.Map(container.current, options);
 
+
     // 지도 중심지 설정
     if (centerlatitude == null || centerlongitude == null ) {
       position = new kakao.maps.LatLng(33.450701, 126.570667);
@@ -80,7 +83,6 @@ export default function Map({ setHouseId, maplists, setMapLists, addressData, se
 
         // 마커 클릭 이벤트 추가
         kakao.maps.event.addListener(marker, 'click', function () {
-          alert('버튼을 클릭했습니다!');
           setAddressData({
             centerlatitude: latitude,
             centerlongitude: longitude,
@@ -90,7 +92,7 @@ export default function Map({ setHouseId, maplists, setMapLists, addressData, se
       });
     }
     fetchMapMarker();
-  }, [addressData]);
+  }, [addressData, nickname]);
 
   return (
     <>
@@ -121,6 +123,7 @@ export default function Map({ setHouseId, maplists, setMapLists, addressData, se
                 <button
                   className={`${mapButtonStyle} ${isSelected ? 'bg-white text-primary' : ''}`}
                   id={id}
+                  key={id}
                   data-latitude={latitude}
                   data-longitude={longitude}
                   onClick={mapButton}

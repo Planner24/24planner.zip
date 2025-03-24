@@ -14,10 +14,12 @@ export default function Houses() {
     centerlongitude: null,
   });
 
+  const [nickname, setNickName] = useState("");
+
   return (
     <main className={mapMainStyle}>
-      <Map setHouseId={setHouseId} maplists={maplists} setMapLists={setMapLists} addressData={addressData} setAddressData={setAddressData} />
-      <MapSidebar houseId={houseId} maplists={maplists} setMapLists={setMapLists} setAddressData={setAddressData} />
+      <Map setHouseId={setHouseId} maplists={maplists} setMapLists={setMapLists} addressData={addressData} setAddressData={setAddressData} nickname={nickname} />
+      <MapSidebar houseId={houseId} maplists={maplists} setMapLists={setMapLists} setAddressData={setAddressData} setNickName={setNickName}/>
     </main>
   );
 }
