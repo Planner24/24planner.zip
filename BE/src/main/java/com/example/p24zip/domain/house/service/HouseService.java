@@ -66,9 +66,9 @@ public class HouseService {
      * @return 집 정보(id, nickname, 위도, 경도, 수정일)를 가진 리스트
      * **/
     public HouseListResponseDto getHouses(Long movingPlanId) {
-       MovingPlan movingPlan = movingPlanRepository.findById(movingPlanId).orElseThrow(ResourceNotFoundException::new);
-
+        MovingPlan movingPlan = movingPlanRepository.findById(movingPlanId).orElseThrow(ResourceNotFoundException::new);
         List<House> houseList = houseRepository.findAllByMovingPlan(movingPlan);
+
         return HouseListResponseDto.from(houseList);
     }
 
@@ -79,8 +79,10 @@ public class HouseService {
      * @return responseDto (id, nickname, address1, address2, content)
      * **/
     public GetHouseDetailsResponseDto getHouseDetails(Long movingPlanId, Long houseId) {
-        isMovingPlanIdMatched(movingPlanId, houseId);
-        return GetHouseDetailsResponseDto.from(houseRepository.findById(houseId).orElseThrow(ResourceNotFoundException::new));
+        House house = houseRepository.findById(houseId).orElseThrow(ResourceNotFoundException::new);
+        isMovingPlanIdMatched(movingPlanId, house);
+
+        return GetHouseDetailsResponseDto.from(house);
     }
 
     
@@ -92,8 +94,9 @@ public class HouseService {
      * **/
     @Transactional
     public ChangeHouseNicknameResponseDto updateHouseNickname(Long movingPlanId, Long houseId, ChangeHouseNicknameRequestDto requestDto) {
-        isMovingPlanIdMatched(movingPlanId, houseId);
         House house = houseRepository.findById(houseId).orElseThrow(ResourceNotFoundException::new);
+        isMovingPlanIdMatched(movingPlanId, house);
+
         house.updateNickname(requestDto);
 
         return ChangeHouseNicknameResponseDto.from(house);
@@ -108,23 +111,12 @@ public class HouseService {
      * **/
     @Transactional
     public ChangeHouseContentResponseDto updateHouseContent(Long movingPlanId, Long houseId, ChangeHouseContentRequestDto requestDto) {
-        isMovingPlanIdMatched(movingPlanId, houseId);
         House house = houseRepository.findById(houseId).orElseThrow(ResourceNotFoundException::new);
+        isMovingPlanIdMatched(movingPlanId, house);
+
         house.updateContent(requestDto);
 
         return ChangeHouseContentResponseDto.from(house);
-    }
-
-    
-    /**
-     * @param movingPlanId : 이사계획 테이블 id
-     * @param houseId : 집 테이블 id (이사계획 테이블의 id FK로 연관 관계 가지고 있음)
-     * @return null
-     * **/
-    @Transactional
-    public void deleteHouse(Long movingPlanId, Long houseId) {
-        isMovingPlanIdMatched(movingPlanId, houseId);
-        houseRepository.deleteById(houseId);
     }
 
 
@@ -137,12 +129,30 @@ public class HouseService {
      * **/
     @Transactional
     public ChangeHouseDetailAddressResponseDto updateHouseDetailAddress(Long movingPlanId, Long houseId, ChangeHouseDetailAddressRequestDto requestDto) {
-        isMovingPlanIdMatched(movingPlanId, houseId);
         House house = houseRepository.findById(houseId).orElseThrow(ResourceNotFoundException::new);
+        isMovingPlanIdMatched(movingPlanId, house);
+
         house.updateDetailAddress(requestDto);
 
         return ChangeHouseDetailAddressResponseDto.from(house);
     }
+
+
+    /**
+     * @param movingPlanId : 이사계획 테이블 id
+     * @param houseId : 집 테이블 id (이사계획 테이블의 id FK로 연관 관계 가지고 있음)
+     * @return null
+     * **/
+    @Transactional
+    public void deleteHouse(Long movingPlanId, Long houseId) {
+        House house = houseRepository.findById(houseId).orElseThrow(ResourceNotFoundException::new);
+        isMovingPlanIdMatched(movingPlanId, house);
+
+        houseRepository.deleteById(houseId);
+    }
+
+
+
 
     ///////////////////////////////////////////////////////////////////////////////
     // 보조 메서드
@@ -175,12 +185,11 @@ public class HouseService {
     /**
      * 해당 이사계획에 속한 집이 아닐 경우 예외 처리
      * @param movingPlanId : 이사계획 테이블 id
-     * @param houseId : 집 테이블 id (이사계획 테이블의 id FK로 연관 관계 가지고 있음)
+     * @param house : 집 테이블 객체
      * @return null
      * **/
-    private void isMovingPlanIdMatched(Long movingPlanId, Long houseId) {
-        MovingPlan movingPlan = movingPlanRepository.findById(movingPlanId).orElseThrow(ResourceNotFoundException::new);
-        if(houseRepository.findById(houseId).orElseThrow(ResourceNotFoundException::new).getMovingPlan() != movingPlan) {
+    private void isMovingPlanIdMatched(Long movingPlanId, House house) {
+        if( house.getMovingPlan().getId().equals(movingPlanId)) {
             throw new ResourceNotFoundException();
         }
     }
