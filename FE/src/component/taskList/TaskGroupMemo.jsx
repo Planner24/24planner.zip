@@ -1,4 +1,4 @@
-export default function TaskGroupMemo() {
+export default function TaskGroupMemo({memo}) {
   // CSS
   const memoWrapperStyle = 'w-full';
   const memoStyle =
@@ -10,6 +10,7 @@ export default function TaskGroupMemo() {
         name="memo"
         id="memo"
         placeholder="메모를 입력하세요."
+        value={memo}
         className={memoStyle}
       ></textarea>
     </section>

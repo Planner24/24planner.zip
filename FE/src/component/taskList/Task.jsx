@@ -1,4 +1,6 @@
-export default function Task() {
+export default function Task({ id, content, isCompleted }) {
+ 
+
   // CSS
   const checkpointInfoStyle = 'flex justify-between items-center box-border mb-10';
   const checkpointStyle = 'flex items-center gap-5';
@@ -9,13 +11,13 @@ export default function Task() {
   const deleteCheckpointStyle = 'text-gray-500 text-opacity-70 cursor-pointer';
 
   return (
-    <div className={checkpointInfoStyle}>
+    <li className={checkpointInfoStyle}>
       <div className={checkpointStyle}>
-        <input type="checkbox" id="check1" className={checkBoxStyle} />
-        <label htmlFor="check1" className={checkBoxLabelStyle}></label>
-        <div className={checkpointContentStyle}>체크포인트 내용</div>
+        <input type="checkbox" id={id} className={checkBoxStyle} />
+        <label htmlFor={id} className={checkBoxLabelStyle}></label>
+        <div className={checkpointContentStyle}>{content}</div>
       </div>
       <div className={deleteCheckpointStyle}>✕</div>
-    </div>
+    </li>
   );
 }

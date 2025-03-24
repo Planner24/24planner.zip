@@ -1,6 +1,7 @@
 import Task from './Task';
 
-export default function TaskListSection() {
+export default function TaskListSection({ totalCount, completeCount, tasks }) {
+
   // CSS
   const checkpointWrapperStyle = 'w-full';
   const checkpointCountingStyle = 'text-right text-xl text-primary mb-2 pr-7';
@@ -9,24 +10,17 @@ export default function TaskListSection() {
 
   return (
     <section className={checkpointWrapperStyle}>
-      <div className={checkpointCountingStyle}>8 / 10</div>
-      <div className={checkpointListStyle}>
-        <Task></Task>
-        <Task></Task>
-        <Task></Task>
-        <Task></Task>
-        <Task></Task>
-        <Task></Task>
-        <Task></Task>
-        <Task></Task>
-        <Task></Task>
-        <Task></Task>
-        <Task></Task>
-        <Task></Task>
-        <Task></Task>
-        <Task></Task>
-        <Task></Task>
+      <div className={checkpointCountingStyle}>
+        {completeCount} / {totalCount}
       </div>
+      <ul className={checkpointListStyle}>
+        {
+          tasks?.map((task) => {
+            const { id, content, isCompleted } = task;
+            return <Task key={id} id={id} content={content} isCompleted={isCompleted}></Task>
+          })
+        }
+      </ul>
     </section>
   );
 }
