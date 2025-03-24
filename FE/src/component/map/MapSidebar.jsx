@@ -13,7 +13,7 @@ export default function MapSidebar({
 
   const [housedetails, setHouseDetails] = useState('');
 
-  const [mapselect, setSelect] = useState(false);
+  const [mapselect, setMapSelect] = useState(false);
 
   const [isnicknameEditing, setNickNameIsEditing] = useState(false);
 
@@ -40,7 +40,7 @@ export default function MapSidebar({
         const response = await mapApi.housedetail(movingPlanId, houseId);
 
         setHouseDetails(response.data.data);
-        setSelect(true);
+        setMapSelect(true);
       } catch (error) {
         console.log(error);
       }
@@ -60,6 +60,7 @@ export default function MapSidebar({
         centerlatitude: null,
         centerlongitude: null,
       }));
+      setMapSelect(false);
     } catch (err) {
       console.log(err);
     }
