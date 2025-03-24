@@ -2,9 +2,11 @@ package com.example.p24zip.domain.house.controller;
 
 import com.example.p24zip.domain.house.dto.request.AddHouseRequestDto;
 import com.example.p24zip.domain.house.dto.request.ChangeHouseContentRequestDto;
+import com.example.p24zip.domain.house.dto.request.ChangeHouseDetailAddressRequestDto;
 import com.example.p24zip.domain.house.dto.request.ChangeHouseNicknameRequestDto;
 import com.example.p24zip.domain.house.dto.response.AddHouseResponseDto;
 import com.example.p24zip.domain.house.dto.response.ChangeHouseContentResponseDto;
+import com.example.p24zip.domain.house.dto.response.ChangeHouseDetailAddressResponseDto;
 import com.example.p24zip.domain.house.dto.response.ChangeHouseNicknameResponseDto;
 import com.example.p24zip.domain.house.dto.response.GetHouseDetailsResponseDto;
 import com.example.p24zip.domain.house.dto.response.HouseListResponseDto;
@@ -84,6 +86,14 @@ public class HouseController {
 
         return ResponseEntity.ok(
             ApiResponse.ok("DELETED", "집 삭제에 성공했습니다.", null)
+        );
+    }
+    @PatchMapping("/{houseId}/detail-address")
+    public ResponseEntity<ApiResponse<ChangeHouseDetailAddressResponseDto>> updateHouseDetailAddress(@PathVariable Long movingPlanId, @PathVariable Long houseId, @RequestBody @Valid ChangeHouseDetailAddressRequestDto requestDto, @AuthenticationPrincipal User user){
+        movingPlanValidator.validateMovingPlanAccess(movingPlanId, user);
+
+        return ResponseEntity.ok(
+            ApiResponse.ok("UPDATED", "집 상세주소 수정에 성공했습니다.", houseService.updateHouseDetailAddress(movingPlanId, houseId, requestDto))
         );
     }
 

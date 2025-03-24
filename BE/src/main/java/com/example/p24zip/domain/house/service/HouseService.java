@@ -2,9 +2,11 @@ package com.example.p24zip.domain.house.service;
 
 import com.example.p24zip.domain.house.dto.request.AddHouseRequestDto;
 import com.example.p24zip.domain.house.dto.request.ChangeHouseContentRequestDto;
+import com.example.p24zip.domain.house.dto.request.ChangeHouseDetailAddressRequestDto;
 import com.example.p24zip.domain.house.dto.request.ChangeHouseNicknameRequestDto;
 import com.example.p24zip.domain.house.dto.response.AddHouseResponseDto;
 import com.example.p24zip.domain.house.dto.response.ChangeHouseContentResponseDto;
+import com.example.p24zip.domain.house.dto.response.ChangeHouseDetailAddressResponseDto;
 import com.example.p24zip.domain.house.dto.response.ChangeHouseNicknameResponseDto;
 import com.example.p24zip.domain.house.dto.response.GetHouseDetailsResponseDto;
 import com.example.p24zip.domain.house.dto.response.HouseListResponseDto;
@@ -61,7 +63,7 @@ public class HouseService {
 
     /**
      * @param movingPlanId : 집 관련 테이블과 연관관계를 가진 테이블의 id
-     * @return 집 정보를 가진 리스트
+     * @return 집 정보(id, nickname, 위도, 경도, 수정일)를 가진 리스트
      * **/
     public HouseListResponseDto getHouses(Long movingPlanId) {
        MovingPlan movingPlan = movingPlanRepository.findById(movingPlanId).orElseThrow(ResourceNotFoundException::new);
@@ -72,7 +74,8 @@ public class HouseService {
 
     
     /**
-     * @param houseId : 집 테이블의 id
+     * @param movingPlanId : 이사계획 테이블 id
+     * @param houseId : 집 테이블 id (이사계획 테이블의 id FK로 연관 관계 가지고 있음)
      * @return responseDto (id, nickname, address1, address2, content)
      * **/
     public GetHouseDetailsResponseDto getHouseDetails(Long movingPlanId, Long houseId) {
@@ -82,8 +85,9 @@ public class HouseService {
 
     
     /**
-     * @param houseId : 집 테이블의 id
-     * @param requestDto : nickname
+     * @param movingPlanId : 이사계획 테이블 id
+     * @param houseId : 집 테이블 id (이사계획 테이블의 id FK로 연관 관계 가지고 있음)
+     * @param requestDto nickname : 집 별칭
      * @return responseDto (id, nickname)
      * **/
     @Transactional
@@ -97,9 +101,10 @@ public class HouseService {
     
 
     /**
-     * @param houseId : 집 테이블의 id
-     * @param requestDto : content
-     * @return responseDto (id, nickname)
+     * @param movingPlanId : 이사계획 테이블 id
+     * @param houseId : 집 테이블 id (이사계획 테이블의 id FK로 연관 관계 가지고 있음)
+     * @param requestDto content: 집 상세 내용
+     * @return responseDto (id, content)
      * **/
     @Transactional
     public ChangeHouseContentResponseDto updateHouseContent(Long movingPlanId, Long houseId, ChangeHouseContentRequestDto requestDto) {
@@ -112,13 +117,31 @@ public class HouseService {
 
     
     /**
-     * @param houseId : 집 테이블의 id
+     * @param movingPlanId : 이사계획 테이블 id
+     * @param houseId : 집 테이블 id (이사계획 테이블의 id FK로 연관 관계 가지고 있음)
      * @return null
      * **/
     @Transactional
     public void deleteHouse(Long movingPlanId, Long houseId) {
         isMovingPlanIdMatched(movingPlanId, houseId);
         houseRepository.deleteById(houseId);
+    }
+
+
+    /**
+     * @param movingPlanId : 이사계획 테이블 id
+     * @param houseId : 집 테이블 id (이사계획 테이블의 id FK로 연관 관계 가지고 있음)
+     * @param requestDto address2: 상세주소
+     * @return responseDto(id, address2)
+     *
+     * **/
+    @Transactional
+    public ChangeHouseDetailAddressResponseDto updateHouseDetailAddress(Long movingPlanId, Long houseId, ChangeHouseDetailAddressRequestDto requestDto) {
+        isMovingPlanIdMatched(movingPlanId, houseId);
+        House house = houseRepository.findById(houseId).orElseThrow(ResourceNotFoundException::new);
+        house.updateDetailAddress(requestDto);
+
+        return ChangeHouseDetailAddressResponseDto.from(house);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -161,6 +184,7 @@ public class HouseService {
             throw new ResourceNotFoundException();
         }
     }
+
 
 
 }
