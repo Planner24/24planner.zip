@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import taskGroupsApi from '../../api/taskGroupApi';
+import taskGroupApi from '../../api/taskGroupApi';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export default function TaskGroupBox() {
@@ -18,7 +18,7 @@ export default function TaskGroupBox() {
     setFormData({ title: inputValue });
 
     try {
-      const response = await taskGroupsApi.postTaskGroup(movingPlanId, { title: inputValue });
+      const response = await taskGroupApi.postTaskGroup(movingPlanId, { title: inputValue });
       console.log(response);
 
       const code = response.code;
@@ -27,9 +27,9 @@ export default function TaskGroupBox() {
         setMessage();
       }
     } catch (error) {
-      const errordata = error.response.data;
-      const code = errordata.code;
-      const message = errordata.message;
+      const errorData = error.response.data;
+      const code = errorData.code;
+      const message = errorData.message;
 
       if (code === 'BAD_REQUEST') {
         setMessage(message);
@@ -41,11 +41,11 @@ export default function TaskGroupBox() {
     }
   };
 
-  const section = 'flex flex-wrap gap-5 justify-center';
+  const section = 'grid grid-cols-2 gap-4';
   const groupBox =
     'w-100 h-35 border-3 rounded-3xl px-2 py-5 bg-white font-roboto flex flex-col items-center justify-center';
   const boxText = 'text-lg font-roboto pr-60 m-3';
-  const gauge = 'w-90 h-7 border-2 rounded-full px-2 py-1 border-primary bg-primary ';
+  const progress = 'w-90 h-7 border-2 rounded-full px-2 py-1 border-primary bg-primary ';
   const addBox =
     'w-100 h-35 border-3 border-gray-300 rounded-3xl px-2 py-5 flex items-center justify-center';
   const addBoxText = 'text-gray-300 text-2xl font-roboto ';
@@ -61,7 +61,7 @@ export default function TaskGroupBox() {
     <section className={`${section}`}>
       <div className={`${groupBox}`}>
         <span className={`${boxText}`}>체크 그룹1</span>
-        <div className={`${gauge}`}></div>
+        <div className={`${progress}`}></div>
       </div>
 
       {clickAdd ? (
