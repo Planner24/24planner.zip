@@ -2,15 +2,12 @@ import { useRef, useState } from 'react';
 import taskGroupApi from '../../api/taskGroupApi';
 import { useNavigate, useParams } from 'react-router-dom';
 
-export default function TaskGroupBox({ taskGroups }) {
+export default function TaskGroupBox({ taskGroups, setTaskGroups }) {
   const { movingPlanId } = useParams();
 
   const [clickAdd, setClickAdd] = useState(false);
   const [message, setMessage] = useState();
   const [formData, setFormData] = useState({ title: '' });
-  const [Groups, setGroups] = useState([]);
-
-  console.log(taskGroups);
 
   const taskGroupText = useRef();
   const navigate = useNavigate();
@@ -28,11 +25,13 @@ export default function TaskGroupBox({ taskGroups }) {
     try {
       const response = await taskGroupApi.postTaskGroup(movingPlanId, { title: inputValue });
       console.log(response);
-
       const code = response.code;
+      const id = response.data.id;
       if (code === 'CREATED') {
         setClickAdd(false);
         setMessage();
+        const add = { id, title: inputValue, progress: 0 };
+        setTaskGroups((prev) => [...prev, add]);
       }
     } catch (error) {
       const errorData = error.response.data;
@@ -49,7 +48,7 @@ export default function TaskGroupBox({ taskGroups }) {
     }
   };
 
-  const section = 'm-10 grid grid-cols-2 gap-4';
+  const section = 'm-10 grid grid-cols-2 gap-14';
   const groupBox =
     'w-100 h-35 border-3 rounded-3xl px-2 py-5 bg-white font-roboto flex flex-col items-center justify-center';
   const boxText = 'text-lg font-roboto pr-60 m-3';
@@ -62,7 +61,7 @@ export default function TaskGroupBox({ taskGroups }) {
   const addBtn =
     'w-20 border-2 rounded-xl px-2 py-1 border-primary text-primary hover:bg-primary hover:text-white cursor-pointer';
   const inputText =
-    'w-50 border-3 border-b-gray-300 border-x-white border-t-white m-5 placeholder:text-gray-300';
+    'w-50 mt-6 border-3 border-b-gray-300 border-x-white border-t-white placeholder:text-gray-300';
   const messageStyle = 'font-semibold text-red-400';
 
   return (
@@ -94,7 +93,7 @@ export default function TaskGroupBox({ taskGroups }) {
               추가
             </button>
           </div>
-          {message && <span className={`${messageStyle}`}>{message}</span>}
+          {message ? <span className={`${messageStyle}`}>{message}</span> : <div>&nbsp;</div>}
         </div>
       ) : (
         <div

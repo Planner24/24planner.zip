@@ -34,9 +34,9 @@ export default function TaskGroups() {
   //
   const section = 'px-15 py-3.75 flex flex-col items-center';
   const totalGaugeFontSize = 'font-roboto text-xl font-bold';
-  const progress = 'w-200 h-10 border-2 rounded-full m-5 px-2 py-1 border-primary bg-primary';
+  const progress = 'w-215 h-10 border-2 rounded-full m-5 px-2 py-1 border-primary bg-primary';
   const house =
-    'w-200 border-2 rounded-3xl m-5 px-2 py-5  border-4 border-primary text-lg text-black text-center font-bold bg-white font-roboto';
+    'w-215 border-2 rounded-3xl m-5 px-2 py-5  border-4 border-primary text-lg text-black text-center font-bold bg-white font-roboto';
 
   return (
     <section className={`${section}`}>
@@ -49,13 +49,13 @@ export default function TaskGroups() {
       <div
         className={`${house}`}
         onClick={() => {
-          navigate(`/${movingPlanId}/house`);
+          navigate(`/plans/${movingPlanId}/house`);
         }}
       >
         살 곳 정하기
       </div>
 
-      <TaskGroupBox taskGroups={taskGroups}></TaskGroupBox>
+      <TaskGroupBox taskGroups={taskGroups} setTaskGroups={setTaskGroups}></TaskGroupBox>
     </section>
   );
 }
