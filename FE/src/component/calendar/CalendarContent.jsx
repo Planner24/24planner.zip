@@ -79,6 +79,7 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
   const calendarHeaderCenterNextDivStyle = 'flex flex-1 justify-start';
   const buttonStyle =
     'w-20 h-10 bg-white border-2 border-primary rounded-xl text-primary text-lg font-semibold cursor-pointer hover:bg-primary hover:text-white ml-2';
+  const eventLineStyle = 'h-3 px-1 text-tiny truncate';
 
   return (
     <>
@@ -132,6 +133,12 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
             })}
             // 더 보기 버튼에, 기본 제공되는 +3 개라는 텍스트 대신 +3만 사용
             moreLinkContent={(arg) => ({ html: arg.shortText })}
+            eventContent={(arg) => {
+              const color = arg.event.backgroundColor;
+              return {
+                html: `<div class="${eventLineStyle} bg-[${color}] ${determineBlackText(hexColorToIntArray(color)) ? 'text-black' : 'text-white'}">${arg.event.title}</div>`,
+              };
+            }}
             datesSet={(dateInfo) => {
               const nowYear = dateInfo.start.getFullYear();
               const nowMonth = dateInfo.start.getMonth() + 1;
@@ -194,4 +201,35 @@ function parseIntFromDate(date) {
     Number.parseInt(date.substring(5, 7)) * 100 +
     Number.parseInt(date.substring(8, 10))
   );
+}
+
+function hexColorToIntArray(hexColor) {
+  console.log(hexColor);
+  if (
+    typeof hexColor !== 'string' ||
+    !new RegExp(/#?([\da-fA-F]{2})([\da-fA-F]{2})([\da-fA-F]{2})/g).test(hexColor)
+  ) {
+    return null;
+  }
+
+  const upperCaseHexColor = hexColor.toUpperCase();
+  const result = [];
+
+  for (let i = 1; i < 7; i += 2) {
+    result.push(
+      hexDigitToDecimal(upperCaseHexColor[i]) * 16 + hexDigitToDecimal(upperCaseHexColor[i + 1]),
+    );
+  }
+
+  return result;
+}
+
+function hexDigitToDecimal(hexDigit) {
+  const charCode = hexDigit.charCodeAt(0);
+  return charCode - (charCode < 58 ? 48 : 55);
+}
+
+// https://stackoverflow.com/questions/3942878/how-to-decide-font-color-in-white-or-black-depending-on-background-color
+function determineBlackText(colorIntArray) {
+  return colorIntArray[0] * 0.299 + colorIntArray[1] * 0.587 + colorIntArray[2] * 0.114 > 150;
 }

@@ -2,6 +2,7 @@
 @import 'tailwindcss';
 @theme {
   --font-roboto: 'Roboto', 'sans-serif';
+  --text-tiny: 0.6rem;
   --color-primary: #69db7c;
   --color-secondary: #2f9e44;
 
@@ -130,13 +131,7 @@ input::-webkit-inner-spin-button {
   background-color: #69db7c;
 }
 
-.fc-sticky {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 10px;
-}
-
+/* 달력 내 event뿐만 아니라 fc-event를 여기에서 설정해야 달력 높이도 감소함 */
 .fc-event {
   height: 17px !important;
 }
