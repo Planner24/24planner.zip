@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import taskGroupsApi from '../../api/taskGroupsApi';
+import taskGroupsApi from '../../api/taskGroupApi';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export default function TaskGroupBox() {
@@ -65,7 +65,12 @@ export default function TaskGroupBox() {
       </div>
 
       {clickAdd ? (
-        <div className={`${changeAddBox}`}>
+        <div
+          className={`${changeAddBox}`}
+          onClick={() => {
+            setClickAdd(false);
+          }}
+        >
           <div>
             <input
               ref={taskGroupText}
