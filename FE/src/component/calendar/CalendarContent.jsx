@@ -204,7 +204,6 @@ function parseIntFromDate(date) {
 }
 
 function hexColorToIntArray(hexColor) {
-  console.log(hexColor);
   if (
     typeof hexColor !== 'string' ||
     !new RegExp(/#?([\da-fA-F]{2})([\da-fA-F]{2})([\da-fA-F]{2})/g).test(hexColor)
