@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import taskGroupApi from '../../api/taskGroupApi';
 import { useNavigate, useParams } from 'react-router-dom';
 
-export default function TaskGroupInfo({ title, setTaskList }) {
+export default function TaskGroupInfo({ title, setTaskGroupDetails }) {
   const navigate = useNavigate();
 
   // 파라미터
@@ -51,7 +51,7 @@ export default function TaskGroupInfo({ title, setTaskList }) {
       const newTitle = response.data.data.title;
       setIsEditing(!isEditing);
       setIsError(false);
-      setTaskList((prev) => ({ ...prev, title: newTitle }));
+      setTaskGroupDetails((prev) => ({ ...prev, title: newTitle }));
     } catch (error) {}
   };
 
@@ -72,9 +72,9 @@ export default function TaskGroupInfo({ title, setTaskList }) {
   };
 
   // CSS
-  const checkgroupInfoWrapperStyle = 'w-full flex justify-between items-center mb-4';
-  const checkgroupInfoStyle = 'flex gap-5 items-center w-full';
-  const checkgroupTitleStyle = 'text-xl';
+  const taskgroupInfoWrapperStyle = 'w-full flex justify-between items-center mb-4';
+  const taskgroupInfoStyle = 'flex gap-5 items-center w-full';
+  const taskgroupTitleStyle = 'text-xl';
   const buttonStyle =
     'w-1/6 text-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary';
   const inputNewTitleStyle =
@@ -82,8 +82,8 @@ export default function TaskGroupInfo({ title, setTaskList }) {
 
   return (
     <>
-      <section className={checkgroupInfoWrapperStyle}>
-        <div className={checkgroupInfoStyle}>
+      <section className={taskgroupInfoWrapperStyle}>
+        <div className={taskgroupInfoStyle}>
           {isEditing ? (
             <input
               type="text"
@@ -99,7 +99,7 @@ export default function TaskGroupInfo({ title, setTaskList }) {
             />
           ) : (
             <>
-              <h1 className={checkgroupTitleStyle}>{title}</h1>
+              <h1 className={taskgroupTitleStyle}>{title}</h1>
               <div className={buttonStyle} onClick={handleClickUpdateButton}>
                 수정
               </div>

@@ -1,4 +1,4 @@
-export default function TaskGroupMemo({memo}) {
+export default function TaskGroupMemo({memo, setTaskGroupDetails}) {
   // CSS
   const memoWrapperStyle = 'w-full';
   const memoStyle =

@@ -22,22 +22,22 @@ export default function Task({ task, setTaskList }) {
   };
 
   // CSS
-  const checkpointInfoStyle = 'flex justify-between box-border mb-10';
-  const checkpointStyle = 'flex gap-5';
+  const taskInfoStyle = 'flex justify-between box-border mb-10';
+  const taskStyle = 'flex gap-5';
   const checkBoxStyle = 'hidden peer';
   const checkBoxLabelStyle =
     'min-w-6 min-h-6 w-6 h-6 flex justify-center items-center rounded-md border-2 border-primary cursor-pointer peer-checked:bg-primary peer-checked:border-primary peer-checked:before:content-["✔"] peer-checked:before:text-white';
-  const checkpointContentStyle = "break-all mr-5"
-  const deleteCheckpointStyle = 'text-gray-500 text-opacity-70 cursor-pointer';
+  const taskContentStyle = "break-all mr-5"
+  const deleteTaskStyle = 'text-gray-500 text-opacity-70 cursor-pointer';
 
   return (
-    <li className={checkpointInfoStyle}>
-      <div className={checkpointStyle}>
+    <li className={taskInfoStyle}>
+      <div className={taskStyle}>
         <input type="checkbox" id={id} className={checkBoxStyle} />
         <label htmlFor={id} className={checkBoxLabelStyle}></label>
-        <div className={checkpointContentStyle}>{content}</div>
+        <div className={taskContentStyle}>{content}</div>
       </div>
-      <div className={deleteCheckpointStyle} onClick={handleClickDeleteButton}>
+      <div className={deleteTaskStyle} onClick={handleClickDeleteButton}>
         ✕
       </div>
     </li>

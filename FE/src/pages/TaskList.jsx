@@ -11,9 +11,9 @@ export default function TaskList() {
   // 파라미터
   const { movingPlanId } = useParams();
   const { taskGroupId } = useParams();
-
+  
   // 상태 관리 데이터
-  const [taskList, setTaskList] = useState({
+  const [taskGroupDetails, setTaskGroupDetails] = useState({
     title: '',
     totalCount: 0,
     completeCount: 0,
@@ -21,7 +21,7 @@ export default function TaskList() {
     memo: '',
   });
 
-  const { title, totalCount, completeCount, tasks, memo } = taskList;
+  const { title, totalCount, completeCount, tasks, memo } = taskGroupDetails;
 
   // 체크포인트 리스트 가져오기
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function TaskList() {
         const response = await taskApi.getTasks(movingPlanId, taskGroupId);
         const data = response.data.data;
 
-        setTaskList(data);
+        setTaskGroupDetails(data);
       } catch (error) {
         // 임시로 만들어놓은 not-found
         if (error.response.data.code == 'NOT_FOUND') {
@@ -46,14 +46,14 @@ export default function TaskList() {
 
   return (
     <main className={mainStyle}>
-      <TaskGroupInfo title={title} setTaskList={setTaskList}></TaskGroupInfo>
+      <TaskGroupInfo title={title} setTaskGroupDetails={setTaskGroupDetails}></TaskGroupInfo>
       <TaskListSection
         totalCount={totalCount}
         completeCount={completeCount}
         tasks={tasks}
-        setTaskList={setTaskList}
+        setTaskGroupDetails={setTaskGroupDetails}
       ></TaskListSection>
-      <TaskGroupMemo memo={memo} setTaskList={setTaskList}></TaskGroupMemo>
+      <TaskGroupMemo memo={memo} setTaskGroupDetails={setTaskGroupDetails}></TaskGroupMemo>
     </main>
   );
 }
