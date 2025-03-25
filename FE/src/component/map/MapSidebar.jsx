@@ -122,8 +122,6 @@ export default function MapSidebar({
     try {
       const { id } = e.target;
 
-      console.log(id);
-
       await mapApi.addressupdate(movingPlanId, id, { address2 });
       setAddressError('');
     } catch (err) {
