@@ -2,18 +2,26 @@ import { useRef, useState } from 'react';
 import taskGroupApi from '../../api/taskGroupApi';
 import { useNavigate, useParams } from 'react-router-dom';
 
-export default function TaskGroupBox() {
+export default function TaskGroupBox({ taskGroups }) {
+  const { movingPlanId } = useParams();
+
   const [clickAdd, setClickAdd] = useState(false);
   const [message, setMessage] = useState();
-  const { movingPlanId } = useParams();
+  const [formData, setFormData] = useState({ title: '' });
+  const [Groups, setGroups] = useState([]);
+
+  console.log(taskGroups);
 
   const taskGroupText = useRef();
   const navigate = useNavigate();
 
-  // 요청 값
-  const [formData, setFormData] = useState({ title: '' });
+  const blockParentEvent = (e) => {
+    e.stopPropagation(); //부모 태그로 이벤트 전파 방지
+    setMessage();
+  };
 
-  const addTaskGroup = async () => {
+  const addTaskGroup = async (e) => {
+    e.stopPropagation(); //부모 태그로 이벤트 전파 방지
     const inputValue = taskGroupText.current.value;
     setFormData({ title: inputValue });
 
@@ -41,7 +49,7 @@ export default function TaskGroupBox() {
     }
   };
 
-  const section = 'grid grid-cols-2 gap-4';
+  const section = 'm-10 grid grid-cols-2 gap-4';
   const groupBox =
     'w-100 h-35 border-3 rounded-3xl px-2 py-5 bg-white font-roboto flex flex-col items-center justify-center';
   const boxText = 'text-lg font-roboto pr-60 m-3';
@@ -59,10 +67,12 @@ export default function TaskGroupBox() {
 
   return (
     <section className={`${section}`}>
-      <div className={`${groupBox}`}>
-        <span className={`${boxText}`}>체크 그룹1</span>
-        <div className={`${progress}`}></div>
-      </div>
+      {taskGroups.map((task) => (
+        <div key={task.id} className={`${groupBox}`}>
+          <span className={`${boxText}`}>{task.title}</span>
+          <div className={`${progress}`}></div>
+        </div>
+      ))}
 
       {clickAdd ? (
         <div
@@ -75,6 +85,7 @@ export default function TaskGroupBox() {
             <input
               ref={taskGroupText}
               className={`${inputText}`}
+              onClick={blockParentEvent}
               type="text"
               placeholder="체크 그룹 추가"
               required
@@ -90,6 +101,7 @@ export default function TaskGroupBox() {
           className={`${addBox}`}
           onClick={(click) => {
             setClickAdd(true);
+            setMessage();
           }}
         >
           <span className={`${addBoxText}`}>+</span>
