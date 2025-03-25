@@ -92,6 +92,8 @@ export default function Map({
             centerlongitude: longitude,
           });
           setSelectedButton(`${id}`);
+
+          setHouseId(id);
         });
       });
     }
