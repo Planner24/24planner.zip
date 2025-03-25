@@ -130,6 +130,7 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
               // 한국어 사용 시, 일수가 기본적으로 "n일" 형태로 표현되므로 직접 숫자만 출력
               html: `${arg.date.getDate()}`,
             })}
+            // 더 보기 버튼에, 기본 제공되는 +3 개라는 텍스트 대신 +3만 사용
             moreLinkContent={(arg) => ({ html: arg.shortText })}
             datesSet={(dateInfo) => {
               const nowYear = dateInfo.start.getFullYear();
@@ -151,6 +152,7 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
                 const scheduleEndInt = parseIntFromDate(schedule.endDate);
                 if (scheduleEndInt >= startInt && scheduleStartInt <= endInt) {
                   // 달력에 일정을 출력하기 위해서는 종료일을 하루 뒤로 변경해야 함
+                  // 바로 +를 하면 문자열 연산이 일어나 오작동하므로, -1로 UNIX time으로 변경 뒤 연산 실행
                   const nextDayOfEndDate = new Date(new Date(schedule.endDate) - 1 + 86400001);
                   // color가 아니라 backgroundColor와 borderColor를 각각 지정해야 일정 간 간격을 띄울 수 있음
                   newEventList.push({
