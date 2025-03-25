@@ -55,6 +55,13 @@ export default function TaskGroupInfo({ title, setTaskList }) {
     } catch (error) {}
   };
 
+  // 엔터키 눌러 체크 그룹 제목 수정
+  const handlePressEnter = (e) => {
+    if (e.key === 'Enter') {
+      handleUpdateTitle(e);
+    }
+  };
+
   // 체크 그룹 삭제
   const handleClickDeleteButton = async () => {
     try {
@@ -68,9 +75,10 @@ export default function TaskGroupInfo({ title, setTaskList }) {
   const checkgroupInfoWrapperStyle = 'w-full flex justify-between items-center mb-4';
   const checkgroupInfoStyle = 'flex gap-5 items-center w-full';
   const checkgroupTitleStyle = 'text-xl';
-  const buttonStyle = 'w-1/6 text-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary';
+  const buttonStyle =
+    'w-1/6 text-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary';
   const inputNewTitleStyle =
-    'w-3/4 text-xl focus:outline-none placeholder:text-base placeholder-opacity-70 border-b border-gray-400';
+    'w-3/5 text-xl focus:outline-none placeholder:text-base placeholder-opacity-70 border-b border-gray-400';
 
   return (
     <>
@@ -82,10 +90,12 @@ export default function TaskGroupInfo({ title, setTaskList }) {
               name="title"
               id="title"
               value={updateTitle || ''}
+              maxLength={18}
               placeholder={isError ? '제목을 입력해주세요.' : ''}
               className={inputNewTitleStyle}
               onChange={handleInputNewTitle}
               onBlur={handleUpdateTitle}
+              onKeyDown={handlePressEnter}
             />
           ) : (
             <>
