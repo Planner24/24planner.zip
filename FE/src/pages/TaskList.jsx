@@ -42,17 +42,18 @@ export default function TaskList() {
   }, [movingPlanId, taskGroupId]);
 
   // CSS
-  const mainStyle = 'flex flex-col justify-center items-center pl-60 pr-60 pt-15 pb-15 box-border';
+  const mainStyle = 'flex flex-col justify-center items-center mx-60 my-15 pb-15 box-border';
 
   return (
     <main className={mainStyle}>
-      <TaskGroupInfo title={title}></TaskGroupInfo>
+      <TaskGroupInfo title={title} setTaskList={setTaskList}></TaskGroupInfo>
       <TaskListSection
         totalCount={totalCount}
         completeCount={completeCount}
         tasks={tasks}
+        setTaskList={setTaskList}
       ></TaskListSection>
-      <TaskGroupMemo memo={memo}></TaskGroupMemo>
+      <TaskGroupMemo memo={memo} setTaskList={setTaskList}></TaskGroupMemo>
     </main>
   );
 }
