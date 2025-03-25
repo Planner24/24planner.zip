@@ -34,7 +34,7 @@ export default function MapSidebar({
   const nicknameupdateStyle =
     'w-40 text-xl text-black font-semibold border-b-[1px] border-black outline-none px-1 inline-block';
   const addressupdateStyle =
-    'w-90 text-black border-b-[1px] border-black outline-none inline-block mb-5';
+    'w-90 text-black border-b-[1px] border-black outline-none inline-block';
 
   useEffect(() => {
     async function fetchHouseDetail() {
@@ -175,7 +175,7 @@ export default function MapSidebar({
               <div className="mb-2">{address1}</div>
               <div className="flex ">
                 {isaddressEditing ? (
-                  <div>
+                  <div className='mb-5'>
                     <input
                       type="text"
                       className={addressupdateStyle}
