@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import taskGroupApi from '../../api/taskGroupApi';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function TaskGroupInfo({ title, setTaskList }) {
+  const navigate = useNavigate();
+
   // 파라미터
   const { movingPlanId } = useParams();
   const { taskGroupId } = useParams();
@@ -46,9 +48,19 @@ export default function TaskGroupInfo({ title, setTaskList }) {
       const response = await taskGroupApi.updateTitle(movingPlanId, taskGroupId, {
         title: updateTitle,
       });
+      const newTitle = response.data.data.title;
       setIsEditing(!isEditing);
       setIsError(false);
-      setTaskList((prev) => ({ ...prev, title: updateTitle }));
+      setTaskList((prev) => ({ ...prev, title: newTitle }));
+    } catch (error) {}
+  };
+
+  // 체크 그룹 삭제
+  const handleClickDeleteButton = async () => {
+    try {
+      await taskGroupApi.deleteTaskGroup(movingPlanId, taskGroupId);
+      alert('체크 그룹이 삭제되었습니다.');
+      navigate(`/plans/${movingPlanId}`);
     } catch (error) {}
   };
 
@@ -57,7 +69,6 @@ export default function TaskGroupInfo({ title, setTaskList }) {
   const checkgroupInfoStyle = 'flex gap-5 items-center';
   const checkgroupTitleStyle = 'text-xl';
   const buttonStyle = 'text-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary';
-  const inputNewTitleWrapperStyle = 'flex flex-col gap-2';
   const inputNewTitleStyle =
     'text-xl focus:outline-none placeholder:text-base placeholder-opacity-70';
 
@@ -66,18 +77,16 @@ export default function TaskGroupInfo({ title, setTaskList }) {
       <section className={checkgroupInfoWrapperStyle}>
         <div className={checkgroupInfoStyle}>
           {isEditing ? (
-            <div className={inputNewTitleWrapperStyle}>
-              <input
-                type="text"
-                name="title"
-                id="title"
-                value={updateTitle || ''}
-                placeholder={isError && '제목을 입력해주세요.'}
-                className={inputNewTitleStyle}
-                onChange={handleInputNewTitle}
-                onBlur={handleUpdateTitle}
-              />
-            </div>
+            <input
+              type="text"
+              name="title"
+              id="title"
+              value={updateTitle || ''}
+              placeholder={isError ? '제목을 입력해주세요.' : ''}
+              className={inputNewTitleStyle}
+              onChange={handleInputNewTitle}
+              onBlur={handleUpdateTitle}
+            />
           ) : (
             <>
               <h1 className={checkgroupTitleStyle}>{title}</h1>
@@ -87,7 +96,9 @@ export default function TaskGroupInfo({ title, setTaskList }) {
             </>
           )}
         </div>
-        <div className={buttonStyle}>체크 그룹 삭제</div>
+        <div className={buttonStyle} onClick={handleClickDeleteButton}>
+          체크 그룹 삭제
+        </div>
       </section>
     </>
   );

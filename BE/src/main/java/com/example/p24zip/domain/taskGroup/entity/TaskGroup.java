@@ -33,7 +33,7 @@ public class TaskGroup extends BaseTimeEntity {
     @JoinColumn(name= "moving_plan_id")
     private MovingPlan movingPlan;
 
-    @OneToMany(mappedBy="taskGroup")
+    @OneToMany(mappedBy="taskGroup", cascade = CascadeType.ALL)
     private List<Task> tasks = new ArrayList<>();
 
     @Builder
