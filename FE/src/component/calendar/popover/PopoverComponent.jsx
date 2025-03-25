@@ -26,7 +26,8 @@ export default function PopoverComponent() {
   const popoverStyle = `w-fit h-fit absolute bg-white rounded-2xl border-1 p-1 z-10`;
   const popoverBorderMarginStyle = `rounded-2xl border-1 border-[${popoverBorderColor}]`;
   const popoverContentStyle = 'm-2';
-  const popoverTitleStyle = 'text-lg font-semibold mb-2';
+  const popoverTitleStyle = 'text-center font-semibold mb-2';
+  const popoverDateRangeStyle = 'text-sm text-center';
 
   return (
     <div
@@ -40,13 +41,8 @@ export default function PopoverComponent() {
       <div className={popoverBorderMarginStyle}>
         <div className={popoverContentStyle}>
           <div className={popoverTitleStyle}>{popoverTitle}</div>
-          <div>
-            <span>시작일: </span>
-            {popoverStartDate}
-          </div>
-          <div>
-            <span>종료일: </span>
-            {popoverEndDate}
+          <div className={popoverDateRangeStyle}>
+            ({popoverStartDate}~{popoverEndDate})
           </div>
         </div>
       </div>

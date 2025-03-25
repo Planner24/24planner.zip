@@ -79,7 +79,7 @@ export default function Calendar() {
     },
     {
       color: '#69db7c',
-      content: '일이삼사오육칠팔구십일이삼사',
+      content: '일이삼사오육칠팔구십일이삼사오육칠팔구십',
       startDate: '2025-04-08',
       endDate: '2025-04-08',
     },

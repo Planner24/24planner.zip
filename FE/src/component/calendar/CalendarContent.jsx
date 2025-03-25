@@ -74,11 +74,11 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
   const calendarHeaderRightStyle = 'flex flex-1 justify-end';
   const calendarHeaderCenterPrevDivStyle = 'flex flex-1 justify-end';
   const calendarHeaderCenterDateDivStyle = 'flex flex-3 justify-center mx-5';
-  const calendarHeaderCenterDateTextStyle = 'text-3xl';
+  const calendarHeaderCenterDateTextStyle = 'text-xl';
   const calendarHeaderCenterDivClickableStyle = 'cursor-pointer';
   const calendarHeaderCenterNextDivStyle = 'flex flex-1 justify-start';
   const buttonStyle =
-    'w-20 h-10 bg-white border-2 border-primary rounded-xl text-primary text-lg font-semibold cursor-pointer hover:bg-primary hover:text-white ml-2';
+    'w-20 h-10 bg-white border-2 border-primary rounded-xl text-primary font-semibold cursor-pointer hover:bg-primary hover:text-white ml-2';
   const eventLineStyle = 'h-3 px-1 text-tiny truncate';
 
   return (

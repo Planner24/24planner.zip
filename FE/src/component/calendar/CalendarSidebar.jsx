@@ -4,17 +4,15 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
   const tempUsingColor = ['bg-[#69db7c]', 'bg-[#4dabf7]', 'bg-[#2f9e44]', 'bg-[#fcc2d7]'];
 
   const calendarSidebarStyle = 'flex flex-1 flex-col items-center m-4';
-  const scheduleDateStyle = 'text-2xl mt-12';
+  const scheduleDateStyle = 'text-xl mt-12';
   const scheduleListStyle = 'flex flex-col w-full mt-8';
   const scheduleElementDivStyle = 'flex items-center';
-  const scheduleElementContentStyle =
-    'flex justify-center items-center rounded-3xl text-xl w-full p-2 m-2';
-  const imgDivStyle = 'p-2';
-  const imgStyle = 'w-8 h-7';
+  const scheduleElementContentStyle = 'flex justify-center items-center rounded-3xl w-full p-2 m-2';
+  const deleteButtonDivStyle = 'text-gray-500 text-opacity-70 cursor-pointer';
   const inputDivStyle =
-    'flex justify-center items-center border-1 border-gray-300 rounded-3xl w-full m-2 h-11';
+    'flex justify-center items-center border-1 border-gray-300 rounded-3xl w-full py-2 m-2 h-10';
   const inputStyle = 'focus:outline-none w-full p-2';
-  const addButtonStyle = 'flex justify-center items-center mx-2 px-7 bg-primary rounded-3xl h-11';
+  const addButtonStyle = 'flex justify-center items-center mx-1 px-4 bg-primary rounded-3xl h-10';
 
   const dailyScheduleList = [];
   if (selectDate) {
@@ -44,12 +42,7 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
                   <div className={`${scheduleElementContentStyle} bg-[${schedule.color}]`}>
                     {schedule.content}
                   </div>
-                  <div className={imgDivStyle}>
-                    <img src="/pencil.png" className={imgStyle} />
-                  </div>
-                  <div className={imgDivStyle}>
-                    <img src="/bin.png" className={imgStyle} />
-                  </div>
+                  <div className={deleteButtonDivStyle}>✕</div>
                 </div>
               );
             })}
