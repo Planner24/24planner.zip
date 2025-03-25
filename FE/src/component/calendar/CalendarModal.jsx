@@ -1,7 +1,17 @@
+import { useState } from 'react';
+import { createPortal } from 'react-dom';
+import CalendarColorModal from './CalendarColorModal';
+
 export default function CalendarModal({ modalClose }) {
+  const [showModal2, setShowModal2] = useState();
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
     e.stopPropagation();
+  };
+
+  const handleClickColor = () => {
+    setShowModal2(() => true);
   };
 
   const handleButton = (e) => {
@@ -31,6 +41,11 @@ export default function CalendarModal({ modalClose }) {
 
   return (
     <div className={transparentBlackBackgroundStyle} onClick={modalClose}>
+      {showModal2 &&
+        createPortal(
+          <CalendarColorModal modalClose2={() => setShowModal2(() => false)} />,
+          document.body,
+        )}
       <div className={sizeLimiterStyle}>
         <div
           className={modalBodyStyle}
@@ -44,7 +59,7 @@ export default function CalendarModal({ modalClose }) {
                 <input type="text" className={inputStyle} placeholder="할 일 입력"></input>
               </div>
               <div>
-                <div className={circleStyle}></div>
+                <div className={circleStyle} onClick={handleClickColor} />
               </div>
             </div>
             <div className={dateSelectWrapperStyle}>
