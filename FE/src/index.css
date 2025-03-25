@@ -140,3 +140,8 @@ input::-webkit-inner-spin-button {
 .fc-event {
   height: 17px !important;
 }
+
+.fc .fc-popover {
+  z-index: 8;
+  color: #000000;
+}

@@ -130,6 +130,7 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
               // 한국어 사용 시, 일수가 기본적으로 "n일" 형태로 표현되므로 직접 숫자만 출력
               html: `${arg.date.getDate()}`,
             })}
+            moreLinkContent={(arg) => ({ html: arg.shortText })}
             datesSet={(dateInfo) => {
               const nowYear = dateInfo.start.getFullYear();
               const nowMonth = dateInfo.start.getMonth() + 1;
