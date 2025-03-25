@@ -16,59 +16,27 @@ export default function CalendarModal({ modalClose }) {
   // DatePicker에 요일이 한국어로 뜨도록 할 때 필요한 설정
   registerLocale('ko', ko);
 
-  const years = [];
-  for (let i = 1970; i < 2100; i++) {
-    years.push(i);
-  }
+  const datePickerHeaderStyle = 'flex justify-between items-center text-lg mb-1';
+  const datePickerButtonDivStyle = 'flex-1';
+  const datePickerButtonStyle = 'text-base';
+  const datePickerDateStyle = 'flex flex-2 justify-center';
 
-  const months = [];
-  for (let i = 1; i < 13; i++) {
-    months.push(i);
-  }
-
-  const createCustomHeader = ({
-    date,
-    changeYear,
-    changeMonth,
-    decreaseMonth,
-    increaseMonth,
-    prevMonthButtonDisabled,
-    nextMonthButtonDisabled,
-  }) => {
+  const createCustomHeader = ({ date, decreaseMonth, increaseMonth }) => {
     return (
-      <div className="flex justify-evenly text-lg">
-        <button className="text-base" onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>
-          {'<'}
-        </button>
-        <div>
-          <select
-            className="appearance-none focus:outline-none"
-            value={date.getFullYear()}
-            onChange={({ target: { value } }) => changeYear(value)}
-          >
-            {years.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-          년&nbsp;
-          <select
-            className="appearance-none focus:outline-none text-right"
-            value={months[date.getMonth()]}
-            onChange={({ target: { value } }) => changeMonth(months.indexOf(value))}
-          >
-            {months.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-          월&nbsp;
+      <div className={datePickerHeaderStyle}>
+        <div className={datePickerButtonDivStyle}>
+          <button className={datePickerButtonStyle} onClick={decreaseMonth}>
+            {'<'}
+          </button>
         </div>
-        <button className="text-base" onClick={increaseMonth} disabled={nextMonthButtonDisabled}>
-          {'>'}
-        </button>
+        <div className={datePickerDateStyle}>
+          {date.getFullYear()}년 {date.getMonth() + 1}월
+        </div>
+        <div className={datePickerButtonDivStyle}>
+          <button className={datePickerButtonStyle} onClick={increaseMonth}>
+            {'>'}
+          </button>
+        </div>
       </div>
     );
   };
