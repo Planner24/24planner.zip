@@ -1,5 +1,25 @@
-export default function Task({ id, content, isCompleted }) {
- 
+import { useParams } from 'react-router-dom';
+import taskApi from '../../api/taskApi';
+
+export default function Task({ task, setTaskList }) {
+  const { id, content, isCompleted } = task;
+
+  // 파라미터
+  const { movingPlanId } = useParams();
+  const { taskGroupId } = useParams();
+
+  // 체크포인트 삭제
+  const handleClickDeleteButton = async () => {
+    try {
+      await taskApi.deleteTask(movingPlanId, taskGroupId, id);
+      setTaskList((prevTaskList) =>
+        prevTaskList.filter((prevTask) => {
+          const prevTaskId = prevTask.id;
+          return prevTaskId !== id;
+        }),
+      );
+    } catch (error) {}
+  };
 
   // CSS
   const checkpointInfoStyle = 'flex justify-between items-center box-border mb-10';
@@ -17,7 +37,9 @@ export default function Task({ id, content, isCompleted }) {
         <label htmlFor={id} className={checkBoxLabelStyle}></label>
         <div className={checkpointContentStyle}>{content}</div>
       </div>
-      <div className={deleteCheckpointStyle}>✕</div>
+      <div className={deleteCheckpointStyle} onClick={handleClickDeleteButton}>
+        ✕
+      </div>
     </li>
   );
 }

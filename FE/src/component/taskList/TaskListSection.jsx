@@ -1,6 +1,14 @@
+import { useEffect, useState } from 'react';
 import Task from './Task';
 
 export default function TaskListSection({ totalCount, completeCount, tasks }) {
+  // 상태 관리 데이터
+  const [taskList, setTaskList] = useState(tasks);
+
+  // 체크리스트 변경 시 화면 렌더링
+  useEffect(() => {
+    setTaskList(tasks);
+  }, [tasks]);
 
   // CSS
   const checkpointWrapperStyle = 'w-full';
@@ -14,12 +22,9 @@ export default function TaskListSection({ totalCount, completeCount, tasks }) {
         {completeCount} / {totalCount}
       </div>
       <ul className={checkpointListStyle}>
-        {
-          tasks?.map((task) => {
-            const { id, content, isCompleted } = task;
-            return <Task key={id} id={id} content={content} isCompleted={isCompleted}></Task>
-          })
-        }
+        {taskList?.map((task) => {
+          return <Task key={task.id} task={task} setTaskList={setTaskList}></Task>;
+        })}
       </ul>
     </section>
   );
