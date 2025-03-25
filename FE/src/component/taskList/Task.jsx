@@ -22,12 +22,12 @@ export default function Task({ task, setTaskList }) {
   };
 
   // CSS
-  const checkpointInfoStyle = 'flex justify-between items-center box-border mb-10';
-  const checkpointStyle = 'flex items-center gap-5';
+  const checkpointInfoStyle = 'flex justify-between box-border mb-10';
+  const checkpointStyle = 'flex gap-5';
   const checkBoxStyle = 'hidden peer';
   const checkBoxLabelStyle =
-    'w-6 h-6 flex items-center justify-center rounded-md border-2 border-primary cursor-pointer peer-checked:bg-primary peer-checked:border-primary peer-checked:before:content-["✔"] peer-checked:before:text-white';
-  const checkpointContentStyle = '';
+    'min-w-6 min-h-6 w-6 h-6 flex justify-center items-center rounded-md border-2 border-primary cursor-pointer peer-checked:bg-primary peer-checked:border-primary peer-checked:before:content-["✔"] peer-checked:before:text-white';
+  const checkpointContentStyle = "break-all mr-5"
   const deleteCheckpointStyle = 'text-gray-500 text-opacity-70 cursor-pointer';
 
   return (

@@ -42,7 +42,7 @@ export default function TaskList() {
   }, [movingPlanId, taskGroupId]);
 
   // CSS
-  const mainStyle = 'flex flex-col justify-center items-center mx-60 my-15 box-border';
+  const mainStyle = 'flex flex-col justify-center items-center mx-60 my-15 box-border max-w-200';
 
   return (
     <main className={mainStyle}>

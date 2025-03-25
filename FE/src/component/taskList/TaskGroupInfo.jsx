@@ -66,11 +66,11 @@ export default function TaskGroupInfo({ title, setTaskList }) {
 
   // CSS
   const checkgroupInfoWrapperStyle = 'w-full flex justify-between items-center mb-4';
-  const checkgroupInfoStyle = 'flex gap-5 items-center';
+  const checkgroupInfoStyle = 'flex gap-5 items-center w-full';
   const checkgroupTitleStyle = 'text-xl';
-  const buttonStyle = 'text-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary';
+  const buttonStyle = 'w-1/6 text-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary';
   const inputNewTitleStyle =
-    'text-xl focus:outline-none placeholder:text-base placeholder-opacity-70';
+    'w-3/4 text-xl focus:outline-none placeholder:text-base placeholder-opacity-70 border-b border-gray-400';
 
   return (
     <>

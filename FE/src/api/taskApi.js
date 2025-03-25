@@ -3,6 +3,15 @@ import api from './axios';
 const ENDPOINT = '/plans';
 
 const taskApi = {
+  // 체크포인트 생성
+  createTask: async (movingPlanId, taskGroupId, content) => {
+    const response = await api.post(
+      `${ENDPOINT}/${movingPlanId}/taskgroups/${taskGroupId}/tasks`,
+      {content},
+    );
+    return response;
+  },
+
   // 체크포인트 리스트 조회 (+ 그룹 메모)
   getTasks: async (movingPlanId, taskGroupId) => {
     const response = await api.get(`${ENDPOINT}/${movingPlanId}/taskgroups/${taskGroupId}/tasks`);
