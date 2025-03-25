@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import taskApi from '../../api/taskApi';
 
-export default function Task({ task, setTaskList }) {
+export default function Task({ task, setTaskGroupDetails }) {
   const { id, content, isCompleted } = task;
 
   // 파라미터
@@ -12,12 +12,14 @@ export default function Task({ task, setTaskList }) {
   const handleClickDeleteButton = async () => {
     try {
       await taskApi.deleteTask(movingPlanId, taskGroupId, id);
-      setTaskList((prevTaskList) =>
-        prevTaskList.filter((prevTask) => {
+      setTaskGroupDetails((prev) => ({
+        ...prev,
+        tasks: prev.tasks.filter((prevTask) => {
           const prevTaskId = prevTask.id;
           return prevTaskId !== id;
         }),
-      );
+        totalCount: prev.totalCount - 1,
+      }));
     } catch (error) {}
   };
 
@@ -27,7 +29,7 @@ export default function Task({ task, setTaskList }) {
   const checkBoxStyle = 'hidden peer';
   const checkBoxLabelStyle =
     'min-w-6 min-h-6 w-6 h-6 flex justify-center items-center rounded-md border-2 border-primary cursor-pointer peer-checked:bg-primary peer-checked:border-primary peer-checked:before:content-["✔"] peer-checked:before:text-white';
-  const taskContentStyle = "break-all mr-5"
+  const taskContentStyle = 'break-all mr-5';
   const deleteTaskStyle = 'text-gray-500 text-opacity-70 cursor-pointer';
 
   return (

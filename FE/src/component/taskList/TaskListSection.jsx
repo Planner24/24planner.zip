@@ -3,19 +3,20 @@ import Task from './Task';
 import taskApi from '../../api/taskApi';
 import { useParams } from 'react-router-dom';
 
-export default function TaskListSection({ totalCount, completeCount, tasks, setTaskGroupDetails }) {
+export default function TaskListSection({ taskGroupDetails, setTaskGroupDetails }) {
+  const { totalCount, completeCount, tasks } = taskGroupDetails;
+
   // 파라미터
   const { movingPlanId } = useParams();
   const { taskGroupId } = useParams();
 
   // 상태 관리 데이터
-  const [taskList, setTaskList] = useState(tasks);
   const [newContent, setNewContent] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
   // 체크리스트 변경 시 화면 렌더링
   useEffect(() => {
-    setTaskList(tasks);
+    setTaskGroupDetails((prev) => ({ ...prev, tasks: tasks }));
   }, [tasks, totalCount, completeCount]);
 
   // 체크포인트 추가하기 클릭
@@ -35,7 +36,11 @@ export default function TaskListSection({ totalCount, completeCount, tasks, setT
       const task = response.data.data;
 
       setNewContent('');
-      setTaskList((prevList) => [...prevList, task]);
+      setTaskGroupDetails((prev) => ({
+        ...prev,
+        tasks: [...prev.tasks, task],
+        totalCount: totalCount + 1,
+      }));
       setIsEditing(false);
     } catch (error) {}
   };
@@ -65,8 +70,8 @@ export default function TaskListSection({ totalCount, completeCount, tasks, setT
         {completeCount} / {totalCount}
       </div>
       <ul className={taskListStyle}>
-        {taskList?.map((task) => {
-          return <Task key={task.id} task={task} setTaskList={setTaskList}></Task>;
+        {tasks?.map((task) => {
+          return <Task key={task.id} task={task} setTaskGroupDetails={setTaskGroupDetails}></Task>;
         })}
         <li className={taskStyle}>
           <input type="checkbox" id="createButton" className={checkBoxStyle} />

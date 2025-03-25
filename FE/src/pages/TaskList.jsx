@@ -11,7 +11,7 @@ export default function TaskList() {
   // 파라미터
   const { movingPlanId } = useParams();
   const { taskGroupId } = useParams();
-  
+
   // 상태 관리 데이터
   const [taskGroupDetails, setTaskGroupDetails] = useState({
     title: '',
@@ -48,9 +48,7 @@ export default function TaskList() {
     <main className={mainStyle}>
       <TaskGroupInfo title={title} setTaskGroupDetails={setTaskGroupDetails}></TaskGroupInfo>
       <TaskListSection
-        totalCount={totalCount}
-        completeCount={completeCount}
-        tasks={tasks}
+        taskGroupDetails={taskGroupDetails}
         setTaskGroupDetails={setTaskGroupDetails}
       ></TaskListSection>
       <TaskGroupMemo memo={memo} setTaskGroupDetails={setTaskGroupDetails}></TaskGroupMemo>
