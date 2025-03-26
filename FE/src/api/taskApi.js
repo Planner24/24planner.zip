@@ -26,6 +26,15 @@ const taskApi = {
     return response;
   },
 
+  // 체크포인트 완료여부 수정
+  updateIsTaskCompleted: async (movingPlanId, taskGroupId, taskId, isCompleted) => {
+    const response = await api.patch(
+      `${ENDPOINT}/${movingPlanId}/taskgroups/${taskGroupId}/tasks/${taskId}/isCompleted`,
+      isCompleted,
+    );
+    return response;
+  },
+
   // 체크포인트 삭제
   deleteTask: async (movingPlanId, taskGroupId, taskId) => {
     const response = await api.delete(

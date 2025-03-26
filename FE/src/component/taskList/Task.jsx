@@ -12,6 +12,7 @@ export default function Task({ task, setTaskGroupDetails }) {
   // 상태 관리 데이터
   const [isEditing, setIsEditing] = useState(false);
   const [updateContent, setUpdateContent] = useState(content);
+  const [updateIsCompleted, setUpdateIsCompleted] = useState(isCompleted);
   const [isError, setIsError] = useState(false);
 
   // 체크포인트 내용 클릭
@@ -60,11 +61,32 @@ export default function Task({ task, setTaskGroupDetails }) {
     }
   };
 
-  // 엔터키 눌러 체크 그룹 제목 수정
+  // 엔터키 눌러 체크포인트 내용 수정
   const handlePressEnter = (e) => {
     if (e.key === 'Enter') {
       handleUpdateContent(e);
     }
+  };
+
+  // 체크포인트 완료여부 수정
+  const handleUpdateIsCompleted = async () => {
+    try {
+      const response = await taskApi.updateIsTaskCompleted(movingPlanId, taskGroupId, id, {
+        isCompleted: !isCompleted,
+      });
+      const newIsCompleted = response.data.data.isCompleted;
+      setUpdateIsCompleted(newIsCompleted);
+      setTaskGroupDetails((prev) => ({
+        ...prev,
+        tasks: prev.tasks.map((prevTask) => {
+          if (prevTask.id === id) {
+            return { ...prevTask, isCompleted: newIsCompleted };
+          }
+          return prevTask;
+        }),
+        completeCount: isCompleted ? prev.completeCount - 1 : prev.completeCount + 1,
+      }));
+    } catch (error) {}
   };
 
   // 체크포인트 삭제
@@ -96,7 +118,24 @@ export default function Task({ task, setTaskGroupDetails }) {
   return (
     <li className={taskInfoStyle}>
       <div className={taskStyle}>
-        <input type="checkbox" id={id} className={checkBoxStyle} />
+        {updateIsCompleted ? (
+          <input
+            type="checkbox"
+            id={id}
+            className={checkBoxStyle}
+            defaultChecked
+            value={updateIsCompleted}
+            onChange={handleUpdateIsCompleted}
+          />
+        ) : (
+          <input
+            type="checkbox"
+            id={id}
+            className={checkBoxStyle}
+            value={updateIsCompleted}
+            onChange={handleUpdateIsCompleted}
+          />
+        )}
         <label htmlFor={id} className={checkBoxLabelStyle}></label>
         {isEditing ? (
           <input
