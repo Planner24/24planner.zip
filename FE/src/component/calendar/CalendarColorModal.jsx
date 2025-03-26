@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function CalendarColorModal({ modalClose2, selectColor, setSelectColor }) {
+export default function CalendarColorModal({ selectColor, setSelectColor }) {
   // Tailwind CSS에서 사용할 수 있도록 바탕 색상을 미리 정의하는 부분으로, 실제 대입하지는 않음
   const colorsListForSelect = [
     [
@@ -45,6 +45,15 @@ export default function CalendarColorModal({ modalClose2, selectColor, setSelect
     setSelectColor(() => currentTarget.getAttribute('value'));
   };
 
+  const circleButtonStyle = 'w-10 h-10 m-1 rounded-4xl';
+  const selectedButtonStyle = 'border-2 border-red-700';
+  const notSelectedButtonStyle = 'border-1 border-gray-300';
+  const flexStyle = 'flex justify-center items-center';
+  const flexColStyle = flexStyle + ' flex-col';
+  const colorsDivListStyle = flexStyle + ' m-4';
+  const subColorsDivListStyle = flexColStyle + ' flex-1';
+  const dropdownTitleStyle = 'text-xl font-semibold';
+
   const colorsDivList = colorsList.map((subColorsList, i) => {
     const subColorsDivList = subColorsList.map((colors, j) => {
       const colorDivList = colors.map((color, k) => {
@@ -52,53 +61,28 @@ export default function CalendarColorModal({ modalClose2, selectColor, setSelect
           <div
             key={k}
             value={color}
-            className={`w-10 h-10 m-1 ${selectColorUpper === color ? 'border-2 border-red-700' : 'border-1 border-gray-300'} rounded-4xl bg-[${color}]`}
+            className={`${circleButtonStyle} bg-[${color}] ${selectColorUpper === color ? selectedButtonStyle : notSelectedButtonStyle}`}
             onClick={decideColor}
           />
         );
       });
       return (
-        <div key={j} className="flex justify-center items-center">
+        <div key={j} className={flexStyle}>
           {colorDivList}
         </div>
       );
     });
     return (
-      <div key={i} className="flex flex-1 flex-col justify-center items-center">
+      <div key={i} className={subColorsDivListStyle}>
         {subColorsDivList}
       </div>
     );
   });
 
-  const handleClose = (e) => {
-    modalClose2();
-    e.stopPropagation();
-  };
-
-  const transparentBackgroundStyle =
-    'absolute flex top-0 left-0 z-4 w-full h-full min-w-320 min-h-220 bg-transparent';
-  const flexColStyle = 'flex flex-col justify-center items-center mx-auto my-auto';
-  const sizeLimiterStyle = flexColStyle + ' w-full h-full max-w-320 max-h-220 bg-transparent';
-  const modalBodyStyle = flexColStyle + ' w-1/2 h-1/2 bg-white rounded-3xl border-2';
-  const buttonStyle =
-    'w-40 h-15 bg-white border-4 border-primary rounded-3xl text-primary text-xl font-bold cursor-pointer hover:bg-primary hover:text-white';
-
   return (
-    <div className={transparentBackgroundStyle} onClick={handleClose}>
-      <div className={sizeLimiterStyle}>
-        <div
-          className={modalBodyStyle}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <div className="text-xl font-semibold">색상 선택</div>
-          <div className="flex justify-center items-center m-4">{colorsDivList}</div>
-          <button className={buttonStyle} onClick={handleClose}>
-            닫기
-          </button>
-        </div>
-      </div>
+    <div>
+      <div className={dropdownTitleStyle}>색상 선택</div>
+      <div className={colorsDivListStyle}>{colorsDivList}</div>
     </div>
   );
 }

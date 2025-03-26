@@ -1,5 +1,4 @@
 import { useState, forwardRef } from 'react';
-import { createPortal } from 'react-dom';
 
 import DatePicker, { registerLocale } from 'react-datepicker';
 import ko from 'date-fns/locale/ko';
@@ -9,10 +8,10 @@ import 'react-datepicker/dist/react-datepicker.css';
 import CalendarColorModal from './CalendarColorModal';
 
 export default function CalendarModal({ modalClose }) {
-  const [showModal2, setShowModal2] = useState();
-  const [selectColor, setSelectColor] = useState('#69db7c');
+  const [selectColor, setSelectColor] = useState('#69DB7C');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [showColorDropdown, setShowColorDropdown] = useState(false);
 
   // DatePicker에 요일이 한국어로 뜨도록 할 때 필요한 설정
   registerLocale('ko', ko);
@@ -42,24 +41,42 @@ export default function CalendarModal({ modalClose }) {
     );
   };
 
+  const handleBackgroundClick = () => {
+    if (showColorDropdown) {
+      setShowColorDropdown(() => false);
+    } else {
+      modalClose();
+    }
+  };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
     e.stopPropagation();
   };
 
   const handleClickColor = () => {
-    setShowModal2(() => true);
+    setShowColorDropdown((prev) => !prev);
+  };
+
+  const handleDropdownClick = (e) => {
+    e.stopPropagation();
   };
 
   const handleButton = (e) => {
-    alert('확인');
-    e.preventDefault();
-    e.stopPropagation();
-    modalClose();
+    if (showColorDropdown) {
+      setShowColorDropdown(() => false);
+      e.preventDefault();
+      e.stopPropagation();
+    } else {
+      alert('확인');
+      e.preventDefault();
+      e.stopPropagation();
+      modalClose();
+    }
   };
 
-  const StartDateCustomInput = buttonForDackPicker();
-  const EndDateCustomInput = buttonForDackPicker();
+  const StartDateCustomInput = buttonForDatePicker();
+  const EndDateCustomInput = buttonForDatePicker();
 
   const transparentBlackBackgroundStyle =
     'absolute flex top-0 left-0 z-2 w-full h-full min-w-320 min-h-220 bg-black/75';
@@ -78,22 +95,18 @@ export default function CalendarModal({ modalClose }) {
   const dateSelectContentStyle = 'text-lg';
   const buttonStyle =
     'w-40 h-15 bg-white border-4 border-primary rounded-3xl text-primary text-xl font-bold cursor-pointer hover:bg-primary hover:text-white';
+  const calendarModalDropdownStyle = 'relative group';
+  const calendarModalDropdownBodyStyle = `absolute text-xl text-center top-11 space-y-4 -left-45 right-0 w-100 py-4 bg-white border-1 border-primary rounded-2xl shadow-sm z-8 ${showColorDropdown ? 'opacity-100 visible' : 'opacity-0 invisible'}`;
 
   return (
-    <div className={transparentBlackBackgroundStyle} onClick={modalClose}>
-      {showModal2 &&
-        createPortal(
-          <CalendarColorModal
-            modalClose2={() => setShowModal2(() => false)}
-            selectColor={selectColor}
-            setSelectColor={setSelectColor}
-          />,
-          document.body,
-        )}
+    <div className={transparentBlackBackgroundStyle} onClick={handleBackgroundClick}>
       <div className={sizeLimiterStyle}>
         <div
           className={modalBodyStyle}
           onClick={(e) => {
+            if (showColorDropdown) {
+              setShowColorDropdown(() => false);
+            }
             e.stopPropagation();
           }}
         >
@@ -102,8 +115,12 @@ export default function CalendarModal({ modalClose }) {
               <div className={inputWrapperStyle}>
                 <input type="text" className={inputStyle} placeholder="할 일 입력"></input>
               </div>
-              <div>
-                <div className={circleStyle} onClick={handleClickColor} />
+              <div className={calendarModalDropdownStyle}>
+                <div className={circleStyle} onClick={handleClickColor}>
+                  <div className={calendarModalDropdownBodyStyle} onClick={handleDropdownClick}>
+                    <CalendarColorModal selectColor={selectColor} setSelectColor={setSelectColor} />
+                  </div>
+                </div>
               </div>
             </div>
             <div className={dateSelectWrapperStyle}>
@@ -154,7 +171,7 @@ export default function CalendarModal({ modalClose }) {
   );
 }
 
-function buttonForDackPicker() {
+function buttonForDatePicker() {
   return forwardRef(({ value, onClick, className }, ref) => (
     <button className={className} onClick={onClick} ref={ref}>
       {value.substring(6, 10)}년 {value.substring(0, 2)}월 {value.substring(3, 5)}일
