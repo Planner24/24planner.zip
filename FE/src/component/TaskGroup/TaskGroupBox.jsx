@@ -59,7 +59,7 @@ export default function TaskGroupBox({ taskGroups, setTaskGroups }) {
   const addBtn =
     'w-20 border-2 rounded-xl px-2 py-1 border-primary text-primary hover:bg-primary hover:text-white cursor-pointer';
   const inputText =
-    'w-50 mt-6 border-3 border-b-gray-300 border-x-white border-t-white placeholder:text-gray-300';
+    'w-50 mt-6 border-3 border-b-gray-300 border-x-white border-t-white placeholder:text-gray-300 focus:outline-none';
   const messageStyle = 'font-semibold text-red-400';
 
   return (
