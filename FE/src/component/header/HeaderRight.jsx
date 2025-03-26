@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../store/slices/authSlice';
+import { setCurrentPlanTitle } from '../../store/slices/planForHeaderSlice';
 import authApi from '../../api/authApi';
 import planApi from '../../api/planApi';
 
@@ -11,8 +12,8 @@ export default function HeaderRight() {
   const dispatch = useDispatch();
 
   const [storedPlanId, setStoredPlanId] = useState(0);
-  const [currentPlanTitle, setCurrentPlanTitle] = useState('');
 
+  const currentPlanTitle = useSelector((state) => state.planForHeader.title);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   const splitedUrlString = location.pathname.split('/');
@@ -27,17 +28,18 @@ export default function HeaderRight() {
     async function setPlanTitle() {
       try {
         const response = await planApi.readPlan(storedPlanId);
-        setCurrentPlanTitle(response.data.data.title);
+        dispatch(setCurrentPlanTitle({ title: response.data.data.title }));
       } catch (error) {
         console.log(error);
-        setCurrentPlanTitle('');
+        setStoredPlanId(() => 0);
+        dispatch(setCurrentPlanTitle({ title: '' }));
       }
     }
 
     if (storedPlanId) {
       setPlanTitle();
     } else {
-      setCurrentPlanTitle('');
+      dispatch(setCurrentPlanTitle({ title: '' }));
     }
   }, [storedPlanId]);
 
