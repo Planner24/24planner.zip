@@ -1,13 +1,11 @@
-import { useState, forwardRef } from 'react';
+import { forwardRef } from 'react';
+
 import DatePicker, { registerLocale } from 'react-datepicker';
 import ko from 'date-fns/locale/ko';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
-export default function CalendarModalDatePicker() {
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-
+export default function CalendarModalDatePicker({ startDate, setStartDate, endDate, setEndDate }) {
   // DatePicker에 요일이 한국어로 뜨도록 할 때 필요한 설정
   registerLocale('ko', ko);
 
