@@ -7,7 +7,6 @@ export default function TaskGroupBox({ taskGroups, setTaskGroups }) {
 
   const [clickAdd, setClickAdd] = useState(false);
   const [message, setMessage] = useState();
-  const [formData, setFormData] = useState({ title: '' });
 
   const taskGroupText = useRef();
   const navigate = useNavigate();
@@ -17,10 +16,9 @@ export default function TaskGroupBox({ taskGroups, setTaskGroups }) {
     setMessage();
   };
 
-  const addTaskGroup = async (e) => {
+  const postTaskGroup = async (e) => {
     e.stopPropagation(); //부모 태그로 이벤트 전파 방지
     const inputValue = taskGroupText.current.value;
-    setFormData({ title: inputValue });
 
     try {
       const response = await taskGroupApi.postTaskGroup(movingPlanId, { title: inputValue });
@@ -103,7 +101,7 @@ export default function TaskGroupBox({ taskGroups, setTaskGroups }) {
               placeholder="체크 그룹 추가"
               required
             />
-            <button className={`${addBtn}`} onClick={addTaskGroup}>
+            <button className={`${addBtn}`} onClick={postTaskGroup}>
               추가
             </button>
           </div>
