@@ -47,7 +47,7 @@ export default function TaskGroupBox({ taskGroups, setTaskGroups }) {
 
   const section = 'm-10 grid grid-cols-2 gap-14';
   const groupBox =
-    'w-100 h-35 border-3 rounded-3xl px-2 py-5 bg-white font-roboto flex flex-col items-center justify-center';
+    'w-100 h-35 border-3 rounded-3xl px-2 py-5 bg-white font-roboto flex flex-col items-center justify-center hover:cursor-pointer';
   const boxText = 'text-lg font-roboto m-3';
   const progress = 'w-90 h-7 border-2 rounded-full border-primary';
   const progressPercent = 'bg-primary border-primary border-1 rounded-full';
