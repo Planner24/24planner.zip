@@ -16,7 +16,7 @@ export default function HeaderRight() {
     navigate('/');
   };
 
-  const headerListStyle = 'flex flex-6 justify-end';
+  const headerListStyle = 'flex flex-1 justify-end';
   const headerItemStyle = 'flex items-center p-4';
   const headerDropdownStyle = headerItemStyle + ' relative group';
   const headerDropdownButtonStyle = 'text-secondary cursor-pointer';
