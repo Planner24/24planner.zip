@@ -14,7 +14,7 @@ export default function PlanCreator({ onPlanCreated }) {
     setNewPlan('');
   };
 
-  // 플랜 이름 입력 감지 및 검증
+  // 플랜 제목 입력 감지 및 검증
   const handleInput = (e) => {
     const { value } = e.target;
 
@@ -22,7 +22,7 @@ export default function PlanCreator({ onPlanCreated }) {
   };
 
   // 이사 플랜 생성 요청
-  const handleCreatePlan = async () => {
+  const createPlan = async () => {
     if (newPlan.trim()) {
       try {
         const response = await planApi.createPlan(newPlan);
@@ -38,7 +38,7 @@ export default function PlanCreator({ onPlanCreated }) {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      handleCreatePlan();
+      createPlan();
     }
   };
 
@@ -91,7 +91,7 @@ export default function PlanCreator({ onPlanCreated }) {
             />
             <hr />
           </div>
-          <button className={createButton} onClick={handleCreatePlan}>
+          <button className={createButton} onClick={createPlan}>
             추가
           </button>
         </div>
