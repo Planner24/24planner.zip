@@ -165,3 +165,7 @@ input::-webkit-inner-spin-button {
   .react-datepicker__day:last-child.react-datepicker__day--outside-month {
   color: #ccccff !important;
 }
+
+.react-datepicker__day--keyboard-selected {
+  background-color: #ffffff !important;
+}
