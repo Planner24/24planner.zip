@@ -31,6 +31,11 @@ export default function TaskListSection({ taskGroupDetails, setTaskGroupDetails 
 
   // 체크포인트 생성
   const handleCreateTask = async (e) => {
+    // 체크포인트 내용이 존재하지 않는 경우
+    if (!e.target.value.trim()) {
+      return;
+    }
+
     try {
       const response = await taskApi.createTask(movingPlanId, taskGroupId, newContent);
       const task = response.data.data;
@@ -48,7 +53,7 @@ export default function TaskListSection({ taskGroupDetails, setTaskGroupDetails 
   // 엔터키 눌러 체크포인트 생성
   const handlePressEnter = (e) => {
     if (e.key === 'Enter') {
-      handleCreateTask();
+      handleCreateTask(e);
     }
   };
 
@@ -62,7 +67,8 @@ export default function TaskListSection({ taskGroupDetails, setTaskGroupDetails 
   const checkBoxLabelStyle =
     'min-w-6 min-h-6 w-6 h-6 flex items-center justify-center rounded-md border-2 border-gray-400 cursor-pointer';
   const taskContentStyle = 'text-gray-400';
-  const inputNewContentStyle = 'focus:outline-none border-b border-gray-400 w-full break-all';
+  const inputNewContentStyle =
+    'focus:outline-none placeholder:text-base placeholder-opacity-70 border-b border-gray-400 w-full break-all';
 
   return (
     <section className={taskWrapperStyle}>
@@ -70,7 +76,7 @@ export default function TaskListSection({ taskGroupDetails, setTaskGroupDetails 
         {completeCount} / {totalCount}
       </div>
       <ul className={taskListStyle}>
-        {tasks?.map((task) => {          
+        {tasks?.map((task) => {
           return <Task key={task.id} task={task} setTaskGroupDetails={setTaskGroupDetails}></Task>;
         })}
         <li className={taskStyle}>
@@ -82,6 +88,7 @@ export default function TaskListSection({ taskGroupDetails, setTaskGroupDetails 
               name="content"
               id="content"
               value={newContent || ''}
+              placeholder="내용을 입력해주세요."
               className={inputNewContentStyle}
               onChange={handleInputNewContent}
               onBlur={handleCreateTask}

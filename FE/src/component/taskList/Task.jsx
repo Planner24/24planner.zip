@@ -149,6 +149,7 @@ export default function Task({ task, setTaskGroupDetails }) {
             onChange={handleInputNewContent}
             onBlur={handleUpdateContent}
             onKeyDown={handlePressEnter}
+            autoFocus
           />
         ) : (
           <div className={taskContentStyle} onClick={handleClickContent}>

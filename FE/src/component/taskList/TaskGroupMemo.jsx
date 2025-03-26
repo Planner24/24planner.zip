@@ -35,7 +35,7 @@ export default function TaskGroupMemo({ memo, setTaskGroupDetails }) {
 
       const newMemo = response.data.data.memo;
       setTaskGroupDetails((prev) => ({ ...prev, memo: newMemo }));
-    } catch (error) { }
+    } catch (error) {}
   };
 
   // CSS
@@ -53,6 +53,7 @@ export default function TaskGroupMemo({ memo, setTaskGroupDetails }) {
         className={memoStyle}
         onChange={handleInputNewMemo}
         onBlur={handleUpdateMemo}
+        autoFocus
       ></textarea>
     </section>
   );

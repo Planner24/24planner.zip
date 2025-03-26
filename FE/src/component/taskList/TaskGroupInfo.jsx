@@ -96,6 +96,7 @@ export default function TaskGroupInfo({ title, setTaskGroupDetails }) {
               onChange={handleInputNewTitle}
               onBlur={handleUpdateTitle}
               onKeyDown={handlePressEnter}
+              autoFocus
             />
           ) : (
             <>
