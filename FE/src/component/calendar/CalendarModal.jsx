@@ -1,13 +1,19 @@
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import CalendarColorModal from './CalendarColorModal';
 import CalendarModalDatePicker from './CalendarModalDatePicker';
+import scheduleApi from '../../api/scheduleApi';
 
 export default function CalendarModal({ modalClose }) {
-  const [selectColor, setSelectColor] = useState('#69DB7C');
+  const [content, setContent] = useState('');
+  const [contentError, setContentError] = useState(false);
+  const [color, setColor] = useState('#69DB7C');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [showColorDropdown, setShowColorDropdown] = useState(false);
+
+  const { movingPlanId } = useParams();
 
   const handleBackgroundClick = () => {
     if (showColorDropdown) {
@@ -29,6 +35,11 @@ export default function CalendarModal({ modalClose }) {
     e.stopPropagation();
   };
 
+  const handleContentChange = (e) => {
+    setContent(() => e.target.value);
+    setContentError(() => false);
+  };
+
   const handleClickColor = () => {
     setShowColorDropdown((prev) => !prev);
   };
@@ -37,16 +48,28 @@ export default function CalendarModal({ modalClose }) {
     e.stopPropagation();
   };
 
-  const handleButton = (e) => {
+  const handleButton = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (showColorDropdown) {
       setShowColorDropdown(() => false);
-      e.preventDefault();
-      e.stopPropagation();
     } else {
-      alert('확인');
-      e.preventDefault();
-      e.stopPropagation();
-      modalClose();
+      if (!content.length) {
+        setContentError(() => true);
+      } else {
+        try {
+          const response = await scheduleApi.createSchedule(movingPlanId, {
+            content: content,
+            startDate: parseDateObject(startDate),
+            endDate: parseDateObject(endDate),
+            color: color,
+          });
+          modalClose();
+        } catch (err) {
+          console.log(err);
+        }
+      }
     }
   };
 
@@ -59,8 +82,8 @@ export default function CalendarModal({ modalClose }) {
   const inputLineStyle =
     'flex justify-between items-center w-full border-b-1 border-gray-500 text-xl p-1 m-4';
   const inputWrapperStyle = 'flex grow';
-  const inputStyle = 'grow focus:outline-hidden';
-  const circleStyle = `bg-[${selectColor}] w-10 h-10 rounded-4xl`;
+  const inputStyle = `grow focus:outline-hidden ${contentError ? 'placeholder:text-red-300' : ''}`;
+  const circleStyle = `bg-[${color}] w-10 h-10 rounded-4xl`;
   const buttonStyle =
     'w-40 h-15 bg-white border-4 border-primary rounded-3xl text-primary text-xl font-bold cursor-pointer hover:bg-primary hover:text-white';
   const calendarModalDropdownStyle = 'relative group';
@@ -73,12 +96,18 @@ export default function CalendarModal({ modalClose }) {
           <form className={formStyle} onSubmit={handleFormSubmit}>
             <div className={inputLineStyle}>
               <div className={inputWrapperStyle}>
-                <input type="text" className={inputStyle} placeholder="할 일 입력"></input>
+                <input
+                  type="text"
+                  className={inputStyle}
+                  placeholder={`${contentError ? '할 일을 입력해 주세요' : '할 일 입력'}`}
+                  value={content}
+                  onChange={handleContentChange}
+                />
               </div>
               <div className={calendarModalDropdownStyle}>
                 <div className={circleStyle} onClick={handleClickColor}>
                   <div className={calendarModalDropdownBodyStyle} onClick={handleDropdownClick}>
-                    <CalendarColorModal selectColor={selectColor} setSelectColor={setSelectColor} />
+                    <CalendarColorModal color={color} setColor={setColor} />
                   </div>
                 </div>
               </div>
@@ -99,4 +128,12 @@ export default function CalendarModal({ modalClose }) {
       </div>
     </div>
   );
+}
+
+function parseDateObject(date) {
+  return parseDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
+}
+
+function parseDate(year, month, day) {
+  return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 }

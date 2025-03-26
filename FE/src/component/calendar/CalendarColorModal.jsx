@@ -1,4 +1,4 @@
-export default function CalendarColorModal({ selectColor, setSelectColor }) {
+export default function CalendarColorModal({ color, setColor }) {
   // Tailwind CSS에서 사용할 수 있도록 바탕 색상을 미리 정의하는 부분으로, 실제 대입하지는 않음
   const colorsListForSelect = [
     [
@@ -34,13 +34,13 @@ export default function CalendarColorModal({ selectColor, setSelectColor }) {
     ],
   ];
 
-  const selectColorUpper = selectColor.toUpperCase();
+  const colorUpper = color.toUpperCase();
 
   const decideColor = (e) => {
     // e.currentTarget으로 하면 null이 되는 문제가 있어서 다음과 같이 보정
     // https://stackoverflow.com/questions/78717419/react-onmouseenter-event-currenttarget-is-always-null
     const { currentTarget } = e;
-    setSelectColor(() => currentTarget.getAttribute('value'));
+    setColor(() => currentTarget.getAttribute('value'));
   };
 
   const circleButtonStyle = 'w-10 h-10 m-1 rounded-4xl';
@@ -59,7 +59,7 @@ export default function CalendarColorModal({ selectColor, setSelectColor }) {
           <div
             key={k}
             value={color}
-            className={`${circleButtonStyle} bg-[${color}] ${selectColorUpper === color ? selectedButtonStyle : notSelectedButtonStyle}`}
+            className={`${circleButtonStyle} bg-[${color}] ${colorUpper === color ? selectedButtonStyle : notSelectedButtonStyle}`}
             onClick={decideColor}
           />
         );
