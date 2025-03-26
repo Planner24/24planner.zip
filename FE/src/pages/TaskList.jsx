@@ -21,7 +21,7 @@ export default function TaskList() {
     memo: '',
   });
 
-  const { title, totalCount, completeCount, tasks, memo } = taskGroupDetails;
+  const { title, memo } = taskGroupDetails;
 
   // 체크포인트 리스트 가져오기
   useEffect(() => {

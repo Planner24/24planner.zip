@@ -8,11 +8,12 @@ export default function TaskGroupMemo({ memo, setTaskGroupDetails }) {
   const { taskGroupId } = useParams();
 
   // 상태 관리 데이터
-  const [updateMemo, setUpdateMemo] = useState('');
+  const [updateMemo, setUpdateMemo] = useState(memo);
 
   // 체크 그룹 메모 수정 시 화면 렌더링
   useEffect(() => {
     setUpdateMemo(memo);
+    
   }, [memo]);
 
   // 체크 그룹 메모 입력값
@@ -22,12 +23,12 @@ export default function TaskGroupMemo({ memo, setTaskGroupDetails }) {
 
   // 체크 그룹 메모 수정
   const handleUpdateMemo = async (e) => {
-    // 기존 제목과 변경된 제목이 동일한 경우
+    // 기존 메모와 변경된 메모가 동일한 경우
     if (updateMemo === memo) {
       return;
     }
 
-    // 체크 그룹 제목이 존재하는 경우
+    // 체크 그룹 메모가 존재하는 경우
     try {
       const response = await taskGroupApi.updateMemo(movingPlanId, taskGroupId, {
         memo: updateMemo,
@@ -35,7 +36,9 @@ export default function TaskGroupMemo({ memo, setTaskGroupDetails }) {
 
       const newMemo = response.data.data.memo;
       setTaskGroupDetails((prev) => ({ ...prev, memo: newMemo }));
-    } catch (error) {}
+      console.log(newMemo);
+      
+    } catch (error) { }
   };
 
   // CSS
