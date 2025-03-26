@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import mapApi from '../../api/mapApi';
 
-export default function MapModal({ modalClose, setAddressData, setSelectedButton }) {
+export default function MapModal({ modalClose, setAddressData, setSelectedButton, setHouseId }) {
   const { movingPlanId } = useParams();
 
   const [address, setAddress] = useState('');
@@ -20,6 +20,8 @@ export default function MapModal({ modalClose, setAddressData, setSelectedButton
   });
 
   const [isOpen, setIsOpen] = useState(false);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const loadPostcodeScript = () => {
     return new Promise((resolve, reject) => {
@@ -88,12 +90,19 @@ export default function MapModal({ modalClose, setAddressData, setSelectedButton
   };
 
   const createhouse = async () => {
+
+    if (isSubmitting) return; 
+    
+    setIsSubmitting(true); 
+    
     const errors = {};
-    if (!formData.nickname) errors.nickname = '별명을 지어주세요.';
+    if (!formData.nickname) errors.nickname = '별명을 넣어주세요.';
     if (!formData.address1) errors.address1 = '주소를 넣어주세요.';
+    if (!formData.address2) errors.address2 = '상세 주소를 넣어주세요.';
 
     if (Object.keys(errors).length) {
       setInputRequestMessage(errors);
+      setIsSubmitting(false);
       return;
     }
 
@@ -101,7 +110,7 @@ export default function MapModal({ modalClose, setAddressData, setSelectedButton
       let response = await mapApi.mapCreate(movingPlanId, formData);
       response = response.data.data;
 
-      const { latitude, longitude } = response;
+      const { latitude, longitude, id } = response;
 
       setAddressData((prev) => ({
         ...prev,
@@ -109,11 +118,14 @@ export default function MapModal({ modalClose, setAddressData, setSelectedButton
         centerlongitude: longitude,
       }));
 
-      setSelectedButton(`${latitude},${longitude}`);
+      setSelectedButton(`${id}`);
+      setHouseId(id);
 
       modalClose();
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsSubmitting(false); // 요청 완료 후 다시 버튼 활성화
     }
   };
 
@@ -172,6 +184,9 @@ export default function MapModal({ modalClose, setAddressData, setSelectedButton
                 className={inputStyle}
               />
               <hr className={lineStyle} />
+              <div className={inputRequestMessageStyle}>
+                {inputRequestMessage.address2 || '\u00A0'}
+              </div>
             </div>
             <button className={buttonStyle} onClick={createhouse}>
               새 집 추가

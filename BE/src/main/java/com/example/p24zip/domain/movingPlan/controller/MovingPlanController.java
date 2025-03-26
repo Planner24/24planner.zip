@@ -5,6 +5,7 @@ import com.example.p24zip.domain.movingPlan.dto.response.MovingPlanResponseDto;
 import com.example.p24zip.domain.movingPlan.service.MovingPlanService;
 import com.example.p24zip.domain.user.entity.User;
 import com.example.p24zip.global.response.ApiResponse;
+import com.example.p24zip.global.validator.MovingPlanValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import java.util.Map;
 public class MovingPlanController {
 
     private final MovingPlanService movingPlanService;
+    private final MovingPlanValidator movingPlanValidator;
 
     @PostMapping
     public ResponseEntity<ApiResponse<MovingPlanResponseDto>> createMovingPlan(
@@ -49,11 +51,27 @@ public class MovingPlanController {
         ));
     }
 
+    @GetMapping("/{movingPlanId}")
+    public ResponseEntity<ApiResponse<MovingPlanResponseDto>> readMovingPlanById(
+            @PathVariable Long movingPlanId,
+            @AuthenticationPrincipal User user) {
+
+        movingPlanValidator.validateMovingPlanAccess(movingPlanId, user);
+
+        return ResponseEntity.ok(ApiResponse.ok(
+                "OK",
+                "플랜 조회에 성공했습니다.",
+                movingPlanService.readMovingPlanById(movingPlanId)
+        ));
+    }
+
     @PutMapping("/{movingPlanId}")
     public ResponseEntity<ApiResponse<MovingPlanResponseDto>> updateMovingPlan(
             @PathVariable Long movingPlanId,
             @Valid @RequestBody MovingPlanRequestDto requestDto,
             @AuthenticationPrincipal User user) {
+
+        movingPlanValidator.validateMovingPlanAccess(movingPlanId, user);
 
         return ResponseEntity.ok(ApiResponse.ok(
                 "UPDATED",
@@ -66,6 +84,8 @@ public class MovingPlanController {
     public ResponseEntity<ApiResponse<Object>> deleteMovingPlan(
             @PathVariable Long movingPlanId,
             @AuthenticationPrincipal User user) {
+
+        movingPlanValidator.validateMovingPlanAccess(movingPlanId, user);
 
         movingPlanService.deleteMovingPlan(movingPlanId);
 

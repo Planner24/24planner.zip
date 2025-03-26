@@ -1,6 +1,6 @@
 package com.example.p24zip.domain.house.dto.request;
 
-import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,8 +11,9 @@ import org.hibernate.validator.constraints.Length;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChangeHouseContentRequestDto {
-    @Length(max = 1000)
-    private String content;
+public class ChangeHouseDetailAddressRequestDto {
+    @NotBlank
+    @Length(max = 35)
+    private String address2;
 
 }
