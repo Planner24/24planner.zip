@@ -130,14 +130,14 @@ export default function MapSidebar({
     setAddressIsEditing(false);
   };
 
-    // 엔터키 눌러 체크 그룹 제목 수정
+    // 엔터키 눌러 별칭 수정
     const handleAdressEnter = (e) => {
       if (e.key === 'Enter') {
         updateAddress(e);
       }
     };
 
-     // 엔터키 눌러 체크 그룹 제목 수정
+     // 엔터키 눌러 주소 수정
      const handleNicknameEnter = (e) => {
       if (e.key === 'Enter') {
         updateNickname(e);
