@@ -1,7 +1,17 @@
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+
+import scheduleApi from '../../api/scheduleApi';
+
 export default function CalendarSidebar({ selectDate, scheduleList }) {
   // Tailwind CSS에서 사용할 색상 Class들을 미리 선언
   // TODO: 임시적인 목록이므로, 추후 변경될 수 있음
   const tempUsingColor = ['bg-[#69db7c]', 'bg-[#4dabf7]', 'bg-[#2f9e44]', 'bg-[#fcc2d7]'];
+
+  const [content, setContent] = useState('');
+  const [contentError, setContentError] = useState(false);
+
+  const { movingPlanId } = useParams();
 
   const calendarSidebarStyle = 'flex flex-1 flex-col items-center m-4';
   const scheduleDateStyle = 'text-xl mt-12';
@@ -11,8 +21,9 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
   const deleteButtonDivStyle = 'text-gray-500 text-opacity-70 cursor-pointer';
   const inputDivStyle =
     'flex justify-center items-center border-1 border-gray-300 rounded-3xl w-full py-2 m-2 h-10';
-  const inputStyle = 'focus:outline-none w-full p-2';
-  const addButtonStyle = 'flex justify-center items-center mx-1 px-4 bg-primary rounded-3xl h-10';
+  const inputStyle = `focus:outline-none w-full p-4 ${contentError ? 'placeholder:text-red-300' : ''}`;
+  const addButtonStyle =
+    'flex justify-center items-center mx-1 px-4 bg-primary rounded-3xl h-10 cursor-pointer';
 
   const dailyScheduleList = [];
   if (selectDate) {
@@ -25,6 +36,32 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
       }
     });
   }
+
+  const handleContentChange = (e) => {
+    setContent(() => e.target.value);
+    setContentError(() => false);
+  };
+
+  const handleAddButton = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!content.length) {
+      setContentError(() => true);
+    } else {
+      try {
+        const response = await scheduleApi.createSchedule(movingPlanId, {
+          content: content,
+          startDate: selectDate,
+          endDate: selectDate,
+          color: '#69DB7C',
+        });
+        setContent(() => '');
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
 
   return (
     <section className={calendarSidebarStyle}>
@@ -48,9 +85,17 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
             })}
             <div className={scheduleElementDivStyle}>
               <div className={inputDivStyle}>
-                <input type="text" placeholder="할 일 추가" className={inputStyle}></input>
+                <input
+                  type="text"
+                  className={inputStyle}
+                  placeholder={`${contentError ? '할 일을 입력해 주세요' : '할 일 입력'}`}
+                  value={content}
+                  onChange={handleContentChange}
+                />
               </div>
-              <div className={addButtonStyle}>+</div>
+              <div className={addButtonStyle} onClick={handleAddButton}>
+                +
+              </div>
             </div>
           </div>
         </>
@@ -67,4 +112,12 @@ function parseIntFromDate(date) {
     Number.parseInt(date.substring(5, 7)) * 100 +
     Number.parseInt(date.substring(8, 10))
   );
+}
+
+function parseDateObject(date) {
+  return parseDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
+}
+
+function parseDate(year, month, day) {
+  return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 }
