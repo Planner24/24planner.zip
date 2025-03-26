@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function CalendarColorModal({ modalClose2 }) {
+export default function CalendarColorModal({ modalClose2, selectColor, setSelectColor }) {
   // Tailwind CSS에서 사용할 수 있도록 바탕 색상을 미리 정의하는 부분으로, 실제 대입하지는 않음
   const colorsListForSelect = [
     [
@@ -36,13 +36,24 @@ export default function CalendarColorModal({ modalClose2 }) {
     ],
   ];
 
+  const selectColorUpper = selectColor.toUpperCase();
+
+  const decideColor = (e) => {
+    // e.currentTarget으로 하면 null이 되는 문제가 있어서 다음과 같이 보정
+    // https://stackoverflow.com/questions/78717419/react-onmouseenter-event-currenttarget-is-always-null
+    const { currentTarget } = e;
+    setSelectColor(() => currentTarget.getAttribute('value'));
+  };
+
   const colorsDivList = colorsList.map((subColorsList, i) => {
     const subColorsDivList = subColorsList.map((colors, j) => {
       const colorDivList = colors.map((color, k) => {
         return (
           <div
             key={k}
-            className={`w-10 h-10 m-1 border-1 border-gray-300 rounded-4xl bg-[${color}]`}
+            value={color}
+            className={`w-10 h-10 m-1 ${selectColorUpper === color ? 'border-2 border-red-700' : 'border-1 border-gray-300'} rounded-4xl bg-[${color}]`}
+            onClick={decideColor}
           />
         );
       });
@@ -59,7 +70,7 @@ export default function CalendarColorModal({ modalClose2 }) {
     );
   });
 
-  const handleBackgroundClick = (e) => {
+  const handleClose = (e) => {
     modalClose2();
     e.stopPropagation();
   };
@@ -69,9 +80,11 @@ export default function CalendarColorModal({ modalClose2 }) {
   const flexColStyle = 'flex flex-col justify-center items-center mx-auto my-auto';
   const sizeLimiterStyle = flexColStyle + ' w-full h-full max-w-320 max-h-220 bg-transparent';
   const modalBodyStyle = flexColStyle + ' w-1/2 h-1/2 bg-white rounded-3xl border-2';
+  const buttonStyle =
+    'w-40 h-15 bg-white border-4 border-primary rounded-3xl text-primary text-xl font-bold cursor-pointer hover:bg-primary hover:text-white';
 
   return (
-    <div className={transparentBackgroundStyle} onClick={handleBackgroundClick}>
+    <div className={transparentBackgroundStyle} onClick={handleClose}>
       <div className={sizeLimiterStyle}>
         <div
           className={modalBodyStyle}
@@ -79,7 +92,11 @@ export default function CalendarColorModal({ modalClose2 }) {
             e.stopPropagation();
           }}
         >
-          <div className="flex justify-center items-center">{colorsDivList}</div>
+          <div className="text-xl font-semibold">색상 선택</div>
+          <div className="flex justify-center items-center m-4">{colorsDivList}</div>
+          <button className={buttonStyle} onClick={handleClose}>
+            닫기
+          </button>
         </div>
       </div>
     </div>

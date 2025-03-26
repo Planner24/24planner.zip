@@ -10,6 +10,7 @@ import CalendarColorModal from './CalendarColorModal';
 
 export default function CalendarModal({ modalClose }) {
   const [showModal2, setShowModal2] = useState();
+  const [selectColor, setSelectColor] = useState('#69db7c');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
@@ -70,7 +71,7 @@ export default function CalendarModal({ modalClose }) {
     'flex justify-between items-center w-full border-b-1 border-gray-500 text-xl p-1 m-4';
   const inputWrapperStyle = 'flex grow';
   const inputStyle = 'grow focus:outline-hidden';
-  const circleStyle = 'bg-primary w-10 h-10 rounded-4xl';
+  const circleStyle = `bg-[${selectColor}] w-10 h-10 rounded-4xl`;
   const dateSelectWrapperStyle = 'flex w-full h-2/5 justify-between';
   const dateSelectStyle = 'flex flex-1 flex-col justify-evenly items-center';
   const dateSelectTitleStyle = 'text-2xl';
@@ -82,7 +83,11 @@ export default function CalendarModal({ modalClose }) {
     <div className={transparentBlackBackgroundStyle} onClick={modalClose}>
       {showModal2 &&
         createPortal(
-          <CalendarColorModal modalClose2={() => setShowModal2(() => false)} />,
+          <CalendarColorModal
+            modalClose2={() => setShowModal2(() => false)}
+            selectColor={selectColor}
+            setSelectColor={setSelectColor}
+          />,
           document.body,
         )}
       <div className={sizeLimiterStyle}>
