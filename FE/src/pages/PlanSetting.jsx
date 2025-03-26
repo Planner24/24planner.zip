@@ -20,7 +20,12 @@ export default function PlanSetting() {
         const data = response.data.data;
 
         setTitle(data.title);
-      } catch (error) {}
+      } catch (error) {
+        const errordata = error.response.data;
+        if (errordata.code === 'NOT_FOUND') {
+          navigate('/not-found');
+        }
+      }
     }
     fetchPlan();
   }, []);
