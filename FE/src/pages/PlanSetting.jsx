@@ -64,11 +64,17 @@ export default function PlanSetting() {
   };
 
   // 이사 플랜 삭제
-  const deletePlan = async (e) => {
-    try {
-      await planApi.deletePlan(movingPlanId);
-      navigate('/plans');
-    } catch (error) {}
+  const deletePlan = async () => {
+    const confirmDelete = window.confirm(
+      '이 이사 플랜과 관련된 모든 데이터가 삭제됩니다.\n정말 삭제하시겠습니까?',
+    );
+
+    if (confirmDelete) {
+      try {
+        await planApi.deletePlan(movingPlanId);
+        navigate('/plans');
+      } catch (error) {}
+    }
   };
 
   // CSS

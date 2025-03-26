@@ -30,7 +30,7 @@ export default function PlanList() {
   const titleStyle = 'text-2xl';
   const lineStyle = 'mx-30 mt-5 border-t-2 border-primary';
   const planListContainer = 'flex flex-col items-center px-60 py-10 list-none';
-  const emptyText = 'text-primary text-2xl';
+  const emptyText = 'mt-10 text-primary text-2xl';
 
   return (
     <div className={displayStyle}>
