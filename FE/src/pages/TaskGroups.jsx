@@ -28,15 +28,12 @@ export default function TaskGroups() {
     getTaskGroups();
   }, [totalProgress]);
 
-  // CSS
-  // px: 가로padding py: 세로 패딩
-  // w-25: width: 25px * 4
-  //
   const section = 'px-15 py-3.75 flex flex-col items-center';
   const totalGaugeFontSize = 'font-roboto text-xl font-bold';
-  const progress = 'w-215 h-10 border-2 rounded-full m-5 px-2 py-1 border-primary bg-primary';
+  const progress = 'w-215 h-10 border-4 rounded-full m-5 border-primary';
+  const progressPercent = 'bg-primary border-primary border-1 rounded-full';
   const house =
-    'w-215 border-2 rounded-3xl m-5 px-2 py-5  border-4 border-primary text-lg text-black text-center font-bold bg-white font-roboto';
+    'w-215 border-3 rounded-3xl m-5 px-2 py-5  text-lg text-black text-center font-bold bg-white font-roboto';
 
   return (
     <section className={`${section}`}>
@@ -45,7 +42,23 @@ export default function TaskGroups() {
         <span className={`${totalGaugeFontSize} text-primary`}> {totalProgress}%</span>
         <span className={`${totalGaugeFontSize}`}> 완료!</span>
       </div>
-      <div className={`${progress}`}></div>
+
+      <div className={`${progress}`} style={{ position: 'relative' }}>
+        {totalProgress ? (
+          <div
+            className={`${progressPercent}`}
+            style={{
+              width: 2 + 0.985 * totalProgress + '%',
+              height: '100%',
+              position: 'absolute',
+              left: -2,
+            }}
+          ></div>
+        ) : (
+          <div></div>
+        )}
+      </div>
+
       <div
         className={`${house}`}
         onClick={() => {

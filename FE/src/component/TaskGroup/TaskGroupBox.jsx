@@ -24,7 +24,6 @@ export default function TaskGroupBox({ taskGroups, setTaskGroups }) {
 
     try {
       const response = await taskGroupApi.postTaskGroup(movingPlanId, { title: inputValue });
-      console.log(response);
       const code = response.code;
       const id = response.data.id;
       if (code === 'CREATED') {
@@ -51,8 +50,9 @@ export default function TaskGroupBox({ taskGroups, setTaskGroups }) {
   const section = 'm-10 grid grid-cols-2 gap-14';
   const groupBox =
     'w-100 h-35 border-3 rounded-3xl px-2 py-5 bg-white font-roboto flex flex-col items-center justify-center';
-  const boxText = 'text-lg font-roboto pr-60 m-3';
-  const progress = 'w-90 h-7 border-2 rounded-full px-2 py-1 border-primary bg-primary ';
+  const boxText = 'text-lg font-roboto m-3';
+  const progress = 'w-90 h-7 border-2 rounded-full border-primary';
+  const progressPercent = 'bg-primary border-primary border-1 rounded-full';
   const addBox =
     'w-100 h-35 border-3 border-gray-300 rounded-3xl px-2 py-5 flex items-center justify-center';
   const addBoxText = 'text-gray-300 text-2xl font-roboto ';
@@ -69,7 +69,21 @@ export default function TaskGroupBox({ taskGroups, setTaskGroups }) {
       {taskGroups.map((task) => (
         <div key={task.id} className={`${groupBox}`}>
           <span className={`${boxText}`}>{task.title}</span>
-          <div className={`${progress}`}></div>
+          <div className={`${progress}`} style={{ position: 'relative' }}>
+            {task.progress ? (
+              <div
+                className={`${progressPercent}`}
+                style={{
+                  width: 2 + 0.985 * task.progress + '%',
+                  height: '100%',
+                  position: 'absolute',
+                  left: -2,
+                }}
+              ></div>
+            ) : (
+              <div></div>
+            )}
+          </div>
         </div>
       ))}
 
