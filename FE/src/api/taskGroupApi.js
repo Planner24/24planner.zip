@@ -12,6 +12,15 @@ const taskGroupApi = {
     return response;
   },
 
+  // 체크 그룹 메모 수정
+  updateMemo: async (movingPlanId, taskGroupId, memo) => {
+    const response = await api.patch(
+      `${ENDPOINT}/${movingPlanId}/taskgroups/${taskGroupId}/memo`,
+      memo,
+    );
+    return response;
+  },
+
   // 체크 그룹 삭제
   deleteTaskGroup: async (movingPlanId, taskGroupId) => {
     const response = await api.delete(`${ENDPOINT}/${movingPlanId}/taskgroups/${taskGroupId}`);
