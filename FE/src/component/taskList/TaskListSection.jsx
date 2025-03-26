@@ -88,6 +88,7 @@ export default function TaskListSection({ taskGroupDetails, setTaskGroupDetails 
               name="content"
               id="content"
               value={newContent || ''}
+              maxLength={1000}
               placeholder="내용을 입력해주세요."
               className={inputNewContentStyle}
               onChange={handleInputNewContent}
