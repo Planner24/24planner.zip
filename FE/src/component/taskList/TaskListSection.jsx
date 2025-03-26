@@ -70,7 +70,7 @@ export default function TaskListSection({ taskGroupDetails, setTaskGroupDetails 
         {completeCount} / {totalCount}
       </div>
       <ul className={taskListStyle}>
-        {tasks?.map((task) => {
+        {tasks?.map((task) => {          
           return <Task key={task.id} task={task} setTaskGroupDetails={setTaskGroupDetails}></Task>;
         })}
         <li className={taskStyle}>

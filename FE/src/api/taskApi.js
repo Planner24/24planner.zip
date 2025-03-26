@@ -5,10 +5,9 @@ const ENDPOINT = '/plans';
 const taskApi = {
   // 체크포인트 생성
   createTask: async (movingPlanId, taskGroupId, content) => {
-    const response = await api.post(
-      `${ENDPOINT}/${movingPlanId}/taskgroups/${taskGroupId}/tasks`,
-      {content},
-    );
+    const response = await api.post(`${ENDPOINT}/${movingPlanId}/taskgroups/${taskGroupId}/tasks`, {
+      content,
+    });
     return response;
   },
 
@@ -18,11 +17,21 @@ const taskApi = {
     return response;
   },
 
+  // 체크포인트 내용 수정
+  updateTaskContent: async (movingPlanId, taskGroupId, taskId, content) => {
+    const response = await api.patch(
+      `${ENDPOINT}/${movingPlanId}/taskgroups/${taskGroupId}/tasks/${taskId}/content`,
+      content,
+    );
+    return response;
+  },
+
   // 체크포인트 삭제
   deleteTask: async (movingPlanId, taskGroupId, taskId) => {
     const response = await api.delete(
       `${ENDPOINT}/${movingPlanId}/taskgroups/${taskGroupId}/tasks/${taskId}`,
     );
+    return response;
   },
 };
 

@@ -13,7 +13,6 @@ export default function TaskGroupMemo({ memo, setTaskGroupDetails }) {
   // 체크 그룹 메모 수정 시 화면 렌더링
   useEffect(() => {
     setUpdateMemo(memo);
-    
   }, [memo]);
 
   // 체크 그룹 메모 입력값
@@ -36,8 +35,6 @@ export default function TaskGroupMemo({ memo, setTaskGroupDetails }) {
 
       const newMemo = response.data.data.memo;
       setTaskGroupDetails((prev) => ({ ...prev, memo: newMemo }));
-      console.log(newMemo);
-      
     } catch (error) { }
   };
 
