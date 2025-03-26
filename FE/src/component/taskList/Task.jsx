@@ -143,7 +143,7 @@ export default function Task({ task, setTaskGroupDetails }) {
             name="content"
             id="content"
             value={updateContent || ''}
-            // maxLength={18}
+            maxLength={100}
             placeholder={isError ? '내용을 입력해주세요.' : ''}
             className={inputNewContentStyle}
             onChange={handleInputNewContent}
