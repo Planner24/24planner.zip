@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../store/slices/authSlice';
 import authApi from '../../api/authApi';
 import planApi from '../../api/planApi';
@@ -12,6 +12,8 @@ export default function HeaderRight() {
 
   const [storedPlanId, setStoredPlanId] = useState(0);
   const [currentPlanTitle, setCurrentPlanTitle] = useState('');
+
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   const splitedUrlString = location.pathname.split('/');
   let currentPlanId = splitedUrlString[2];
@@ -26,8 +28,8 @@ export default function HeaderRight() {
       try {
         const response = await planApi.readPlan(storedPlanId);
         setCurrentPlanTitle(response.data.data.title);
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
+        console.log(error);
         setCurrentPlanTitle('');
       }
     }
@@ -69,7 +71,10 @@ export default function HeaderRight() {
               </Link>
             </li>
             <li className={headerDropdownItemStyle}>
-              <Link to="/config" className={headerDropdownLinkStyle}>
+              <Link
+                to={`/plans/${splitedUrlString[2]}/setting`}
+                className={headerDropdownLinkStyle}
+              >
                 이사 설정
               </Link>
             </li>
@@ -79,14 +84,12 @@ export default function HeaderRight() {
         <></>
       )}
 
-      {splitedUrlString[1] === 'plans' ? (
+      {isLoggedIn && (
         <li className={headerItemStyle}>
           <div className="cursor-pointer" onClick={handleLogoutClick}>
             로그아웃
           </div>
         </li>
-      ) : (
-        <></>
       )}
     </ul>
   );

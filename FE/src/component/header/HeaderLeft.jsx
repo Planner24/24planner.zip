@@ -27,7 +27,9 @@ export default function HeaderLeft() {
   return (
     <ul className={headerListStyle}>
       <li className={headerLogoStyle}>
-        <img src={logo} />
+        <Link to="/">
+          <img src={logo} />
+        </Link>
       </li>
 
       <li className="flex">
