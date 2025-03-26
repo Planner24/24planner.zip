@@ -100,6 +100,7 @@ export default function Task({ task, setTaskGroupDetails }) {
           return prevTaskId !== id;
         }),
         totalCount: prev.totalCount - 1,
+        completeCount: isCompleted ? prev.completeCount - 1 : prev.completeCount,
       }));
     } catch (error) {}
   };
