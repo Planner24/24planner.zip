@@ -33,7 +33,8 @@ export default function TaskListSection({ taskGroupDetails, setTaskGroupDetails 
   const handleCreateTask = async (e) => {
     // 체크포인트 내용이 존재하지 않는 경우
     if (!e.target.value.trim()) {
-      return;
+      setIsEditing(false);
+      return;                                                                  
     }
 
     try {
@@ -94,6 +95,7 @@ export default function TaskListSection({ taskGroupDetails, setTaskGroupDetails 
               onChange={handleInputNewContent}
               onBlur={handleCreateTask}
               onKeyDown={handlePressEnter}
+              autoFocus
             />
           ) : (
             <>
