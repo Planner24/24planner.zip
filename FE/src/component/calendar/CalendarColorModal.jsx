@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function CalendarColorModal({ selectColor, setSelectColor }) {
   // Tailwind CSS에서 사용할 수 있도록 바탕 색상을 미리 정의하는 부분으로, 실제 대입하지는 않음
   const colorsListForSelect = [

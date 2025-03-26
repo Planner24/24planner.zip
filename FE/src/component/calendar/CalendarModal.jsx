@@ -1,11 +1,7 @@
-import { useState, forwardRef } from 'react';
-
-import DatePicker, { registerLocale } from 'react-datepicker';
-import ko from 'date-fns/locale/ko';
-
-import 'react-datepicker/dist/react-datepicker.css';
+import { useState } from 'react';
 
 import CalendarColorModal from './CalendarColorModal';
+import CalendarModalDatePicker from './CalendarModalDatePicker';
 
 export default function CalendarModal({ modalClose }) {
   const [selectColor, setSelectColor] = useState('#69DB7C');
@@ -13,40 +9,19 @@ export default function CalendarModal({ modalClose }) {
   const [endDate, setEndDate] = useState(new Date());
   const [showColorDropdown, setShowColorDropdown] = useState(false);
 
-  // DatePicker에 요일이 한국어로 뜨도록 할 때 필요한 설정
-  registerLocale('ko', ko);
-
-  const datePickerHeaderStyle = 'flex justify-between items-center text-lg mb-1';
-  const datePickerButtonDivStyle = 'flex-1';
-  const datePickerButtonStyle = 'text-base';
-  const datePickerDateStyle = 'flex flex-2 justify-center';
-
-  const createCustomHeader = ({ date, decreaseMonth, increaseMonth }) => {
-    return (
-      <div className={datePickerHeaderStyle}>
-        <div className={datePickerButtonDivStyle}>
-          <button className={datePickerButtonStyle} onClick={decreaseMonth}>
-            {'<'}
-          </button>
-        </div>
-        <div className={datePickerDateStyle}>
-          {date.getFullYear()}년 {date.getMonth() + 1}월
-        </div>
-        <div className={datePickerButtonDivStyle}>
-          <button className={datePickerButtonStyle} onClick={increaseMonth}>
-            {'>'}
-          </button>
-        </div>
-      </div>
-    );
-  };
-
   const handleBackgroundClick = () => {
     if (showColorDropdown) {
       setShowColorDropdown(() => false);
     } else {
       modalClose();
     }
+  };
+
+  const handleModalBodyClick = (e) => {
+    if (showColorDropdown) {
+      setShowColorDropdown(() => false);
+    }
+    e.stopPropagation();
   };
 
   const handleFormSubmit = (e) => {
@@ -75,9 +50,6 @@ export default function CalendarModal({ modalClose }) {
     }
   };
 
-  const StartDateCustomInput = buttonForDatePicker();
-  const EndDateCustomInput = buttonForDatePicker();
-
   const transparentBlackBackgroundStyle =
     'absolute flex top-0 left-0 z-2 w-full h-full min-w-320 min-h-220 bg-black/75';
   const flexColStyle = 'flex flex-col justify-center items-center mx-auto my-auto';
@@ -89,10 +61,6 @@ export default function CalendarModal({ modalClose }) {
   const inputWrapperStyle = 'flex grow';
   const inputStyle = 'grow focus:outline-hidden';
   const circleStyle = `bg-[${selectColor}] w-10 h-10 rounded-4xl`;
-  const dateSelectWrapperStyle = 'flex w-full h-2/5 justify-between';
-  const dateSelectStyle = 'flex flex-1 flex-col justify-evenly items-center';
-  const dateSelectTitleStyle = 'text-2xl';
-  const dateSelectContentStyle = 'text-lg';
   const buttonStyle =
     'w-40 h-15 bg-white border-4 border-primary rounded-3xl text-primary text-xl font-bold cursor-pointer hover:bg-primary hover:text-white';
   const calendarModalDropdownStyle = 'relative group';
@@ -101,15 +69,7 @@ export default function CalendarModal({ modalClose }) {
   return (
     <div className={transparentBlackBackgroundStyle} onClick={handleBackgroundClick}>
       <div className={sizeLimiterStyle}>
-        <div
-          className={modalBodyStyle}
-          onClick={(e) => {
-            if (showColorDropdown) {
-              setShowColorDropdown(() => false);
-            }
-            e.stopPropagation();
-          }}
-        >
+        <div className={modalBodyStyle} onClick={handleModalBodyClick}>
           <form className={formStyle} onSubmit={handleFormSubmit}>
             <div className={inputLineStyle}>
               <div className={inputWrapperStyle}>
@@ -123,42 +83,12 @@ export default function CalendarModal({ modalClose }) {
                 </div>
               </div>
             </div>
-            <div className={dateSelectWrapperStyle}>
-              <div className={dateSelectStyle}>
-                <div className={dateSelectTitleStyle}>시작일</div>
-                <div className={dateSelectContentStyle}>
-                  <DatePicker
-                    selected={startDate}
-                    onChange={(date) => {
-                      setStartDate(date);
-                      if (endDate < date) {
-                        setEndDate(date);
-                      }
-                    }}
-                    customInput={<StartDateCustomInput />}
-                    locale="ko"
-                    renderCustomHeader={createCustomHeader}
-                  />
-                </div>
-              </div>
-              <div className={dateSelectStyle}>
-                <div className={dateSelectTitleStyle}>종료일</div>
-                <div className={dateSelectContentStyle}>
-                  <DatePicker
-                    selected={endDate}
-                    onChange={(date) => {
-                      setEndDate(date);
-                      if (startDate > date) {
-                        setStartDate(date);
-                      }
-                    }}
-                    customInput={<EndDateCustomInput />}
-                    locale="ko"
-                    renderCustomHeader={createCustomHeader}
-                  />
-                </div>
-              </div>
-            </div>
+            <CalendarModalDatePicker
+              startDate={startDate}
+              setStartDate={setStartDate}
+              endDate={endDate}
+              setEndDate={setEndDate}
+            />
             <div>
               <button className={buttonStyle} onClick={handleButton}>
                 할 일 추가하기
@@ -169,12 +99,4 @@ export default function CalendarModal({ modalClose }) {
       </div>
     </div>
   );
-}
-
-function buttonForDatePicker() {
-  return forwardRef(({ value, onClick, className }, ref) => (
-    <button className={className} onClick={onClick} ref={ref}>
-      {value.substring(6, 10)}년 {value.substring(0, 2)}월 {value.substring(3, 5)}일
-    </button>
-  ));
 }
