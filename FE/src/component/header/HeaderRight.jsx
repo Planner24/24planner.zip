@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../store/slices/authSlice';
+import authApi from '../../api/authApi';
 
 export default function HeaderRight() {
   const location = useLocation();
@@ -9,8 +10,9 @@ export default function HeaderRight() {
 
   const splitedUrlString = location.pathname.split('/');
 
-  const handleLogoutClick = () => {
+  const handleLogoutClick = async () => {
     dispatch(logout());
+    await authApi.logout();
     navigate('/');
   };
 
