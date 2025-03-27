@@ -86,10 +86,9 @@ export default function PlanSetting() {
   const displayStyle = 'w-300 mx-auto my-5';
   const titleHeader = 'h-full mx-60 flex justify-between';
   const titleDiv = 'flex';
-  const titleStyle = 'text-2xl mr-5';
-  const titleButton =
-    'text-xl text-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary';
-  const titleInputStyle = 'text-gray-700 text-2xl border-b outline-none';
+  const titleStyle = 'text-2xl mr-3';
+  const titleButton = 'text-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary';
+  const titleInputStyle = 'w-120 text-gray-700 text-2xl border-b outline-none';
 
   return (
     <div className={displayStyle}>
