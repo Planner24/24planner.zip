@@ -51,7 +51,7 @@ export default function TaskGroups() {
               width: 2 + 0.985 * totalProgress + '%',
               height: '100%',
               position: 'absolute',
-              left: -2,
+              left: -1,
             }}
           ></div>
         ) : (
