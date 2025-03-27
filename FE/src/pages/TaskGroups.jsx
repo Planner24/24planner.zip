@@ -30,10 +30,11 @@ export default function TaskGroups() {
 
   const section = 'px-15 py-3.75 flex flex-col items-center';
   const totalGaugeFontSize = 'font-roboto text-xl font-bold';
-  const progress = 'w-215 h-10 border-4 rounded-full m-5 border-primary';
-  const progressPercent = 'bg-primary border-primary border-1 rounded-full';
+  const progress = 'w-215 h-10 border-4 rounded-full m-5 border-primary relative';
+  const progressPercent =
+    'h-full bg-primary border-primary border-1 rounded-full absolute -left-px';
   const house =
-    'w-215 border-3 rounded-3xl m-5 px-2 py-5  text-lg text-black text-center font-bold bg-white font-roboto hover:cursor-pointer';
+    'w-215 border-2 rounded-3xl m-5 px-2 py-5  text-lg text-black text-center bg-white font-roboto hover:cursor-pointer';
 
   return (
     <section className={`${section}`}>
@@ -43,15 +44,12 @@ export default function TaskGroups() {
         <span className={`${totalGaugeFontSize}`}> 완료!</span>
       </div>
 
-      <div className={`${progress}`} style={{ position: 'relative' }}>
+      <div className={`${progress}`}>
         {totalProgress ? (
           <div
             className={`${progressPercent}`}
             style={{
               width: 2 + 0.985 * totalProgress + '%',
-              height: '100%',
-              position: 'absolute',
-              left: -1,
             }}
           ></div>
         ) : (
