@@ -1,5 +1,6 @@
 package com.example.p24zip.domain.user.controller;
 
+import com.example.p24zip.domain.user.dto.request.ChangePasswordRequestDto;
 import com.example.p24zip.domain.user.dto.request.LoginRequestDto;
 import com.example.p24zip.domain.user.dto.request.SignupRequestDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestCodeDto;
@@ -7,6 +8,7 @@ import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestDto;
 import com.example.p24zip.domain.user.dto.response.VerifyEmailDataResponseDto;
 import com.example.p24zip.domain.user.dto.response.AccessTokenResponseDto;
 import com.example.p24zip.domain.user.dto.response.LoginResponseDto;
+import com.example.p24zip.domain.user.entity.User;
 import com.example.p24zip.domain.user.service.AuthService;
 import com.example.p24zip.global.response.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -73,6 +76,15 @@ public class AuthController {
 
         return ResponseEntity.ok(
             ApiResponse.ok("OK", "인증 링크를 전송했습니다.", null)
+        );
+    }
+
+    @PatchMapping("/password")
+    public ResponseEntity<ApiResponse<Void>> updatePassword(@RequestBody @Valid ChangePasswordRequestDto requestDto, @AuthenticationPrincipal User user) {
+        authService.updatePassword(requestDto, user);
+
+        return ResponseEntity.ok(
+            ApiResponse.ok("UPDATED","비밀번호 수정에 성공했습니다.", null)
         );
     }
 

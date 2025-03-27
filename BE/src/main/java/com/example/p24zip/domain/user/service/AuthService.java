@@ -1,6 +1,7 @@
 package com.example.p24zip.domain.user.service;
 
 
+import com.example.p24zip.domain.user.dto.request.ChangePasswordRequestDto;
 import com.example.p24zip.domain.user.dto.request.LoginRequestDto;
 import com.example.p24zip.domain.user.dto.request.SignupRequestDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestCodeDto;
@@ -184,6 +185,7 @@ public class AuthService {
         String createdAt = username + "_createdAt";
         redisTemplate.opsForValue().set(createdAt, String.valueOf(ZonedDateTime.now()), 30, TimeUnit.MINUTES); // 생성시간
 
+
         String subject = "이사모음.zip 비밀번호 인증 메일입니다.";
         String text = origin+ "/newpassword?query="+ tempJwt +"\n해당 링크로 접속 후 비밀번호를 변경해 주세요. 이용시간은 30분까지 입니다.";
 
@@ -194,8 +196,18 @@ public class AuthService {
         message.setSubject(subject);
         message.setText(text);
         mailSender.send(message);
+    }
 
+    @Transactional
+    public void updatePassword(ChangePasswordRequestDto requestDto, User user) {
+        String encryptedPassword = passwordEncoder.encode(requestDto.getPassword());
 
+        user.setPassword(encryptedPassword);
+        userRepository.save(user);
+
+        String username = user.getUsername();
+        redisTemplate.delete(username+"_tempToken");
+        redisTemplate.delete(username + "_createdAt");
     }
 
     // 로그인
@@ -328,6 +340,7 @@ public class AuthService {
         redisTemplate.opsForValue().set(createdAt, String.valueOf(LocalDateTime.now()), 3, TimeUnit.MINUTES); // 생성시간
         return ZonedDateTime.now(ZoneId.of("Asia/Seoul")).plusMinutes(3);
     }
+
 
 
 }
