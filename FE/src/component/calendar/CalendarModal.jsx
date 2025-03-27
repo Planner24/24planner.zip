@@ -5,6 +5,8 @@ import CalendarColorModal from './CalendarColorModal';
 import CalendarModalDatePicker from './CalendarModalDatePicker';
 import scheduleApi from '../../api/scheduleApi';
 
+import calendarUtil from './util/calendarUtil';
+
 export default function CalendarModal({
   yearState,
   monthState,
@@ -68,8 +70,8 @@ export default function CalendarModal({
         try {
           const response = await scheduleApi.createSchedule(movingPlanId, {
             content: content,
-            startDate: parseDateFromObject(startDate),
-            endDate: parseDateFromObject(endDate),
+            startDate: calendarUtil.parseDateFromObject(startDate),
+            endDate: calendarUtil.parseDateFromObject(endDate),
             color: color,
           });
 
@@ -84,30 +86,21 @@ export default function CalendarModal({
           }
 
           const startDateOfSelectedMonthToInt = parseIntFromDate(
-            parseDateFromObject(new Date(yearState, monthState - 1, 1)),
+            calendarUtil.parseDateFromObject(new Date(yearState, monthState - 1, 1)),
           );
           const endDateOfSelectedMonthToInt = parseIntFromDate(
-            parseDateFromObject(new Date(new Date(yearState, monthState % 12, 1) - 86400000)),
+            calendarUtil.parseDateFromObject(
+              new Date(
+                new Date(yearState + (monthState === 12 ? 1 : 0), monthState % 12, 1) - 86400000,
+              ),
+            ),
           );
-          const startDateOfNewScheduleToInt = parseIntFromDate(newSchedule.startDate);
-          const endDateOfNewScheduleToInt = parseIntFromDate(newSchedule.endDate);
 
           if (
-            startDateOfNewScheduleToInt <= endDateOfSelectedMonthToInt &&
-            endDateOfNewScheduleToInt >= startDateOfSelectedMonthToInt
+            startDateToInt <= endDateOfSelectedMonthToInt &&
+            endDateToInt >= startDateOfSelectedMonthToInt
           ) {
-            // 달력에 일정을 출력하기 위해서는 종료일을 하루 뒤로 변경해야 함
-            // 바로 +를 하면 문자열 연산이 일어나 오작동하므로, -1로 UNIX time으로 변경 뒤 연산 실행
-            const nextDayOfEndDate = new Date(new Date(newSchedule.endDate) - 1 + 86400001);
-            // 달력에 맞게 형식 변경
-            const newEvent = {
-              title: newSchedule.content,
-              start: newSchedule.startDate,
-              end: parseDateFromObject(nextDayOfEndDate),
-              backgroundColor: newSchedule.color,
-              borderColor: '#FFFFFF',
-            };
-            setMonthlyEventList((prev) => [...prev, newEvent]);
+            setMonthlyEventList((prev) => [...prev, calendarUtil.scheduleToEvent(newSchedule)]);
           }
 
           modalClose();
@@ -184,12 +177,4 @@ function parseIntFromDate(date) {
     Number.parseInt(date.substring(5, 7)) * 100 +
     Number.parseInt(date.substring(8, 10))
   );
-}
-
-function parseDateFromObject(date) {
-  return parseDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
-}
-
-function parseDate(year, month, day) {
-  return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 }

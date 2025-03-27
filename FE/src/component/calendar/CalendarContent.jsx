@@ -12,6 +12,7 @@ import scheduleApi from '../../api/scheduleApi';
 import CalendarModal from './CalendarModal';
 import ChevronLeftSvg from './svg/ChevronLeftSvg';
 import ChevronRightSvg from './svg/ChevronRightSvg';
+import calendarUtil from './util/calendarUtil';
 
 import { eventMouseHoverReducer, eventMouseLeaveReducer } from '../../store/slices/popoverSlice';
 
@@ -37,7 +38,7 @@ export default function CalendarContent({
   const moveToCurrentMonth = () => {
     const now = new Date();
     calendarRef.current.getApi().gotoDate(now);
-    setSelectDate(parseDateFromObject(now));
+    setSelectDate(calendarUtil.parseDateFromObject(now));
   };
 
   const moveToPrevMonth = () => {
@@ -45,7 +46,7 @@ export default function CalendarContent({
     const targetMonth = ((monthState + 10) % 12) + 1;
     setYearState(targetYear);
     setMonthState(targetMonth);
-    calendarRef.current.getApi().gotoDate(parseDate(targetYear, targetMonth, 1));
+    calendarRef.current.getApi().gotoDate(calendarUtil.parseDate(targetYear, targetMonth, 1));
   };
 
   const moveToNextMonth = () => {
@@ -53,7 +54,7 @@ export default function CalendarContent({
     const targetMonth = (monthState % 12) + 1;
     setYearState(targetYear);
     setMonthState(targetMonth);
-    calendarRef.current.getApi().gotoDate(parseDate(targetYear, targetMonth, 1));
+    calendarRef.current.getApi().gotoDate(calendarUtil.parseDate(targetYear, targetMonth, 1));
   };
 
   const handleDateCellClick = (e) => {
@@ -65,7 +66,7 @@ export default function CalendarContent({
       eventMouseHoverReducer({
         title: e.event.title,
         start: e.event.startStr,
-        end: parseDateFromObject(new Date(e.event.end - 86400000)),
+        end: calendarUtil.parseDateFromObject(new Date(e.event.end - 86400000)),
         color: e.event.backgroundColor,
       }),
     );
@@ -88,22 +89,9 @@ export default function CalendarContent({
       const scheduleList = response.data.data.schedules;
 
       // 달력에 맞게 형식 변경
-      const newEventList = [];
-      scheduleList.forEach((schedule) => {
-        // 달력에 일정을 출력하기 위해서는 종료일을 하루 뒤로 변경해야 함
-        // 바로 +를 하면 문자열 연산이 일어나 오작동하므로, -1로 UNIX time으로 변경 뒤 연산 실행
-        const nextDayOfEndDate = new Date(new Date(schedule.endDate) - 1 + 86400001);
-        // color가 아니라 backgroundColor와 borderColor를 각각 지정해야 일정 간 간격을 띄울 수 있음
-        newEventList.push({
-          title: schedule.content,
-          start: schedule.startDate,
-          end: parseDateFromObject(nextDayOfEndDate),
-          backgroundColor: schedule.color,
-          borderColor: '#FFFFFF',
-        });
-      });
-
-      setMonthlyEventList(() => newEventList);
+      setMonthlyEventList(() =>
+        scheduleList.map((schedule) => calendarUtil.scheduleToEvent(schedule)),
+      );
     } catch (err) {
       console.log(err);
     }
@@ -189,7 +177,7 @@ export default function CalendarContent({
             eventContent={(arg) => {
               const color = arg.event.backgroundColor;
               return {
-                html: `<div class="${eventLineStyle} bg-[${color}] ${determineBlackText(hexColorToIntArray(color)) ? 'text-black' : 'text-white'}">${arg.event.title}</div>`,
+                html: `<div class="${eventLineStyle} bg-[${color}] ${calendarUtil.determineBlackText(calendarUtil.hexColorToIntArray(color)) ? 'text-black' : 'text-white'}">${arg.event.title}</div>`,
               };
             }}
             datesSet={async (dateInfo) => {
@@ -215,56 +203,6 @@ export default function CalendarContent({
   );
 }
 
-function parseMonthFromObject(date) {
-  return parseDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
-}
-
 function parseMonth(year, month) {
   return `${year}-${month.toString().padStart(2, '0')}`;
-}
-
-function parseDateFromObject(date) {
-  return parseDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
-}
-
-function parseDate(year, month, day) {
-  return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-}
-
-function parseIntFromDate(date) {
-  return (
-    Number.parseInt(date.substring(0, 4)) * 10000 +
-    Number.parseInt(date.substring(5, 7)) * 100 +
-    Number.parseInt(date.substring(8, 10))
-  );
-}
-
-function hexColorToIntArray(hexColor) {
-  if (
-    typeof hexColor !== 'string' ||
-    !new RegExp(/#?([\da-fA-F]{2})([\da-fA-F]{2})([\da-fA-F]{2})/g).test(hexColor)
-  ) {
-    return null;
-  }
-
-  const upperCaseHexColor = hexColor.toUpperCase();
-  const result = [];
-
-  for (let i = 1; i < 7; i += 2) {
-    result.push(
-      hexDigitToDecimal(upperCaseHexColor[i]) * 16 + hexDigitToDecimal(upperCaseHexColor[i + 1]),
-    );
-  }
-
-  return result;
-}
-
-function hexDigitToDecimal(hexDigit) {
-  const charCode = hexDigit.charCodeAt(0);
-  return charCode - (charCode < 58 ? 48 : 55);
-}
-
-// https://stackoverflow.com/questions/3942878/how-to-decide-font-color-in-white-or-black-depending-on-background-color
-function determineBlackText(colorIntArray) {
-  return colorIntArray[0] * 0.299 + colorIntArray[1] * 0.587 + colorIntArray[2] * 0.114 > 150;
 }

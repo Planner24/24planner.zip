@@ -2,12 +2,14 @@ import { useState } from 'react';
 import CalendarContent from '../component/calendar/CalendarContent';
 import CalendarSidebar from '../component/calendar/CalendarSidebar';
 
+import calendarUtil from '../component/calendar/util/calendarUtil';
+
 export default function Calendar() {
   const now = new Date();
   const [yearState, setYearState] = useState(now.getFullYear());
   const [monthState, setMonthState] = useState(now.getMonth() + 1);
   const [selectDate, setSelectDate] = useState(
-    parseDate(now.getFullYear(), now.getMonth() + 1, now.getDate()),
+    calendarUtil.parseDate(now.getFullYear(), now.getMonth() + 1, now.getDate()),
   );
   /* 
     Schedule은 DB에서 받아오는 형식을 그대로 사용함을 의미
@@ -42,8 +44,4 @@ export default function Calendar() {
       />
     </main>
   );
-}
-
-function parseDate(year, month, day) {
-  return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 }

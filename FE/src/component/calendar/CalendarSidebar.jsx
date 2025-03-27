@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 
 import scheduleApi from '../../api/scheduleApi';
 
+import calendarUtil from './util/calendarUtil';
+
 export default function CalendarSidebar({
   yearState,
   monthState,
@@ -62,18 +64,7 @@ export default function CalendarSidebar({
         const selectedYear = Number.parseInt(selectDate.substring(0, 4));
         const selectedMonth = Number.parseInt(selectDate.substring(5, 7));
         if (selectedYear === yearState && selectedMonth === monthState) {
-          // 달력에 일정을 출력하기 위해서는 종료일을 하루 뒤로 변경해야 함
-          // 바로 +를 하면 문자열 연산이 일어나 오작동하므로, -1로 UNIX time으로 변경 뒤 연산 실행
-          const nextDayOfEndDate = new Date(new Date(newSchedule.endDate) - 1 + 86400001);
-          // 달력에 맞게 형식 변경
-          const newEvent = {
-            title: newSchedule.content,
-            start: newSchedule.startDate,
-            end: parseDateFromObject(nextDayOfEndDate),
-            backgroundColor: newSchedule.color,
-            borderColor: '#FFFFFF',
-          };
-          setMonthlyEventList((prev) => [...prev, newEvent]);
+          setMonthlyEventList((prev) => [...prev, calendarUtil.scheduleToEvent(newSchedule)]);
         }
       } catch (err) {
         setErrorMessage(() => '등록 도중 오류가 발생했습니다.');
@@ -136,12 +127,4 @@ export default function CalendarSidebar({
       )}
     </section>
   );
-}
-
-function parseDateFromObject(date) {
-  return parseDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
-}
-
-function parseDate(year, month, day) {
-  return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 }
