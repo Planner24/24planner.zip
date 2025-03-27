@@ -40,6 +40,7 @@ const calendarUtil = {
 
   scheduleToEvent: (schedule) => {
     return {
+      scheduleId: schedule.id,
       title: schedule.content,
       start: schedule.startDate,
       // 달력에 일정을 출력하기 위해서는 종료일을 하루 뒤로 변경해야 함

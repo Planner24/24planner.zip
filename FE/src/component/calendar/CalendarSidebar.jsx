@@ -69,6 +69,16 @@ export default function CalendarSidebar({
     }
   };
 
+  const deleteSchedule = async (e, scheduleId) => {
+    try {
+      const response = await scheduleApi.deleteSchedule(movingPlanId, scheduleId);
+      setDailyScheduleList((prev) => prev.filter((schedule) => schedule.id !== scheduleId));
+      setMonthlyEventList((prev) => prev.filter((event) => event.scheduleId !== scheduleId));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const calendarSidebarStyle = 'flex flex-1 flex-col items-center m-4';
   const scheduleDateStyle = 'text-xl mt-12';
   const scheduleListStyle = 'flex flex-col w-full mt-8';
@@ -97,7 +107,16 @@ export default function CalendarSidebar({
                   <div className={`${scheduleElementContentStyle} bg-[${schedule.color}]`}>
                     {schedule.content}
                   </div>
-                  <div className={deleteButtonDivStyle}>✕</div>
+                  <div
+                    className={deleteButtonDivStyle}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      deleteSchedule(e, schedule.id);
+                    }}
+                  >
+                    ✕
+                  </div>
                 </div>
               );
             })}

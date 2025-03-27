@@ -67,6 +67,7 @@ export default function Calendar() {
         selectDate={selectDate}
         dailyScheduleList={dailyScheduleList}
         setDailyScheduleList={setDailyScheduleList}
+        monthlyEventList={monthlyEventList}
         setMonthlyEventList={setMonthlyEventList}
       />
     </main>
