@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import planApi from '../api/planApi';
+import { useDispatch } from 'react-redux';
+import { setCurrentPlanTitle } from '../store/slices/planForHeaderSlice';
 
 export default function PlanSetting() {
   const { movingPlanId } = useParams();
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // 상태 관리 데이터
   const [title, setTitle] = useState('');
@@ -56,6 +59,7 @@ export default function PlanSetting() {
         const data = response.data.data;
 
         setTitle(data.title);
+        dispatch(setCurrentPlanTitle({ title: data.title }));
       } catch (error) {}
     }
 
