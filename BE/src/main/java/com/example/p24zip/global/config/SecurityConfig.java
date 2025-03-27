@@ -51,7 +51,8 @@ public class SecurityConfig {
                 //
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/auth/verify").authenticated()
-                                .requestMatchers("/auth/**", "/error", "/images/**").permitAll()
+                                .requestMatchers("/auth/**", "/error", "/images/**", "/gs-guide-websocket/**").permitAll()
+                                .requestMatchers("/ws/**", "/topic/**", "/app/**").permitAll() // WebSocket 관련 경로 추가
                                 .requestMatchers("/swagger-ui/**", "swagger-ui.html", "/api-docs/**").permitAll()
                                 .anyRequest().authenticated()
                 )
