@@ -64,7 +64,7 @@ export default function PlanCreator({ onPlanCreated }) {
   const creatingLi = 'border-primary';
   const planText = 'w-full text-center text-3xl text-gray-200 text-opacity-70';
   const createDiv = 'w-full flex items-center justify-center relative';
-  const inputStyle = 'w-80 px-2 focus:outline-none text-center text-xl';
+  const inputStyle = 'w-105 px-2 focus:outline-none text-center text-xl';
   const createButton =
     'absolute right-5 w-15 border-2 border-primary rounded-xl py-1 text-primary cursor-pointer hover:bg-primary hover:text-white';
 
@@ -83,6 +83,7 @@ export default function PlanCreator({ onPlanCreated }) {
               type="text"
               value={newPlan}
               placeholder="이사 플랜 추가"
+              maxLength="20"
               className={inputStyle}
               onChange={handleInput}
               onKeyDown={handleKeyDown}
