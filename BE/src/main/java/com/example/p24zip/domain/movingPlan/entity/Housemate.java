@@ -26,4 +26,18 @@ public class Housemate {
 
     private Boolean isOwner = false;
 
+    public static Housemate createOwner(User user, MovingPlan movingPlan) {
+        return Housemate.builder()
+                .user(user)
+                .movingPlan(movingPlan)
+                .isOwner(true)
+                .build();
+    }
+
+    @Builder
+    public Housemate(User user, MovingPlan movingPlan, Boolean isOwner) {
+        this.user = user;
+        this.movingPlan = movingPlan;
+        this.isOwner = isOwner;
+    }
 }

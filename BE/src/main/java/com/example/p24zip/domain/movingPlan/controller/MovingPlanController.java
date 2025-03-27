@@ -1,6 +1,7 @@
 package com.example.p24zip.domain.movingPlan.controller;
 
 import com.example.p24zip.domain.movingPlan.dto.request.MovingPlanRequestDto;
+import com.example.p24zip.domain.movingPlan.dto.response.MovingPlanOwnerResponseDto;
 import com.example.p24zip.domain.movingPlan.dto.response.MovingPlanResponseDto;
 import com.example.p24zip.domain.movingPlan.service.MovingPlanService;
 import com.example.p24zip.domain.user.entity.User;
@@ -25,7 +26,7 @@ public class MovingPlanController {
     private final MovingPlanValidator movingPlanValidator;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<MovingPlanResponseDto>> createMovingPlan(
+    public ResponseEntity<ApiResponse<MovingPlanOwnerResponseDto>> createMovingPlan(
             @Valid @RequestBody MovingPlanRequestDto requestDto,
             @AuthenticationPrincipal User user) {
 
@@ -37,11 +38,11 @@ public class MovingPlanController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Map<String, List<MovingPlanResponseDto>>>> readMovingPlans(
+    public ResponseEntity<ApiResponse<Map<String, List<MovingPlanOwnerResponseDto>>>> readMovingPlans(
             @AuthenticationPrincipal User user) {
-        
-        List<MovingPlanResponseDto> movingPlans = movingPlanService.readMovingPlans(user);
-        Map<String, List<MovingPlanResponseDto>> wrappedData = new HashMap<>();
+
+        List<MovingPlanOwnerResponseDto> movingPlans = movingPlanService.readMovingPlans(user);
+        Map<String, List<MovingPlanOwnerResponseDto>> wrappedData = new HashMap<>();
         wrappedData.put("movingPlans", movingPlans);
 
         return ResponseEntity.ok(ApiResponse.ok(

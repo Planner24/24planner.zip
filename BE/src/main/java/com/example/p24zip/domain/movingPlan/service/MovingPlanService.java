@@ -1,8 +1,11 @@
 package com.example.p24zip.domain.movingPlan.service;
 
 import com.example.p24zip.domain.movingPlan.dto.request.MovingPlanRequestDto;
+import com.example.p24zip.domain.movingPlan.dto.response.MovingPlanOwnerResponseDto;
 import com.example.p24zip.domain.movingPlan.dto.response.MovingPlanResponseDto;
+import com.example.p24zip.domain.movingPlan.entity.Housemate;
 import com.example.p24zip.domain.movingPlan.entity.MovingPlan;
+import com.example.p24zip.domain.movingPlan.repository.HousemateRepository;
 import com.example.p24zip.domain.movingPlan.repository.MovingPlanRepository;
 import com.example.p24zip.domain.user.entity.User;
 import com.example.p24zip.global.exception.ResourceNotFoundException;
@@ -18,15 +21,21 @@ import java.util.List;
 public class MovingPlanService {
 
     private final MovingPlanRepository movingPlanRepository;
+    private final HousemateRepository housemateRepository;
 
     @Transactional
-    public MovingPlanResponseDto createMovingPlan(MovingPlanRequestDto requestDto, User user) {
-        return MovingPlanResponseDto.from(movingPlanRepository.save(requestDto.toEntity(user)));
+    public MovingPlanOwnerResponseDto createMovingPlan(MovingPlanRequestDto requestDto, User user) {
+        MovingPlan movingPlan = movingPlanRepository.save(requestDto.toEntity());
+
+        Housemate owner = Housemate.createOwner(user, movingPlan);
+        housemateRepository.save(owner);
+
+        return MovingPlanOwnerResponseDto.from(owner);
     }
 
-    public List<MovingPlanResponseDto> readMovingPlans(User user) {
-        return movingPlanRepository.findAllByUserOrderByCreatedAtDesc(user).stream()
-                .map(MovingPlanResponseDto::from)
+    public List<MovingPlanOwnerResponseDto> readMovingPlans(User user) {
+        return housemateRepository.findByUserOrderByMovingPlanCreatedAtDesc(user).stream()
+                .map(MovingPlanOwnerResponseDto::from)
                 .toList();
     }
 
