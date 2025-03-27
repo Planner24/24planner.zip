@@ -115,11 +115,3 @@ function parseIntFromDate(date) {
     Number.parseInt(date.substring(8, 10))
   );
 }
-
-function parseDateObject(date) {
-  return parseDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
-}
-
-function parseDate(year, month, day) {
-  return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-}

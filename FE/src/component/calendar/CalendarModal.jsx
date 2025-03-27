@@ -56,7 +56,7 @@ export default function CalendarModal({ modalClose }) {
       setShowColorDropdown(() => false);
     } else {
       if (!content.length) {
-        setErrorMessage(() => '내용은 필수로 입력해야 합니다.');
+        setErrorMessage(() => '내용은 필수 입력 항목입니다.');
       } else {
         try {
           const response = await scheduleApi.createSchedule(movingPlanId, {
