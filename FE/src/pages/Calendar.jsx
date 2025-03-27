@@ -83,11 +83,9 @@ export default function Calendar() {
         setYearState={setYearState}
         monthState={monthState}
         setMonthState={setMonthState}
-        selectDate={selectDate}
         setSelectDate={setSelectDate}
         monthlyEventList={monthlyEventList}
         setMonthlyEventList={setMonthlyEventList}
-        setDailyScheduleList={setDailyScheduleList}
         setIsShowingModal={setIsShowingModal}
         setShowingScheduleToModal={setShowingScheduleToModal}
       />

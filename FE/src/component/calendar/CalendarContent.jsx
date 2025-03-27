@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import { createPortal } from 'react-dom';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import FullCalendar from '@fullcalendar/react';
@@ -9,7 +8,6 @@ import koLocale from '@fullcalendar/core/locales/ko';
 
 import scheduleApi from '../../api/scheduleApi';
 
-import CalendarModal from './CalendarModal';
 import ChevronLeftSvg from './svg/ChevronLeftSvg';
 import ChevronRightSvg from './svg/ChevronRightSvg';
 import calendarUtil from './util/calendarUtil';
@@ -21,19 +19,15 @@ export default function CalendarContent({
   setYearState,
   monthState,
   setMonthState,
-  selectDate,
   setSelectDate,
   monthlyEventList,
   setMonthlyEventList,
-  setDailyScheduleList,
   setIsShowingModal,
   setShowingScheduleToModal,
 }) {
   const dispatch = useDispatch();
 
   const calendarRef = useRef(null);
-
-  const [showModal, setShowModal] = useState(false);
 
   const { movingPlanId } = useParams();
 
@@ -117,18 +111,6 @@ export default function CalendarContent({
 
   return (
     <>
-      {showModal &&
-        createPortal(
-          <CalendarModal
-            yearState={yearState}
-            monthState={monthState}
-            selectDate={selectDate}
-            setDailyScheduleList={setDailyScheduleList}
-            setMonthlyEventList={setMonthlyEventList}
-            modalClose={() => setShowModal(false)}
-          />,
-          document.body,
-        )}
       <section className={calendarContentStyle}>
         <div className={calendarPaddingStyle}>
           <div className={calendarHeaderStyle}>
