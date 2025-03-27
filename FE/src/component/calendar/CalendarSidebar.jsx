@@ -15,6 +15,8 @@ export default function CalendarSidebar({
 }) {
   const [content, setContent] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
+  const [updatingIndex, setUpdatingIndex] = useState(-1);
+  const [updateContent, setUpdateContent] = useState('');
 
   const { movingPlanId } = useParams();
 
@@ -30,11 +32,19 @@ export default function CalendarSidebar({
 
   useEffect(() => {
     setErrorMessage(() => null);
+    setUpdatingIndex(() => -1);
+    setUpdateContent(() => '');
+    setContent(() => '');
     loadList();
   }, [selectDate]);
 
   const handleContentChange = (e) => {
     setContent(() => e.target.value.substring(0, 20));
+    setErrorMessage(() => null);
+  };
+
+  const handleUpdateContentChange = (e) => {
+    setUpdateContent(() => e.target.value.substring(0, 20));
     setErrorMessage(() => null);
   };
 
@@ -69,6 +79,60 @@ export default function CalendarSidebar({
     }
   };
 
+  const updateScheduleContent = async (e, scheduleId) => {
+    setUpdatingIndex(() => -1);
+
+    if (updateContent === '') {
+      return;
+    }
+
+    let existingSchedule = null;
+    for (let i = 0; i < dailyScheduleList.length; i++) {
+      if (dailyScheduleList[i].id === scheduleId) {
+        existingSchedule = dailyScheduleList[i];
+        break;
+      }
+    }
+
+    if (!existingSchedule || existingSchedule.content === updateContent) {
+      return;
+    }
+
+    existingSchedule.content = updateContent;
+
+    try {
+      const response = await scheduleApi.updateSchedule(movingPlanId, scheduleId, existingSchedule);
+
+      setDailyScheduleList((prev) =>
+        prev.map((schedule) => {
+          if (schedule.id === scheduleId) {
+            return {
+              ...schedule,
+              content: updateContent,
+            };
+          } else {
+            return schedule;
+          }
+        }),
+      );
+
+      setMonthlyEventList((prev) => {
+        return prev.map((event) => {
+          if (event.scheduleId === scheduleId) {
+            return {
+              ...event,
+              title: updateContent,
+            };
+          } else {
+            return event;
+          }
+        });
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const deleteSchedule = async (e, scheduleId) => {
     try {
       const response = await scheduleApi.deleteSchedule(movingPlanId, scheduleId);
@@ -85,11 +149,55 @@ export default function CalendarSidebar({
   const scheduleElementDivStyle = 'flex items-center';
   const scheduleElementContentStyle = 'flex justify-center items-center rounded-3xl w-full p-2 m-2';
   const deleteButtonDivStyle = 'text-gray-500 text-opacity-70 cursor-pointer';
+  const invisibleDeleteButtonDivStyle = 'invisible';
   const inputDivStyle =
-    'flex justify-center items-center border-1 border-gray-300 rounded-3xl w-full py-2 m-2 h-10';
+    'flex justify-center items-center border-1 border-gray-300 rounded-3xl w-full py-2 pr-5 m-2 h-10';
   const inputStyle = 'focus:outline-none w-full p-4';
   const addButtonStyle =
     'flex justify-center items-center mx-1 px-4 bg-primary rounded-3xl h-10 cursor-pointer';
+
+  const dailyScheduleListDiv = dailyScheduleList.map((schedule, i) => {
+    if (updatingIndex === i) {
+      return (
+        <div key={i} className={scheduleElementDivStyle}>
+          <div className={inputDivStyle}>
+            <input
+              type="text"
+              className={inputStyle}
+              placeholder="할 일 입력"
+              value={updateContent}
+              onChange={handleUpdateContentChange}
+              onBlur={(e) => updateScheduleContent(e, schedule.id)}
+              autoFocus
+            />
+          </div>
+          <div className={invisibleDeleteButtonDivStyle}>✕</div>
+        </div>
+      );
+    }
+
+    return (
+      <div key={i} className={scheduleElementDivStyle}>
+        <div
+          className={`${scheduleElementContentStyle} bg-[${schedule.color}]`}
+          onClick={(e) => {
+            setUpdatingIndex(() => i);
+            setUpdateContent(schedule.content);
+          }}
+        >
+          {schedule.content}
+        </div>
+        <div
+          className={deleteButtonDivStyle}
+          onClick={(e) => {
+            deleteSchedule(e, schedule.id);
+          }}
+        >
+          ✕
+        </div>
+      </div>
+    );
+  });
 
   return (
     <section className={calendarSidebarStyle}>
@@ -101,25 +209,7 @@ export default function CalendarSidebar({
             {Number.parseInt(selectDate.substring(8, 10))}일
           </div>
           <div className={scheduleListStyle}>
-            {dailyScheduleList.map((schedule, i) => {
-              return (
-                <div key={i} className={scheduleElementDivStyle}>
-                  <div className={`${scheduleElementContentStyle} bg-[${schedule.color}]`}>
-                    {schedule.content}
-                  </div>
-                  <div
-                    className={deleteButtonDivStyle}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      deleteSchedule(e, schedule.id);
-                    }}
-                  >
-                    ✕
-                  </div>
-                </div>
-              );
-            })}
+            {dailyScheduleListDiv}
             <div className={scheduleElementDivStyle}>
               <div className={inputDivStyle}>
                 <input
