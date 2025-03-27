@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
+
 import CalendarContent from '../component/calendar/CalendarContent';
 import CalendarSidebar from '../component/calendar/CalendarSidebar';
+import CalendarModal from '../component/calendar/CalendarModal';
 
 import calendarUtil from '../component/calendar/util/calendarUtil';
 
@@ -46,10 +49,35 @@ export default function Calendar() {
   const [monthlyEventList, setMonthlyEventList] = useState([]);
   const [dailyScheduleList, setDailyScheduleList] = useState([]);
 
+  /*
+    일정 생성/수정 modal 출력 여부, 그리고 modal에서 보여줄 schedule 객체 저장
+    저장된 게 없으면 modal은 생성, 있으면 수정 역할을 하게 됨
+  */
+  const [isShowingModal, setIsShowingModal] = useState(false);
+  const [showingScheduleToModal, setShowingScheduleToModal] = useState(null);
+
   const calendarMainStyle = 'flex justify-center h-full px-2 pb-4';
 
   return (
     <main className={calendarMainStyle}>
+      {isShowingModal &&
+        createPortal(
+          <CalendarModal
+            yearState={yearState}
+            monthState={monthState}
+            selectDate={selectDate}
+            dailyScheduleList={dailyScheduleList}
+            setDailyScheduleList={setDailyScheduleList}
+            monthlyEventList={monthlyEventList}
+            setMonthlyEventList={setMonthlyEventList}
+            modalClose={() => {
+              setShowingScheduleToModal(() => null);
+              setIsShowingModal(() => false);
+            }}
+            showingScheduleToModal={showingScheduleToModal}
+          />,
+          document.body,
+        )}
       <CalendarContent
         yearState={yearState}
         setYearState={setYearState}
@@ -60,6 +88,8 @@ export default function Calendar() {
         monthlyEventList={monthlyEventList}
         setMonthlyEventList={setMonthlyEventList}
         setDailyScheduleList={setDailyScheduleList}
+        setIsShowingModal={setIsShowingModal}
+        setShowingScheduleToModal={setShowingScheduleToModal}
       />
       <CalendarSidebar
         yearState={yearState}
@@ -67,8 +97,9 @@ export default function Calendar() {
         selectDate={selectDate}
         dailyScheduleList={dailyScheduleList}
         setDailyScheduleList={setDailyScheduleList}
-        monthlyEventList={monthlyEventList}
         setMonthlyEventList={setMonthlyEventList}
+        setIsShowingModal={setIsShowingModal}
+        setShowingScheduleToModal={setShowingScheduleToModal}
       />
     </main>
   );

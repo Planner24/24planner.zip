@@ -26,6 +26,8 @@ export default function CalendarContent({
   monthlyEventList,
   setMonthlyEventList,
   setDailyScheduleList,
+  setIsShowingModal,
+  setShowingScheduleToModal,
 }) {
   const dispatch = useDispatch();
 
@@ -77,7 +79,8 @@ export default function CalendarContent({
   };
 
   const handleCalendarModal = () => {
-    setShowModal(() => true);
+    setShowingScheduleToModal(() => null);
+    setIsShowingModal(() => true);
   };
 
   const loadList = async (yearMonth) => {
