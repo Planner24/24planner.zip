@@ -32,7 +32,6 @@ export default function CalendarColorModal({ color, setColor }) {
   const flexColStyle = flexStyle + ' flex-col';
   const colorsDivListStyle = flexStyle + ' m-4';
   const subColorsDivListStyle = flexColStyle + ' flex-1';
-  const dropdownTitleStyle = 'text-xl font-semibold';
 
   const colorsDivList = colorsList.map((subColorsList, i) => {
     const subColorsDivList = subColorsList.map((colors, j) => {
@@ -61,7 +60,6 @@ export default function CalendarColorModal({ color, setColor }) {
 
   return (
     <div>
-      <div className={dropdownTitleStyle}>색상 선택</div>
       <div className={colorsDivListStyle}>{colorsDivList}</div>
     </div>
   );
