@@ -68,6 +68,8 @@ export default function TaskGroupBox({ taskGroups, setTaskGroups }) {
   const inputText =
     'w-50 mt-6 border-3 border-b-gray-300 border-x-white border-t-white placeholder:text-gray-300 focus:outline-none';
   const messageStyle = 'font-semibold text-red-400';
+  const X = 'text-gray-500 text-opacity-70 cursor-pointer';
+  const xContainer = 'w-full grid justify-items-end';
 
   return (
     <section className={`${section}`}>
@@ -98,6 +100,17 @@ export default function TaskGroupBox({ taskGroups, setTaskGroups }) {
 
       {clickAdd ? (
         <div className={`${changeAddBox}`}>
+          <div className={`${xContainer}`}>
+            <button
+              className={`${X}`}
+              onClick={() => {
+                setMessage();
+                setClickAdd(false);
+              }}
+            >
+              X
+            </button>
+          </div>
           <form>
             <input
               name="title"
