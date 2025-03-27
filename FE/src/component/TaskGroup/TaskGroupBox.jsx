@@ -10,6 +10,7 @@ export default function TaskGroupBox({ taskGroups, setTaskGroups }) {
   const [formData, setFormData] = useState({
     title: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
 
@@ -25,6 +26,9 @@ export default function TaskGroupBox({ taskGroups, setTaskGroups }) {
 
   const postTaskGroup = async (e) => {
     e.preventDefault();
+
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
     try {
       const response = await taskGroupApi.postTaskGroup(movingPlanId, formData);
@@ -49,6 +53,8 @@ export default function TaskGroupBox({ taskGroups, setTaskGroups }) {
       } else if (code === 'NOT_FOUND') {
         navigate('/not-found');
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
