@@ -8,7 +8,8 @@ export default function Calendar() {
   const [selectDate, setSelectDate] = useState(
     parseDate(now.getFullYear(), now.getMonth() + 1, now.getDate()),
   );
-  const [eventList, setEventList] = useState([]);
+  const [monthlyScheduleList, setMonthlyScheduleList] = useState([]);
+  const [dailyScheduleList, setDailyScheduleList] = useState([]);
 
   const calendarMainStyle = 'flex justify-center h-full px-2 pb-4';
 
@@ -19,11 +20,14 @@ export default function Calendar() {
         setSelectMonth={setSelectMonth}
         selectDate={selectDate}
         setSelectDate={setSelectDate}
-        scheduleList={scheduleList}
-        eventList={eventList}
-        setEventList={setEventList}
+        monthlyScheduleList={monthlyScheduleList}
+        setMonthlyScheduleList={setMonthlyScheduleList}
       />
-      <CalendarSidebar selectDate={selectDate} scheduleList={scheduleList} />
+      <CalendarSidebar
+        selectDate={selectDate}
+        dailyScheduleList={dailyScheduleList}
+        setDailyScheduleList={setDailyScheduleList}
+      />
     </main>
   );
 }

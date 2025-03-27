@@ -8,7 +8,7 @@ const scheduleApi = {
     return response;
   },
 
-  getMonthSchedule: async (movingPlanId, month) => {
+  getMonthlySchedule: async (movingPlanId, month) => {
     const response = await api.get(`${ENDPOINT}/${movingPlanId}/schedules/month?month=${month}`);
     return response;
   },

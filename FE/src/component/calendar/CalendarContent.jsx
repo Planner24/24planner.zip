@@ -1,10 +1,13 @@
 import { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import koLocale from '@fullcalendar/core/locales/ko';
+
+import scheduleApi from '../../api/scheduleApi';
 
 import CalendarModal from './CalendarModal';
 import ChevronLeftSvg from './svg/ChevronLeftSvg';
@@ -17,9 +20,8 @@ export default function CalendarContent({
   setSelectMonth,
   selectDate,
   setSelectDate,
-  scheduleList,
-  eventList,
-  setEventList,
+  monthlyScheduleList,
+  setMonthlyScheduleList,
 }) {
   const dispatch = useDispatch();
 
@@ -28,6 +30,9 @@ export default function CalendarContent({
   const [showModal, setShowModal] = useState(false);
   const [yearState, setYearState] = useState(0);
   const [monthState, setMonthState] = useState(0);
+  const [eventList, setEventList] = useState([]);
+
+  const { movingPlanId } = useParams();
 
   const moveToCurrentMonth = () => {
     const now = new Date();
@@ -72,6 +77,38 @@ export default function CalendarContent({
 
   const handleCalendarModal = () => {
     setShowModal(() => true);
+  };
+
+  const loadList = async (yearMonth) => {
+    setMonthlyScheduleList(() => []);
+    setEventList(() => []);
+
+    try {
+      // 월 단위로 스케줄 가져오기
+      const response = await scheduleApi.getMonthlySchedule(movingPlanId, yearMonth);
+      const scheduleList = response.data.data.schedules;
+      setMonthlyScheduleList(() => scheduleList);
+
+      // 달력에 맞게 형식 변경
+      const newEventList = [];
+      scheduleList.forEach((schedule) => {
+        // 달력에 일정을 출력하기 위해서는 종료일을 하루 뒤로 변경해야 함
+        // 바로 +를 하면 문자열 연산이 일어나 오작동하므로, -1로 UNIX time으로 변경 뒤 연산 실행
+        const nextDayOfEndDate = new Date(new Date(schedule.endDate) - 1 + 86400001);
+        // color가 아니라 backgroundColor와 borderColor를 각각 지정해야 일정 간 간격을 띄울 수 있음
+        newEventList.push({
+          title: schedule.content,
+          start: schedule.startDate,
+          end: parseDateFromObject(nextDayOfEndDate),
+          backgroundColor: schedule.color,
+          borderColor: '#FFFFFF',
+        });
+      });
+
+      setEventList(() => newEventList);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const calendarContentStyle = 'flex flex-col flex-2 h-full w-full border-r-1 border-gray-300 my-4';
@@ -147,40 +184,15 @@ export default function CalendarContent({
                 html: `<div class="${eventLineStyle} bg-[${color}] ${determineBlackText(hexColorToIntArray(color)) ? 'text-black' : 'text-white'}">${arg.event.title}</div>`,
               };
             }}
-            datesSet={(dateInfo) => {
-              const nowYear = dateInfo.start.getFullYear();
-              const nowMonth = dateInfo.start.getMonth() + 1;
-              const startDate = dateInfo.start.getDate();
-              const endDate = new Date(dateInfo.end - 86400000).getDate();
+            datesSet={async (dateInfo) => {
+              const selectedYear = dateInfo.start.getFullYear();
+              const selectedMonth = dateInfo.start.getMonth() + 1;
 
               // 스타일 수정을 위해 헤더를 외부에서 정의했으므로, 월을 바꿀 때마다 해당 년도와 월을 state에 지정해야 표시됨
-              setYearState(() => nowYear);
-              setMonthState(() => nowMonth);
+              setYearState(() => selectedYear);
+              setMonthState(() => selectedMonth);
 
-              const startInt = nowYear * 10000 + nowMonth * 100 + startDate;
-              const endInt = startInt - startDate + endDate;
-
-              // 월 단위로 스케줄 가져오기
-              const newEventList = [];
-              scheduleList.forEach((schedule) => {
-                const scheduleStartInt = parseIntFromDate(schedule.startDate);
-                const scheduleEndInt = parseIntFromDate(schedule.endDate);
-                if (scheduleEndInt >= startInt && scheduleStartInt <= endInt) {
-                  // 달력에 일정을 출력하기 위해서는 종료일을 하루 뒤로 변경해야 함
-                  // 바로 +를 하면 문자열 연산이 일어나 오작동하므로, -1로 UNIX time으로 변경 뒤 연산 실행
-                  const nextDayOfEndDate = new Date(new Date(schedule.endDate) - 1 + 86400001);
-                  // color가 아니라 backgroundColor와 borderColor를 각각 지정해야 일정 간 간격을 띄울 수 있음
-                  newEventList.push({
-                    title: schedule.content,
-                    start: schedule.startDate,
-                    end: parseDateFromObject(nextDayOfEndDate),
-                    backgroundColor: schedule.color,
-                    borderColor: '#FFFFFF',
-                  });
-                }
-              });
-
-              setEventList(() => newEventList);
+              loadList(parseMonth(selectedYear, selectedMonth));
             }}
             // 달력 헤더 스타일 수정을 위해, 달력 기본 헤더를 비활성
             headerToolbar={{
