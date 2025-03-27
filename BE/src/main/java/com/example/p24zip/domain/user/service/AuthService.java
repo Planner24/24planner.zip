@@ -26,6 +26,7 @@ import java.time.ZonedDateTime;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -48,6 +49,8 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
 
+    @Value("${ORIGIN}")
+    private String origin;
  
 
     /**
@@ -157,6 +160,42 @@ public class AuthService {
         if(!(nickname.length()>=2 && nickname.length()<=17)){
             throw new CustomException("BAD_REQUEST", "필수값이 누락되거나 형식이 올바르지 않습니다.");
         }
+    }
+
+    public void findPassword(VerifyEmailRequestDto requestDto) {
+        String username = requestDto.getUsername();
+        System.out.println(username);
+        User user = userRepository.findByUsername(username).orElseThrow(()-> new CustomException("NOT_EXIST_EMAIL", "존재하지 않는 이메일입니다."));
+
+
+        if(redisTemplate.hasKey(username+"_tempToken")){
+            ZonedDateTime checkAccessTime = ZonedDateTime.parse(
+                redisTemplate.opsForValue().get(username + "_createdAt"));
+
+            if(!checkAccessTime.plusSeconds(5).isBefore(ZonedDateTime.now())){
+                throw new CustomException("TOOMANY_REQUEST","5초안에 다시 요청했습니다.");
+            }
+        }
+
+        String tempJwt = jwtTokenProvider.accessCreateToken(user);
+
+        String key = username +"_tempToken";
+        redisTemplate.opsForValue().set(key,tempJwt, 30, TimeUnit.MINUTES);
+        String createdAt = username + "_createdAt";
+        redisTemplate.opsForValue().set(createdAt, String.valueOf(ZonedDateTime.now()), 30, TimeUnit.MINUTES); // 생성시간
+
+        String subject = "이사모음.zip 비밀번호 인증 메일입니다.";
+        String text = origin+ "/newpassword?query="+ tempJwt +"\n해당 링크로 접속 후 비밀번호를 변경해 주세요. 이용시간은 30분까지 입니다.";
+
+
+        // 정의된 SMTP 메일 객체로 메일 전송
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(username);
+        message.setSubject(subject);
+        message.setText(text);
+        mailSender.send(message);
+
+
     }
 
     // 로그인
@@ -275,9 +314,7 @@ public class AuthService {
   
     /**
      * 4자리의 랜덤 수를 redis에 저장
-     *
      * @param username 입력한 email
-
      * @param codeNum     4자리의 랜덤 수
      * @return ZonedDateTime expiredAt
      **/
@@ -291,4 +328,6 @@ public class AuthService {
         redisTemplate.opsForValue().set(createdAt, String.valueOf(LocalDateTime.now()), 3, TimeUnit.MINUTES); // 생성시간
         return ZonedDateTime.now(ZoneId.of("Asia/Seoul")).plusMinutes(3);
     }
+
+
 }

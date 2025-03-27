@@ -67,6 +67,15 @@ public class AuthController {
         );
     }
 
+    @PostMapping("/verify-password")
+    public ResponseEntity<ApiResponse<Object>> findPassword(@RequestBody @Valid VerifyEmailRequestDto requestDto) {
+        authService.findPassword(requestDto);
+
+        return ResponseEntity.ok(
+            ApiResponse.ok("OK", "인증 링크를 전송했습니다.", null)
+        );
+    }
+
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponseDto>> login(
             @Valid @RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
