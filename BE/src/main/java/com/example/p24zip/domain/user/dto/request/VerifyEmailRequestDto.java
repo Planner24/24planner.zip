@@ -19,11 +19,4 @@ public class VerifyEmailRequestDto {
     @Email
     private String username;
 
-
-    public User toEntity() {
-        return User.builder()
-            .username(username)
-            .build();
-    }
-
 }
