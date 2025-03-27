@@ -5,7 +5,14 @@ import CalendarColorModal from './CalendarColorModal';
 import CalendarModalDatePicker from './CalendarModalDatePicker';
 import scheduleApi from '../../api/scheduleApi';
 
-export default function CalendarModal({ modalClose }) {
+export default function CalendarModal({
+  yearState,
+  monthState,
+  selectDate,
+  setDailyScheduleList,
+  setMonthlyEventList,
+  modalClose,
+}) {
   const [content, setContent] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
   const [color, setColor] = useState('#69DB7C');
@@ -65,6 +72,44 @@ export default function CalendarModal({ modalClose }) {
             endDate: parseDateFromObject(endDate),
             color: color,
           });
+
+          const newSchedule = response.data.data;
+
+          const selectDateToInt = parseIntFromDate(selectDate);
+          const startDateToInt = parseIntFromDate(newSchedule.startDate);
+          const endDateToInt = parseIntFromDate(newSchedule.endDate);
+
+          if (startDateToInt <= selectDateToInt && endDateToInt >= selectDateToInt) {
+            setDailyScheduleList((prev) => [...prev, newSchedule]);
+          }
+
+          const startDateOfSelectedMonthToInt = parseIntFromDate(
+            parseDateFromObject(new Date(yearState, monthState - 1, 1)),
+          );
+          const endDateOfSelectedMonthToInt = parseIntFromDate(
+            parseDateFromObject(new Date(new Date(yearState, monthState % 12, 1) - 86400000)),
+          );
+          const startDateOfNewScheduleToInt = parseIntFromDate(newSchedule.startDate);
+          const endDateOfNewScheduleToInt = parseIntFromDate(newSchedule.endDate);
+
+          if (
+            startDateOfNewScheduleToInt <= endDateOfSelectedMonthToInt &&
+            endDateOfNewScheduleToInt >= startDateOfSelectedMonthToInt
+          ) {
+            // 달력에 일정을 출력하기 위해서는 종료일을 하루 뒤로 변경해야 함
+            // 바로 +를 하면 문자열 연산이 일어나 오작동하므로, -1로 UNIX time으로 변경 뒤 연산 실행
+            const nextDayOfEndDate = new Date(new Date(newSchedule.endDate) - 1 + 86400001);
+            // 달력에 맞게 형식 변경
+            const newEvent = {
+              title: newSchedule.content,
+              start: newSchedule.startDate,
+              end: parseDateFromObject(nextDayOfEndDate),
+              backgroundColor: newSchedule.color,
+              borderColor: '#FFFFFF',
+            };
+            setMonthlyEventList((prev) => [...prev, newEvent]);
+          }
+
           modalClose();
         } catch (err) {
           setErrorMessage(() => '등록 도중 오류가 발생했습니다.');
@@ -130,6 +175,14 @@ export default function CalendarModal({ modalClose }) {
         </div>
       </div>
     </div>
+  );
+}
+
+function parseIntFromDate(date) {
+  return (
+    Number.parseInt(date.substring(0, 4)) * 10000 +
+    Number.parseInt(date.substring(5, 7)) * 100 +
+    Number.parseInt(date.substring(8, 10))
   );
 }
 

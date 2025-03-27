@@ -3,7 +3,14 @@ import { useParams } from 'react-router-dom';
 
 import scheduleApi from '../../api/scheduleApi';
 
-export default function CalendarSidebar({ selectDate, dailyScheduleList, setDailyScheduleList }) {
+export default function CalendarSidebar({
+  yearState,
+  monthState,
+  selectDate,
+  dailyScheduleList,
+  setDailyScheduleList,
+  setMonthlyEventList,
+}) {
   // Tailwind CSS에서 사용할 색상 Class들을 미리 선언
   // TODO: 임시적인 목록이므로, 추후 변경될 수 있음
   const tempUsingColor = ['bg-[#69db7c]', 'bg-[#4dabf7]', 'bg-[#2f9e44]', 'bg-[#fcc2d7]'];
@@ -24,6 +31,7 @@ export default function CalendarSidebar({ selectDate, dailyScheduleList, setDail
   };
 
   useEffect(() => {
+    setErrorMessage(() => null);
     loadList();
   }, [selectDate]);
 
@@ -46,7 +54,27 @@ export default function CalendarSidebar({ selectDate, dailyScheduleList, setDail
           endDate: selectDate,
           color: '#69DB7C',
         });
+
+        const newSchedule = response.data.data;
+        setDailyScheduleList((prev) => [...prev, newSchedule]);
         setContent(() => '');
+
+        const selectedYear = Number.parseInt(selectDate.substring(0, 4));
+        const selectedMonth = Number.parseInt(selectDate.substring(5, 7));
+        if (selectedYear === yearState && selectedMonth === monthState) {
+          // 달력에 일정을 출력하기 위해서는 종료일을 하루 뒤로 변경해야 함
+          // 바로 +를 하면 문자열 연산이 일어나 오작동하므로, -1로 UNIX time으로 변경 뒤 연산 실행
+          const nextDayOfEndDate = new Date(new Date(newSchedule.endDate) - 1 + 86400001);
+          // 달력에 맞게 형식 변경
+          const newEvent = {
+            title: newSchedule.content,
+            start: newSchedule.startDate,
+            end: parseDateFromObject(nextDayOfEndDate),
+            backgroundColor: newSchedule.color,
+            borderColor: '#FFFFFF',
+          };
+          setMonthlyEventList((prev) => [...prev, newEvent]);
+        }
       } catch (err) {
         setErrorMessage(() => '등록 도중 오류가 발생했습니다.');
         console.log(err);
@@ -110,10 +138,10 @@ export default function CalendarSidebar({ selectDate, dailyScheduleList, setDail
   );
 }
 
-function parseIntFromDate(date) {
-  return (
-    Number.parseInt(date.substring(0, 4)) * 10000 +
-    Number.parseInt(date.substring(5, 7)) * 100 +
-    Number.parseInt(date.substring(8, 10))
-  );
+function parseDateFromObject(date) {
+  return parseDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
+}
+
+function parseDate(year, month, day) {
+  return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 }

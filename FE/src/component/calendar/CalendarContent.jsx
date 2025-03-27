@@ -16,21 +16,21 @@ import ChevronRightSvg from './svg/ChevronRightSvg';
 import { eventMouseHoverReducer, eventMouseLeaveReducer } from '../../store/slices/popoverSlice';
 
 export default function CalendarContent({
-  selectMonth,
-  setSelectMonth,
+  yearState,
+  setYearState,
+  monthState,
+  setMonthState,
   selectDate,
   setSelectDate,
-  monthlyScheduleList,
-  setMonthlyScheduleList,
+  monthlyEventList,
+  setMonthlyEventList,
+  setDailyScheduleList,
 }) {
   const dispatch = useDispatch();
 
   const calendarRef = useRef(null);
 
   const [showModal, setShowModal] = useState(false);
-  const [yearState, setYearState] = useState(0);
-  const [monthState, setMonthState] = useState(0);
-  const [eventList, setEventList] = useState([]);
 
   const { movingPlanId } = useParams();
 
@@ -80,14 +80,12 @@ export default function CalendarContent({
   };
 
   const loadList = async (yearMonth) => {
-    setMonthlyScheduleList(() => []);
-    setEventList(() => []);
+    setMonthlyEventList(() => []);
 
     try {
       // 월 단위로 스케줄 가져오기
       const response = await scheduleApi.getMonthlySchedule(movingPlanId, yearMonth);
       const scheduleList = response.data.data.schedules;
-      setMonthlyScheduleList(() => scheduleList);
 
       // 달력에 맞게 형식 변경
       const newEventList = [];
@@ -105,7 +103,7 @@ export default function CalendarContent({
         });
       });
 
-      setEventList(() => newEventList);
+      setMonthlyEventList(() => newEventList);
     } catch (err) {
       console.log(err);
     }
@@ -129,7 +127,17 @@ export default function CalendarContent({
   return (
     <>
       {showModal &&
-        createPortal(<CalendarModal modalClose={() => setShowModal(false)} />, document.body)}
+        createPortal(
+          <CalendarModal
+            yearState={yearState}
+            monthState={monthState}
+            selectDate={selectDate}
+            setDailyScheduleList={setDailyScheduleList}
+            setMonthlyEventList={setMonthlyEventList}
+            modalClose={() => setShowModal(false)}
+          />,
+          document.body,
+        )}
       <section className={calendarContentStyle}>
         <div className={calendarPaddingStyle}>
           <div className={calendarHeaderStyle}>
@@ -168,7 +176,7 @@ export default function CalendarContent({
             showNonCurrentDates={false}
             locale={koLocale}
             dayMaxEventRows={3}
-            events={eventList}
+            events={monthlyEventList}
             eventMouseEnter={handleEventMouseEnter}
             eventMouseLeave={handleEventMouseLeave}
             dateClick={handleDateCellClick}
