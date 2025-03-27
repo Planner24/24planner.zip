@@ -13,10 +13,6 @@ export default function CalendarSidebar({
   setDailyScheduleList,
   setMonthlyEventList,
 }) {
-  // Tailwind CSS에서 사용할 색상 Class들을 미리 선언
-  // TODO: 임시적인 목록이므로, 추후 변경될 수 있음
-  const tempUsingColor = ['bg-[#69db7c]', 'bg-[#4dabf7]', 'bg-[#2f9e44]', 'bg-[#fcc2d7]'];
-
   const [content, setContent] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
 
