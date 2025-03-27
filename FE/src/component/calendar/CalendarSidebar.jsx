@@ -34,7 +34,7 @@ export default function CalendarSidebar({
   }, [selectDate]);
 
   const handleContentChange = (e) => {
-    setContent(() => e.target.value);
+    setContent(() => e.target.value.substring(0, 20));
     setErrorMessage(() => null);
   };
 
