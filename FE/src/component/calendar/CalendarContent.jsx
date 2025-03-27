@@ -12,7 +12,15 @@ import ChevronRightSvg from './svg/ChevronRightSvg';
 
 import { eventMouseHoverReducer, eventMouseLeaveReducer } from '../../store/slices/popoverSlice';
 
-export default function CalendarContent({ setSelectDate, scheduleList, eventList, setEventList }) {
+export default function CalendarContent({
+  selectMonth,
+  setSelectMonth,
+  selectDate,
+  setSelectDate,
+  scheduleList,
+  eventList,
+  setEventList,
+}) {
   const dispatch = useDispatch();
 
   const calendarRef = useRef(null);
@@ -24,7 +32,7 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
   const moveToCurrentMonth = () => {
     const now = new Date();
     calendarRef.current.getApi().gotoDate(now);
-    setSelectDate(parseDateObject(now));
+    setSelectDate(parseDateFromObject(now));
   };
 
   const moveToPrevMonth = () => {
@@ -52,7 +60,7 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
       eventMouseHoverReducer({
         title: e.event.title,
         start: e.event.startStr,
-        end: parseDateObject(new Date(e.event.end - 86400000)),
+        end: parseDateFromObject(new Date(e.event.end - 86400000)),
         color: e.event.backgroundColor,
       }),
     );
@@ -165,7 +173,7 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
                   newEventList.push({
                     title: schedule.content,
                     start: schedule.startDate,
-                    end: parseDateObject(nextDayOfEndDate),
+                    end: parseDateFromObject(nextDayOfEndDate),
                     backgroundColor: schedule.color,
                     borderColor: '#FFFFFF',
                   });
@@ -187,7 +195,15 @@ export default function CalendarContent({ setSelectDate, scheduleList, eventList
   );
 }
 
-function parseDateObject(date) {
+function parseMonthFromObject(date) {
+  return parseDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
+}
+
+function parseMonth(year, month) {
+  return `${year}-${month.toString().padStart(2, '0')}`;
+}
+
+function parseDateFromObject(date) {
   return parseDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
 }
 

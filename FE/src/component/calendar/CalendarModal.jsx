@@ -61,8 +61,8 @@ export default function CalendarModal({ modalClose }) {
         try {
           const response = await scheduleApi.createSchedule(movingPlanId, {
             content: content,
-            startDate: parseDateObject(startDate),
-            endDate: parseDateObject(endDate),
+            startDate: parseDateFromObject(startDate),
+            endDate: parseDateFromObject(endDate),
             color: color,
           });
           modalClose();
@@ -133,7 +133,7 @@ export default function CalendarModal({ modalClose }) {
   );
 }
 
-function parseDateObject(date) {
+function parseDateFromObject(date) {
   return parseDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
 }
 
