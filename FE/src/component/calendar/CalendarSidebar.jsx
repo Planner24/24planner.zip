@@ -9,7 +9,7 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
   const tempUsingColor = ['bg-[#69db7c]', 'bg-[#4dabf7]', 'bg-[#2f9e44]', 'bg-[#fcc2d7]'];
 
   const [content, setContent] = useState('');
-  const [contentError, setContentError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const { movingPlanId } = useParams();
 
@@ -21,7 +21,7 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
   const deleteButtonDivStyle = 'text-gray-500 text-opacity-70 cursor-pointer';
   const inputDivStyle =
     'flex justify-center items-center border-1 border-gray-300 rounded-3xl w-full py-2 m-2 h-10';
-  const inputStyle = `focus:outline-none w-full p-4 ${contentError ? 'placeholder:text-red-300' : ''}`;
+  const inputStyle = 'focus:outline-none w-full p-4';
   const addButtonStyle =
     'flex justify-center items-center mx-1 px-4 bg-primary rounded-3xl h-10 cursor-pointer';
 
@@ -39,7 +39,7 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
 
   const handleContentChange = (e) => {
     setContent(() => e.target.value);
-    setContentError(() => false);
+    setErrorMessage(() => null);
   };
 
   const handleAddButton = async (e) => {
@@ -47,7 +47,7 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
     e.stopPropagation();
 
     if (!content.length) {
-      setContentError(() => true);
+      setErrorMessage(() => '내용은 필수로 입력해야 합니다.');
     } else {
       try {
         const response = await scheduleApi.createSchedule(movingPlanId, {
@@ -58,6 +58,7 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
         });
         setContent(() => '');
       } catch (err) {
+        setErrorMessage(() => '등록 도중 오류가 발생했습니다.');
         console.log(err);
       }
     }
@@ -88,7 +89,7 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
                 <input
                   type="text"
                   className={inputStyle}
-                  placeholder={`${contentError ? '할 일을 입력해 주세요' : '할 일 입력'}`}
+                  placeholder="할 일 입력"
                   value={content}
                   onChange={handleContentChange}
                 />
@@ -97,6 +98,7 @@ export default function CalendarSidebar({ selectDate, scheduleList }) {
                 +
               </div>
             </div>
+            <div className="px-4 mx-2 text-red-300">{errorMessage ? errorMessage : '\u00A0'}</div>
           </div>
         </>
       ) : (

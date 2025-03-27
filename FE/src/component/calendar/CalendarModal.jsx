@@ -7,7 +7,7 @@ import scheduleApi from '../../api/scheduleApi';
 
 export default function CalendarModal({ modalClose }) {
   const [content, setContent] = useState('');
-  const [contentError, setContentError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [color, setColor] = useState('#69DB7C');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -36,8 +36,8 @@ export default function CalendarModal({ modalClose }) {
   };
 
   const handleContentChange = (e) => {
-    setContent(() => e.target.value);
-    setContentError(() => false);
+    setContent(() => e.target.value.substring(0, 20));
+    setErrorMessage(() => null);
   };
 
   const handleClickColor = () => {
@@ -56,7 +56,7 @@ export default function CalendarModal({ modalClose }) {
       setShowColorDropdown(() => false);
     } else {
       if (!content.length) {
-        setContentError(() => true);
+        setErrorMessage(() => '내용은 필수로 입력해야 합니다.');
       } else {
         try {
           const response = await scheduleApi.createSchedule(movingPlanId, {
@@ -67,6 +67,7 @@ export default function CalendarModal({ modalClose }) {
           });
           modalClose();
         } catch (err) {
+          setErrorMessage(() => '등록 도중 오류가 발생했습니다.');
           console.log(err);
         }
       }
@@ -80,10 +81,11 @@ export default function CalendarModal({ modalClose }) {
   const modalBodyStyle = flexColStyle + ' w-2/3 h-2/3 bg-white rounded-3xl border-2 border-primary';
   const formStyle = 'flex flex-col justify-between items-center mx-auto my-auto h-1/2 w-2/3';
   const inputLineStyle =
-    'flex justify-between items-center w-full border-b-1 border-gray-500 text-xl p-1 m-4';
+    'flex justify-between items-center w-full border-b-1 border-gray-500 text-xl p-1 m-3';
   const inputWrapperStyle = 'flex grow';
-  const inputStyle = `grow focus:outline-hidden ${contentError ? 'placeholder:text-red-300' : ''}`;
+  const inputStyle = 'grow focus:outline-hidden';
   const circleStyle = `bg-[${color}] w-10 h-10 rounded-4xl`;
+  const errorDivStyle = 'text-red-300';
   const buttonStyle =
     'w-40 h-15 bg-white border-4 border-primary rounded-3xl text-primary text-xl font-bold cursor-pointer hover:bg-primary hover:text-white';
   const calendarModalDropdownStyle = 'relative group';
@@ -99,7 +101,7 @@ export default function CalendarModal({ modalClose }) {
                 <input
                   type="text"
                   className={inputStyle}
-                  placeholder={`${contentError ? '할 일을 입력해 주세요' : '할 일 입력'}`}
+                  placeholder="할 일 입력"
                   value={content}
                   onChange={handleContentChange}
                 />
@@ -112,6 +114,7 @@ export default function CalendarModal({ modalClose }) {
                 </div>
               </div>
             </div>
+            <div className={errorDivStyle}>{errorMessage ? errorMessage : '\u00A0'}</div>
             <CalendarModalDatePicker
               startDate={startDate}
               setStartDate={setStartDate}
