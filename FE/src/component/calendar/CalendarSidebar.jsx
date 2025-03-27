@@ -179,7 +179,7 @@ export default function CalendarSidebar({
     return (
       <div key={i} className={scheduleElementDivStyle}>
         <div
-          className={`${scheduleElementContentStyle} bg-[${schedule.color}]`}
+          className={`${scheduleElementContentStyle} bg-[${schedule.color}] ${calendarUtil.determineBlackText(calendarUtil.hexColorToIntArray(schedule.color)) ? 'text-black' : 'text-white'}`}
           onClick={(e) => {
             setUpdatingIndex(() => i);
             setUpdateContent(schedule.content);
