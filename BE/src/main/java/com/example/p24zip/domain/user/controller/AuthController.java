@@ -11,9 +11,11 @@ import com.example.p24zip.domain.user.dto.response.LoginResponseDto;
 import com.example.p24zip.domain.user.entity.User;
 import com.example.p24zip.domain.user.service.AuthService;
 import com.example.p24zip.global.response.ApiResponse;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -45,7 +47,8 @@ public class AuthController {
     }
 
     @PostMapping("/verify-email")
-    public ResponseEntity<ApiResponse<VerifyEmailDataResponseDto>> verifyEmail(@RequestBody @Valid VerifyEmailRequestDto requestDto){
+    public ResponseEntity<ApiResponse<VerifyEmailDataResponseDto>> verifyEmail(@RequestBody @Valid VerifyEmailRequestDto requestDto)
+        throws MessagingException, UnsupportedEncodingException {
 
         return ResponseEntity.ok(
             ApiResponse.ok("OK", "인증 번호를 전송했습니다.", authService.sendEmail(requestDto))
@@ -71,7 +74,8 @@ public class AuthController {
     }
 
     @PostMapping("/verify-password")
-    public ResponseEntity<ApiResponse<Object>> findPassword(@RequestBody @Valid VerifyEmailRequestDto requestDto) {
+    public ResponseEntity<ApiResponse<Object>> findPassword(@RequestBody @Valid VerifyEmailRequestDto requestDto)
+        throws MessagingException, UnsupportedEncodingException {
         authService.findPassword(requestDto);
 
         return ResponseEntity.ok(

@@ -15,11 +15,15 @@ import com.example.p24zip.global.exception.CustomException;
 import com.example.p24zip.global.exception.ResourceNotFoundException;
 import com.example.p24zip.global.exception.TokenException;
 import com.example.p24zip.global.security.jwt.JwtTokenProvider;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 
 import java.time.ZoneId;
@@ -29,8 +33,8 @@ import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,6 +56,9 @@ public class AuthService {
 
     @Value("${ORIGIN}")
     private String origin;
+
+    @Value("${MAIL_ADDRESS")
+    private String mailAddress;
  
 
     /**
@@ -77,14 +84,12 @@ public class AuthService {
 
 
     /**
-     * 이메일 인증(이메일 전송)
+     * 이메일 인증(사용자 이메일로 랜덤한 숫자 4자리 전송)
      * @param requestDto 입력한 email을 가지고 있는 DTO
      * @return 만료일 가진 responseDto
      * **/
-    // subject 보내질 이메일 제목
-    // text 보내질 이메일 본문 내용
-    // code 보내질 인증 코드 랜덤한 4자리 수
-    public VerifyEmailDataResponseDto sendEmail(VerifyEmailRequestDto requestDto) {
+    public VerifyEmailDataResponseDto sendEmail(VerifyEmailRequestDto requestDto)
+        throws UnsupportedEncodingException, MessagingException {
         String username = requestDto.getUsername();
 
         if(redisTemplate.hasKey(username)){
@@ -96,21 +101,20 @@ public class AuthService {
             }
         }
 
-        String subject = "회원가입 인증 메일입니다.";
-        Random random = new Random();
-        int codeNum = random.nextInt(9000) +1000;
-        String text = "인증 코드는" + codeNum + "입니다.";
-
         boolean checkUsername = checkExistsUsername(username);
         if (checkUsername) {
             throw new CustomException("EXIST_EMAIL", "이미 사용중인 이메일입니다.");
         }
 
-        // 정의된 SMTP 메일 객체로 메일 전송
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(username);
-        message.setSubject(subject);
-        message.setText(text);
+        Random random = new Random();
+        int codeNum = random.nextInt(9000) +1000;
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setFrom(new InternetAddress(mailAddress, "이사모음.zip")); // 메일 보낸 이 표시
+        helper.setTo(username);
+        helper.setSubject("이사모음.zip 회원가입 인증 메일입니다."); // 메일 제목
+        String text = String.format("<h1>인증 코드는 %d입니다.</h1>",codeNum);
+        helper.setText(text, true);
         mailSender.send(message);
 
         // redis인증 코드 저장
@@ -163,7 +167,13 @@ public class AuthService {
         }
     }
 
-    public void findPassword(VerifyEmailRequestDto requestDto) {
+    /**
+     * 사용자 이메일로 비밀번호 수정 임시 페이지 링크 보내줌
+     * @param requestDto username:email
+     * @return null
+     * **/
+    public void findPassword(VerifyEmailRequestDto requestDto)
+        throws UnsupportedEncodingException, MessagingException {
         String username = requestDto.getUsername();
         System.out.println(username);
         User user = userRepository.findByUsername(username).orElseThrow(()-> new CustomException("NOT_EXIST_EMAIL", "존재하지 않는 이메일입니다."));
@@ -185,19 +195,22 @@ public class AuthService {
         String createdAt = username + "_createdAt";
         redisTemplate.opsForValue().set(createdAt, String.valueOf(ZonedDateTime.now()), 30, TimeUnit.MINUTES); // 생성시간
 
-
-        String subject = "이사모음.zip 비밀번호 인증 메일입니다.";
-        String text = origin+ "/newpassword?query="+ tempJwt +"\n해당 링크로 접속 후 비밀번호를 변경해 주세요. 이용시간은 30분까지 입니다.";
-
-
-        // 정의된 SMTP 메일 객체로 메일 전송
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(username);
-        message.setSubject(subject);
-        message.setText(text);
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        helper.setFrom(new InternetAddress(mailAddress, "이사모음.zip"));
+        helper.setTo(username);
+        helper.setSubject("이사모음.zip 비밀번호 인증 메일입니다.");
+        String text = String.format("<h1>해당 링크로 접속 후 비밀번호를 변경해 주세요. 이용시간은 30분까지 입니다.</h1><p>%s/newpassword?query=%s</p>",origin,tempJwt);
+        helper.setText(text, true);
         mailSender.send(message);
     }
 
+    /**
+     * 비밀번호 수정
+     * @param requestDto 수정될 password
+     * @param user 인증된 사용자
+     * @return null
+     * **/
     @Transactional
     public void updatePassword(ChangePasswordRequestDto requestDto, User user) {
         String encryptedPassword = passwordEncoder.encode(requestDto.getPassword());
