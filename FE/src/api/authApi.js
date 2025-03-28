@@ -33,6 +33,12 @@ const authApi = {
     return response.data;
   },
 
+  // 비밀번호 수정
+  patchPassword: async (formData) => {
+    const response = await api.patch(`${ENDPOINT}/password`, formData);
+    return response.data;
+  },
+
   // 로그인
   login: async (formData) => {
     const response = await api.post(`${ENDPOINT}/login`, formData, { withCredentials: true });
