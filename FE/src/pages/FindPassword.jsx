@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import authApi from '../api/authApi';
 
-export default function Password() {
+export default function FindPassword() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState();
   const [formData, setFormData] = useState({
