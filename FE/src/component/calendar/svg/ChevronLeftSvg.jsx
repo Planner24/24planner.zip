@@ -3,8 +3,7 @@ export default function ChevronLeftSvg() {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
-      fill="currentColor"
-      className="size-8"
+      className="size-8 fill-primary hover:fill-white"
     >
       <path
         fillRule="evenodd"

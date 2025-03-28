@@ -121,7 +121,8 @@ export default function CalendarContent({
   const calendarHeaderCenterPrevDivStyle = 'flex flex-1 justify-end';
   const calendarHeaderCenterDateDivStyle = 'flex flex-3 justify-center mx-5';
   const calendarHeaderCenterDateTextStyle = 'text-xl';
-  const calendarHeaderCenterDivClickableStyle = 'cursor-pointer';
+  const calendarHeaderCenterDivClickableStyle =
+    'border-2 border-primary rounded-full hover:bg-primary cursor-pointer';
   const calendarHeaderCenterNextDivStyle = 'flex flex-1 justify-start';
   const buttonStyle =
     'w-20 h-10 bg-white border-2 border-primary rounded-xl text-primary font-semibold cursor-pointer hover:bg-primary hover:text-white ml-2';
