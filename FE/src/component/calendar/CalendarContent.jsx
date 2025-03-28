@@ -21,6 +21,7 @@ export default function CalendarContent({
   setYearState,
   monthState,
   setMonthState,
+  selectDate,
   setSelectDate,
   monthlyEventList,
   setMonthlyEventList,
@@ -111,6 +112,8 @@ export default function CalendarContent({
     'December',
   ];
 
+  const selectDateObject = new Date(selectDate);
+
   const calendarContentStyle = 'flex flex-col flex-2 h-full w-full border-r-1 border-gray-300 my-4';
   const calendarPaddingStyle = 'px-8';
   const calendarHeaderStyle = 'flex justify-between w-full pt-4';
@@ -183,7 +186,7 @@ export default function CalendarContent({
             })}
             dayCellContent={(arg) => ({
               // 한국어 사용 시, 일수가 기본적으로 "n일" 형태로 표현되므로 직접 숫자만 출력
-              html: `${arg.date.getDate()}`,
+              html: `<div class="${isEqualDay(selectDateObject, arg.date) ? 'animate-selected-date' : ''}">${arg.date.getDate()}</div>`,
             })}
             // 더 보기 버튼에, 기본 제공되는 +3 개라는 텍스트 대신 +3만 사용
             moreLinkContent={(arg) => ({ html: arg.shortText })}
@@ -217,4 +220,12 @@ export default function CalendarContent({
 
 function parseMonth(year, month) {
   return `${year}-${month.toString().padStart(2, '0')}`;
+}
+
+function isEqualDay(date1, date2) {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
 }
