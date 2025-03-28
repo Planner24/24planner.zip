@@ -52,7 +52,7 @@ public class MovingPlanController {
         ));
     }
 
-    @GetMapping("/{movingPlanId}")
+    @GetMapping("/{movingPlanId}/title")
     public ResponseEntity<ApiResponse<MovingPlanResponseDto>> readMovingPlanById(
             @PathVariable Long movingPlanId,
             @AuthenticationPrincipal User user) {
@@ -61,12 +61,12 @@ public class MovingPlanController {
 
         return ResponseEntity.ok(ApiResponse.ok(
                 "OK",
-                "플랜 조회에 성공했습니다.",
-                movingPlanService.readMovingPlanById(movingPlanId)
+                "플랜 제목 조회에 성공했습니다.",
+                movingPlanService.readMovingPlanTitleById(movingPlanId)
         ));
     }
 
-    @PutMapping("/{movingPlanId}")
+    @PatchMapping("/{movingPlanId}/title")
     public ResponseEntity<ApiResponse<MovingPlanResponseDto>> updateMovingPlan(
             @PathVariable Long movingPlanId,
             @Valid @RequestBody MovingPlanRequestDto requestDto,

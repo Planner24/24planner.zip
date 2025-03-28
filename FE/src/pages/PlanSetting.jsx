@@ -19,7 +19,7 @@ export default function PlanSetting() {
   useEffect(() => {
     async function fetchPlan() {
       try {
-        const response = await planApi.readPlan(movingPlanId);
+        const response = await planApi.readPlanTitle(movingPlanId);
         const data = response.data.data;
 
         setTitle(data.title);
@@ -55,7 +55,7 @@ export default function PlanSetting() {
     // 기존 제목과 다른 경우에만 api 요청
     if (titleInput !== title) {
       try {
-        const response = await planApi.updatePlan(movingPlanId, titleInput);
+        const response = await planApi.updatePlanTitle(movingPlanId, titleInput);
         const data = response.data.data;
 
         setTitle(data.title);

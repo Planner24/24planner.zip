@@ -39,7 +39,7 @@ public class MovingPlanService {
                 .toList();
     }
 
-    public MovingPlanResponseDto readMovingPlanById(Long id) {
+    public MovingPlanResponseDto readMovingPlanTitleById(Long id) {
         MovingPlan movingPlan = movingPlanRepository.findById(id)
                 .orElseThrow(ResourceNotFoundException::new);
 
