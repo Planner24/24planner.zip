@@ -107,7 +107,7 @@ export default function CalendarContent({
   const calendarHeaderCenterNextDivStyle = 'flex flex-1 justify-start';
   const buttonStyle =
     'w-20 h-10 bg-white border-2 border-primary rounded-xl text-primary font-semibold cursor-pointer hover:bg-primary hover:text-white ml-2';
-  const eventLineStyle = 'h-3 px-1 text-tiny truncate';
+  const eventLineStyle = 'h-3 px-2 text-tiny truncate';
 
   return (
     <>
@@ -160,9 +160,8 @@ export default function CalendarContent({
             // 더 보기 버튼에, 기본 제공되는 +3 개라는 텍스트 대신 +3만 사용
             moreLinkContent={(arg) => ({ html: arg.shortText })}
             eventContent={(arg) => {
-              const color = arg.event.backgroundColor;
               return {
-                html: `<div class="${eventLineStyle} bg-[${color}] ${calendarUtil.determineBlackText(calendarUtil.hexColorToIntArray(color)) ? 'text-black' : 'text-white'}">${arg.event.title}</div>`,
+                html: `<div class="${eventLineStyle} ${calendarUtil.determineBlackText(calendarUtil.hexColorToIntArray(arg.event.backgroundColor)) ? 'text-black' : 'text-white'}">${arg.event.title}</div>`,
               };
             }}
             datesSet={async (dateInfo) => {

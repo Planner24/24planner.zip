@@ -136,6 +136,18 @@ input::-webkit-inner-spin-button {
   height: 17px !important;
 }
 
+.fc-event-start {
+  border-radius: 8px 0 0 8px;
+}
+
+.fc-event-end {
+  border-radius: 0 8px 8px 0;
+}
+
+.fc-event-start.fc-event-end {
+  border-radius: 8px;
+}
+
 .fc .fc-popover {
   z-index: 8;
   color: #000000;
