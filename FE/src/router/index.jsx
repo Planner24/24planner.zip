@@ -11,6 +11,7 @@ import Houses from '../pages/Houses';
 import Calendar from '../pages/Calendar';
 import NotFound from '../pages/NotFound';
 import PlanSetting from '../pages/PlanSetting';
+import FindPassword from '../pages/FindPassword';
 
 const router = createBrowserRouter([
   {
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
     path: '/signup',
     element: <Signup />,
     // errorElement: <NotFound />,
+  },
+  {
+    path: '/password',
+    element: <FindPassword />,
   },
 ]);
 

@@ -26,7 +26,13 @@ const authApi = {
     const response = await api.post(`${ENDPOINT}/signup`, signupData);
     return response;
   },
-  
+
+  // 비밀번호 찾기
+  findPassword: async (formData) => {
+    const response = await api.post(`${ENDPOINT}/verify-password`, formData);
+    return response.data;
+  },
+
   // 로그인
   login: async (formData) => {
     const response = await api.post(`${ENDPOINT}/login`, formData, { withCredentials: true });
@@ -48,7 +54,6 @@ const authApi = {
   test: async () => {
     const response = await api.get(`/test`);
   },
-
 };
 
 export default authApi;
