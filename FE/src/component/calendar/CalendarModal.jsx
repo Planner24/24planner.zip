@@ -18,6 +18,12 @@ export default function CalendarModal({
   modalClose,
   showingScheduleToModal,
 }) {
+  const now = new Date();
+  const selectedMonthDateObject = new Date(yearState, monthState - 1, 1);
+  const isSelectedMonthIsNow =
+    selectedMonthDateObject.getFullYear() === now.getFullYear() &&
+    selectedMonthDateObject.getMonth() === now.getMonth();
+
   const [content, setContent] = useState(
     showingScheduleToModal ? showingScheduleToModal.content : '',
   );
@@ -26,10 +32,18 @@ export default function CalendarModal({
     showingScheduleToModal ? showingScheduleToModal.color : '#69DB7C',
   );
   const [startDate, setStartDate] = useState(
-    showingScheduleToModal ? new Date(showingScheduleToModal.startDate) : new Date(),
+    showingScheduleToModal
+      ? new Date(showingScheduleToModal.startDate)
+      : isSelectedMonthIsNow
+        ? now
+        : selectedMonthDateObject,
   );
   const [endDate, setEndDate] = useState(
-    showingScheduleToModal ? new Date(showingScheduleToModal.endDate) : new Date(),
+    showingScheduleToModal
+      ? new Date(showingScheduleToModal.endDate)
+      : isSelectedMonthIsNow
+        ? now
+        : selectedMonthDateObject,
   );
   const [showColorDropdown, setShowColorDropdown] = useState(false);
 
