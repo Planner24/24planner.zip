@@ -74,7 +74,7 @@ public class AuthController {
     }
 
     @PostMapping("/verify-password")
-    public ResponseEntity<ApiResponse<Object>> findPassword(@RequestBody @Valid VerifyEmailRequestDto requestDto)
+    public ResponseEntity<ApiResponse<Void>> findPassword(@RequestBody @Valid VerifyEmailRequestDto requestDto)
         throws MessagingException, UnsupportedEncodingException {
         authService.findPassword(requestDto);
 
