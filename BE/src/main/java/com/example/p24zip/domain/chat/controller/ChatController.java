@@ -16,6 +16,8 @@ public class ChatController {
 
     private final ChatService chatService;
 
+
+
     @MessageMapping("/chat/{movingPlanId}")
     @SendTo("/topic/{movingPlanId}")
     public MessageResponseDto chatting(
