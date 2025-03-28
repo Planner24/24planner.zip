@@ -6,6 +6,7 @@ import com.example.p24zip.domain.user.dto.request.LoginRequestDto;
 import com.example.p24zip.domain.user.dto.request.SignupRequestDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestCodeDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestDto;
+import com.example.p24zip.domain.user.dto.response.FindPasswordResponseDto;
 import com.example.p24zip.domain.user.dto.response.VerifyEmailDataResponseDto;
 import com.example.p24zip.domain.user.dto.response.AccessTokenResponseDto;
 import com.example.p24zip.domain.user.dto.response.LoginResponseDto;
@@ -28,6 +29,7 @@ import java.time.LocalDateTime;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -169,15 +171,15 @@ public class AuthService {
 
     /**
      * 사용자 이메일로 비밀번호 수정 임시 페이지 링크 보내줌
+     *
      * @param requestDto username:email
      * @return null
-     * **/
-    public void findPassword(VerifyEmailRequestDto requestDto)
+     **/
+    public FindPasswordResponseDto findPassword(VerifyEmailRequestDto requestDto)
         throws UnsupportedEncodingException, MessagingException {
         String username = requestDto.getUsername();
         System.out.println(username);
         User user = userRepository.findByUsername(username).orElseThrow(()-> new CustomException("NOT_EXIST_EMAIL", "존재하지 않는 이메일입니다."));
-
 
         if(redisTemplate.hasKey(username+"_tempToken")){
             ZonedDateTime checkAccessTime = ZonedDateTime.parse(
@@ -203,6 +205,11 @@ public class AuthService {
         String text = String.format("<h1>해당 링크로 접속 후 비밀번호를 변경해 주세요. 이용시간은 30분까지 입니다.</h1><p>%s/newpassword?query=%s</p>",origin,tempJwt);
         helper.setText(text, true);
         mailSender.send(message);
+
+        ZonedDateTime date = ZonedDateTime.now().plusMinutes(3);
+        String expiredAt = date.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);;
+
+        return new FindPasswordResponseDto(tempJwt,expiredAt);
     }
 
     /**

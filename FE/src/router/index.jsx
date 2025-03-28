@@ -12,6 +12,8 @@ import Calendar from '../pages/Calendar';
 import NotFound from '../pages/NotFound';
 import PlanSetting from '../pages/PlanSetting';
 import FindPassword from '../pages/FindPassword';
+import NewPassword from '../pages/NewPassword';
+import PwdLayout from '../layout/PwdLayout';
 
 const router = createBrowserRouter([
   {
@@ -73,6 +75,15 @@ const router = createBrowserRouter([
   {
     path: '/password',
     element: <FindPassword />,
+  },
+  {
+    path: '/newpassword',
+    element: <PwdLayout />,
+    children: [{ index: true, element: <NewPassword /> }],
+  },
+  {
+    path: '/notfound',
+    element: <NotFound />,
   },
 ]);
 

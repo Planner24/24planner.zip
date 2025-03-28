@@ -5,6 +5,7 @@ import com.example.p24zip.domain.user.dto.request.LoginRequestDto;
 import com.example.p24zip.domain.user.dto.request.SignupRequestDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestCodeDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestDto;
+import com.example.p24zip.domain.user.dto.response.FindPasswordResponseDto;
 import com.example.p24zip.domain.user.dto.response.VerifyEmailDataResponseDto;
 import com.example.p24zip.domain.user.dto.response.AccessTokenResponseDto;
 import com.example.p24zip.domain.user.dto.response.LoginResponseDto;
@@ -74,12 +75,11 @@ public class AuthController {
     }
 
     @PostMapping("/verify-password")
-    public ResponseEntity<ApiResponse<Void>> findPassword(@RequestBody @Valid VerifyEmailRequestDto requestDto)
+    public ResponseEntity<ApiResponse<FindPasswordResponseDto>> findPassword(@RequestBody @Valid VerifyEmailRequestDto requestDto)
         throws MessagingException, UnsupportedEncodingException {
-        authService.findPassword(requestDto);
 
         return ResponseEntity.ok(
-            ApiResponse.ok("OK", "인증 링크를 전송했습니다.", null)
+            ApiResponse.ok("OK", "인증 링크를 전송했습니다.", authService.findPassword(requestDto))
         );
     }
 

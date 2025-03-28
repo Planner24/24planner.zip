@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import authApi from '../api/authApi';
+import { setTempToken } from '../store/slices/authPwdSlice';
+import { useDispatch } from 'react-redux';
 
 export default function FindPassword() {
+  const dispatch = useDispatch();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState();
   const [formData, setFormData] = useState({
@@ -28,6 +32,13 @@ export default function FindPassword() {
       const response = await authApi.findPassword(formData);
       const code = response.code;
       const message = response.message;
+      const tempToken = response.data.tempToken;
+      const expiredAt = response.data.expiredAt;
+      // 이메일 인증 성공시 tempToken을 localstorage에 저장
+      if (code === 'OK') {
+        dispatch(setTempToken(tempToken)); // Redux에 저장
+        localStorage.setItem('tempToken', JSON.stringify({ value: tempToken, expiredAt }));
+      }
 
       setMessage(message);
     } catch (error) {
