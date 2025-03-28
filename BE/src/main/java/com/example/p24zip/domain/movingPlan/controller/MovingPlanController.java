@@ -72,7 +72,7 @@ public class MovingPlanController {
             @Valid @RequestBody MovingPlanRequestDto requestDto,
             @AuthenticationPrincipal User user) {
 
-        movingPlanValidator.validateMovingPlanAccess(movingPlanId, user);
+        movingPlanValidator.validateMovingPlanOwnership(movingPlanId, user);
 
         return ResponseEntity.ok(ApiResponse.ok(
                 "UPDATED",
@@ -86,7 +86,7 @@ public class MovingPlanController {
             @PathVariable Long movingPlanId,
             @AuthenticationPrincipal User user) {
 
-        movingPlanValidator.validateMovingPlanAccess(movingPlanId, user);
+        movingPlanValidator.validateMovingPlanOwnership(movingPlanId, user);
 
         movingPlanService.deleteMovingPlan(movingPlanId);
 
