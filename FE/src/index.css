@@ -105,26 +105,38 @@ input::-webkit-inner-spin-button {
 :root {
   --fc-neutral-bg-color: #ffffff;
   --fc-today-bg-color: #ffffff;
+  --fc-border-color: transparent;
 }
 
-.fc-col-header-cell {
-  background-color: #f3f3f3;
+.fc .fc-col-header-cell-cushion,
+.fc .fc-daygrid-day-top {
+  font-family: 'Lexend', 'sans-serif';
 }
 
 .fc-day-disabled {
   background-color: #ffffff;
 }
 
-.fc-day-sun {
-  color: red;
+.fc-day-sun,
+.fc-day-sun .fc-col-header-cell-cushion {
+  color: #dd2222;
 }
 
-.fc-day-sat {
-  color: blue;
+.fc-day-sat,
+.fc-day-sat .fc-col-header-cell-cushion {
+  color: #3366ff;
 }
 
 .fc .fc-daygrid-day-top {
   flex-direction: row;
+  justify-content: center;
+}
+
+.fc .fc-daygrid-day-number {
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
 }
 
 .fc-day-today .fc-daygrid-day-number {
@@ -133,7 +145,7 @@ input::-webkit-inner-spin-button {
 
 /* 달력 내 event뿐만 아니라 fc-event를 여기에서 설정해야 달력 높이도 감소함 */
 .fc-event {
-  height: 17px !important;
+  height: 18px !important;
 }
 
 .fc-event-start {
@@ -156,12 +168,12 @@ input::-webkit-inner-spin-button {
 /* DatePicker 용 CSS */
 .react-datepicker__day-names .react-datepicker__day-name:first-child,
 .react-datepicker__month-container .react-datepicker__day:first-child {
-  color: #ff0000 !important;
+  color: #dd2222 !important;
 }
 
 .react-datepicker__day-names .react-datepicker__day-name:last-child,
 .react-datepicker__month-container .react-datepicker__day:last-child {
-  color: #0000ff !important;
+  color: #3333ff !important;
 }
 
 .react-datepicker__day--outside-month {
@@ -180,6 +192,10 @@ input::-webkit-inner-spin-button {
 
 .react-datepicker__day--keyboard-selected {
   background-color: #ffffff !important;
+}
+
+.react-datepicker__day--today {
+  background-color: #2f9e44 !important;
 }
 
 * {

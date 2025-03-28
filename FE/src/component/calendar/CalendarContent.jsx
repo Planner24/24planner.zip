@@ -121,8 +121,8 @@ export default function CalendarContent({
   const calendarHeaderCenterPrevDivStyle = 'flex flex-1 justify-end';
   const calendarHeaderCenterDateDivStyle = 'flex flex-3 justify-center mx-5';
   const calendarHeaderCenterDateTextStyle = 'text-xl';
-  const calendarHeaderCenterDivClickableStyle =
-    'border-2 border-primary rounded-full hover:bg-primary cursor-pointer';
+  const calendarHeaderCenterDivClickableStyle = 'cursor-pointer';
+  const chevronStyle = 'size-8 fill-secondary';
   const calendarHeaderCenterNextDivStyle = 'flex flex-1 justify-start';
   const buttonStyle =
     'w-20 h-10 bg-white border-2 border-primary rounded-xl text-primary font-semibold cursor-pointer hover:bg-primary hover:text-white ml-2';
@@ -146,7 +146,7 @@ export default function CalendarContent({
             <nav className={calendarHeaderCenterStyle}>
               <div className={calendarHeaderCenterPrevDivStyle}>
                 <div className={calendarHeaderCenterDivClickableStyle} onClick={moveToPrevMonth}>
-                  <ChevronLeftSvg />
+                  <ChevronLeftSvg className={chevronStyle} />
                 </div>
               </div>
               <div className={calendarHeaderCenterDateDivStyle}>
@@ -156,7 +156,7 @@ export default function CalendarContent({
               </div>
               <div className={calendarHeaderCenterNextDivStyle} onClick={moveToNextMonth}>
                 <div className={calendarHeaderCenterDivClickableStyle} onClick={moveToNextMonth}>
-                  <ChevronRightSvg />
+                  <ChevronRightSvg className={chevronStyle} />
                 </div>
               </div>
             </nav>
@@ -174,12 +174,14 @@ export default function CalendarContent({
             plugins={[dayGridPlugin, interactionPlugin]}
             initialView="dayGridMonth"
             showNonCurrentDates={false}
-            locale={koLocale}
             dayMaxEventRows={3}
             events={monthlyEventList}
             eventMouseEnter={handleEventMouseEnter}
             eventMouseLeave={handleEventMouseLeave}
             dateClick={handleDateCellClick}
+            dayHeaderContent={(arg) => ({
+              html: `${arg.text.toUpperCase()}`,
+            })}
             dayCellContent={(arg) => ({
               // 한국어 사용 시, 일수가 기본적으로 "n일" 형태로 표현되므로 직접 숫자만 출력
               html: `${arg.date.getDate()}`,
