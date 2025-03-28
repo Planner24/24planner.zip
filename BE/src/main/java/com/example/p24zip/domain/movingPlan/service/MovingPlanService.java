@@ -1,6 +1,7 @@
 package com.example.p24zip.domain.movingPlan.service;
 
 import com.example.p24zip.domain.movingPlan.dto.request.MovingPlanRequestDto;
+import com.example.p24zip.domain.movingPlan.dto.response.MovingPlanHousemateResponseDto;
 import com.example.p24zip.domain.movingPlan.dto.response.MovingPlanOwnerResponseDto;
 import com.example.p24zip.domain.movingPlan.dto.response.MovingPlanResponseDto;
 import com.example.p24zip.domain.movingPlan.entity.Housemate;
@@ -37,6 +38,17 @@ public class MovingPlanService {
         return housemateRepository.findByUserOrderByMovingPlanCreatedAtDesc(user).stream()
                 .map(MovingPlanOwnerResponseDto::from)
                 .toList();
+    }
+
+    public MovingPlanHousemateResponseDto readMovingPlanById(Long id, User user) {
+        MovingPlan movingPlan = movingPlanRepository.findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
+
+        Boolean isOwner = housemateRepository.existsByUserAndMovingPlanAndIsOwnerTrue(user, movingPlan);
+
+        List<Housemate> housemates = housemateRepository.findByMovingPlan(movingPlan);
+
+        return MovingPlanHousemateResponseDto.from(movingPlan, isOwner, housemates);
     }
 
     public MovingPlanResponseDto readMovingPlanTitleById(Long id) {

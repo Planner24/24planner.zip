@@ -1,6 +1,7 @@
 package com.example.p24zip.domain.movingPlan.controller;
 
 import com.example.p24zip.domain.movingPlan.dto.request.MovingPlanRequestDto;
+import com.example.p24zip.domain.movingPlan.dto.response.MovingPlanHousemateResponseDto;
 import com.example.p24zip.domain.movingPlan.dto.response.MovingPlanOwnerResponseDto;
 import com.example.p24zip.domain.movingPlan.dto.response.MovingPlanResponseDto;
 import com.example.p24zip.domain.movingPlan.service.MovingPlanService;
@@ -52,8 +53,22 @@ public class MovingPlanController {
         ));
     }
 
+    @GetMapping("/{movingPlanId}")
+    public ResponseEntity<ApiResponse<MovingPlanHousemateResponseDto>> readMovingPlanById(
+            @PathVariable Long movingPlanId,
+            @AuthenticationPrincipal User user) {
+
+        movingPlanValidator.validateMovingPlanAccess(movingPlanId, user);
+
+        return ResponseEntity.ok(ApiResponse.ok(
+                "OK",
+                "플랜 조회에 성공했습니다.",
+                movingPlanService.readMovingPlanById(movingPlanId, user)
+        ));
+    }
+
     @GetMapping("/{movingPlanId}/title")
-    public ResponseEntity<ApiResponse<MovingPlanResponseDto>> readMovingPlanById(
+    public ResponseEntity<ApiResponse<MovingPlanResponseDto>> readMovingPlanTitleById(
             @PathVariable Long movingPlanId,
             @AuthenticationPrincipal User user) {
 
