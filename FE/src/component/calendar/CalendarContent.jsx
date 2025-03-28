@@ -135,7 +135,7 @@ export default function CalendarContent({
           <div className={calendarHeaderStyle}>
             <nav className={calendarHeaderLeftStyle}>
               <div className="flex items-center mx-2">
-                <div className="bg-secondary text-center text-white text-xl font-black p-2 px-4">
+                <div className="bg-secondary rounded-[50%] text-center text-white text-xl font-black p-2 px-4">
                   {monthState.toString().padStart(2, '0')}
                 </div>
                 <div className="mx-2 text-secondary text-lg font-bold font-lexend">
