@@ -10,8 +10,9 @@ public class MessageResponseDto {
 
     private final String text;
 
-    public static MessageResponseDtoBuilder from(String text) {
+    public static MessageResponseDto from(String text) {
         return MessageResponseDto.builder()
-                .text(text);
+                .text(text)
+                .build();
     }
 }

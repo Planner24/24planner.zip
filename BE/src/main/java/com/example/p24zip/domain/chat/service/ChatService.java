@@ -2,6 +2,7 @@ package com.example.p24zip.domain.chat.service;
 
 import com.example.p24zip.domain.chat.dto.request.MessageRequestDto;
 import com.example.p24zip.domain.chat.dto.response.MessageResponseDto;
+import com.example.p24zip.domain.chat.entity.Chat;
 import com.example.p24zip.domain.chat.repository.ChatRepository;
 import com.example.p24zip.domain.movingPlan.entity.MovingPlan;
 import com.example.p24zip.domain.movingPlan.repository.MovingPlanRepository;
@@ -19,7 +20,9 @@ public class ChatService {
     private final MovingPlanRepository movingPlanRepository;
     private final ChatRepository chatRepository;
 
-    public MessageResponseDto.MessageResponseDtoBuilder Chatting(
+
+    @Transactional
+    public MessageResponseDto Chatting(
             Long id,
             MessageRequestDto requestDto
             ) {
@@ -27,9 +30,9 @@ public class ChatService {
         MovingPlan movingPlan = movingPlanRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException());
 
-        chatRepository.save(requestDto.toEntity(movingPlan));
+        Chat save = chatRepository.save(requestDto.toEntity(movingPlan));
 
-        String text = HtmlUtils.htmlEscape(requestDto.getText());
+        String text = HtmlUtils.htmlEscape(save.getText());
 
         return MessageResponseDto.from(text);
     }

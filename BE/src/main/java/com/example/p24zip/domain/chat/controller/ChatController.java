@@ -18,10 +18,10 @@ public class ChatController {
 
     @MessageMapping("/chat/{movingPlanId}")
     @SendTo("/topic/{movingPlanId}")
-    public MessageResponseDto.MessageResponseDtoBuilder chatting(
-            @DestinationVariable Long id,
+    public MessageResponseDto chatting(
+            @DestinationVariable Long movingPlanId,
             MessageRequestDto requestDto) {
 
-        return chatService.Chatting(id, requestDto);
+        return chatService.Chatting(movingPlanId, requestDto);
     }
 }

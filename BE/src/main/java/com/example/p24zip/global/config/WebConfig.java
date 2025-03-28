@@ -1,11 +1,16 @@
 package com.example.p24zip.global.config;
 
+import com.example.p24zip.global.MyChannelInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.handler.invocation.HandlerMethodReturnValueHandler;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -21,11 +26,15 @@ public class WebConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
 
-        log.info("1111111");
-
         registry.addEndpoint("/gs-guide-websocket")
-                .setAllowedOrigins("*")
-                .withSockJS();
+//                .withSockJS();
+                .setAllowedOrigins("*");
     }
 
+
+
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(new MyChannelInterceptor());
+    }
 }
