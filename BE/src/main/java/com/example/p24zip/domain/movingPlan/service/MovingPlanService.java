@@ -44,11 +44,11 @@ public class MovingPlanService {
         MovingPlan movingPlan = movingPlanRepository.findById(id)
                 .orElseThrow(ResourceNotFoundException::new);
 
-        Boolean isOwner = housemateRepository.existsByUserAndMovingPlanAndIsOwnerTrue(user, movingPlan);
+        Housemate housemate = housemateRepository.findByUserAndMovingPlan(user, movingPlan);
 
         List<Housemate> housemates = housemateRepository.findByMovingPlan(movingPlan);
 
-        return MovingPlanHousemateResponseDto.from(movingPlan, isOwner, housemates);
+        return MovingPlanHousemateResponseDto.from(movingPlan, housemate, housemates);
     }
 
     public MovingPlanResponseDto readMovingPlanTitleById(Long id) {

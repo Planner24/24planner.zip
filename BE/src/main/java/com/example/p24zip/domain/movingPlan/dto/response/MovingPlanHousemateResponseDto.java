@@ -14,14 +14,16 @@ public class MovingPlanHousemateResponseDto {
 
     private Long id;
     private String title;
+    private Long housemateId;
     private Boolean isOwner;
     private List<HousemateResponseDto> housemates;
 
-    public static MovingPlanHousemateResponseDto from(MovingPlan movingPlan, Boolean isOwner, List<Housemate> housemates) {
+    public static MovingPlanHousemateResponseDto from(MovingPlan movingPlan, Housemate housemate, List<Housemate> housemates) {
         return MovingPlanHousemateResponseDto.builder()
                 .id(movingPlan.getId())
                 .title(movingPlan.getTitle())
-                .isOwner(isOwner)
+                .housemateId(housemate.getId())
+                .isOwner(housemate.getIsOwner())
                 .housemates(housemates.stream()
                         .map(HousemateResponseDto::from)
                         .toList())

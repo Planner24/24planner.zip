@@ -15,7 +15,7 @@ public class HousemateResponseDto {
 
     public static HousemateResponseDto from(Housemate housemate) {
         return HousemateResponseDto.builder()
-                .id(housemate.getUser().getId())
+                .id(housemate.getId())
                 .username(housemate.getUser().getUsername())
                 .nickname(housemate.getUser().getNickname())
                 .isOwner(housemate.getIsOwner())
