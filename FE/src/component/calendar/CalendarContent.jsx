@@ -8,11 +8,14 @@ import koLocale from '@fullcalendar/core/locales/ko';
 
 import scheduleApi from '../../api/scheduleApi';
 
-import ChevronLeftSvg from './svg/ChevronLeftSvg';
-import ChevronRightSvg from './svg/ChevronRightSvg';
+import { eventMouseHoverReducer, eventMouseLeaveReducer } from '../../store/slices/popoverSlice';
+
 import calendarUtil from './util/calendarUtil';
 
-import { eventMouseHoverReducer, eventMouseLeaveReducer } from '../../store/slices/popoverSlice';
+import ChevronLeftSvg from './svg/ChevronLeftSvg';
+import ChevronRightSvg from './svg/ChevronRightSvg';
+
+import './style/calendarContent.css';
 
 export default function CalendarContent({
   yearState,
@@ -94,12 +97,27 @@ export default function CalendarContent({
     }
   };
 
+  const monthList = [
+    'January',
+    'Febraury',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
   const calendarContentStyle = 'flex flex-col flex-2 h-full w-full border-r-1 border-gray-300 my-4';
   const calendarPaddingStyle = 'px-8';
   const calendarHeaderStyle = 'flex justify-between w-full pt-4';
   const calendarHeaderLeftStyle = 'flex flex-1 justify-start';
-  const calendarHeaderCenterStyle = 'flex flex-2 justify-center items-center';
-  const calendarHeaderRightStyle = 'flex flex-1 justify-end';
+  const calendarHeaderCenterStyle = 'flex flex-2 justify-center items-center font-lexend';
+  const calendarHeaderRightStyle = 'flex flex-1 justify-end items-center';
   const calendarHeaderCenterPrevDivStyle = 'flex flex-1 justify-end';
   const calendarHeaderCenterDateDivStyle = 'flex flex-3 justify-center mx-5';
   const calendarHeaderCenterDateTextStyle = 'text-xl';
@@ -114,8 +132,16 @@ export default function CalendarContent({
       <section className={calendarContentStyle}>
         <div className={calendarPaddingStyle}>
           <div className={calendarHeaderStyle}>
-            {/* 헤더 중앙 정렬용 태그 */}
-            <nav className={calendarHeaderLeftStyle} />
+            <nav className={calendarHeaderLeftStyle}>
+              <div className="flex items-center mx-2">
+                <div className="bg-secondary text-center text-white text-xl font-black p-2 px-4">
+                  {monthState.toString().padStart(2, '0')}
+                </div>
+                <div className="mx-2 text-secondary text-lg font-bold font-lexend">
+                  {monthList[monthState - 1]}
+                </div>
+              </div>
+            </nav>
             <nav className={calendarHeaderCenterStyle}>
               <div className={calendarHeaderCenterPrevDivStyle}>
                 <div className={calendarHeaderCenterDivClickableStyle} onClick={moveToPrevMonth}>
@@ -124,7 +150,7 @@ export default function CalendarContent({
               </div>
               <div className={calendarHeaderCenterDateDivStyle}>
                 <h2 className={calendarHeaderCenterDateTextStyle}>
-                  {yearState}년 {monthState}월
+                  {yearState}.{monthState.toString().padStart(2, '0')}
                 </h2>
               </div>
               <div className={calendarHeaderCenterNextDivStyle} onClick={moveToNextMonth}>
