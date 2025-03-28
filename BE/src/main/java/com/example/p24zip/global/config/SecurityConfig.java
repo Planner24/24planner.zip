@@ -3,6 +3,7 @@ package com.example.p24zip.global.config;
 import com.example.p24zip.global.security.handler.CustomAccessDeniedHandler;
 import com.example.p24zip.global.security.handler.JwtAuthenticationEntryPoint;
 import com.example.p24zip.global.security.jwt.JwtAuthenticationFilter;
+import com.example.p24zip.oauth2.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -52,8 +53,22 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/auth/verify").authenticated()
                                 .requestMatchers("/auth/**", "/error", "/images/**").permitAll()
+                                .requestMatchers("/oauth2/**", "/login/oauth2/code/**").permitAll()
+                                .requestMatchers("/login").permitAll() // ✅ 백엔드 테스트용
                                 .requestMatchers("/swagger-ui/**", "swagger-ui.html", "/api-docs/**").permitAll()
                                 .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                    .loginPage("/login") // ✅ 백엔드 테스트용 로그인 페이지
+                    .userInfoEndpoint(userInfo -> userInfo.userService(new CustomOAuth2UserService()))
+                    .successHandler((request, response, authentication) -> {
+                        System.out.println("로그인 성공: " + authentication.getName());
+                        response.sendRedirect("/home");
+                    })
+                    .failureHandler((request, response, exception) -> {
+                        System.out.println("로그인 실패: " + exception.getMessage());
+                        response.sendRedirect("/login?error=true");
+                    })
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
