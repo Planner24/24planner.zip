@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import koLocale from '@fullcalendar/core/locales/ko';
 
 import scheduleApi from '../../api/scheduleApi';
 

@@ -113,18 +113,22 @@ input::-webkit-inner-spin-button {
   font-family: 'Lexend', 'sans-serif';
 }
 
+.fc .fc-col-header-cell-cushion {
+  padding-bottom: 8px;
+}
+
 .fc-day-disabled {
   background-color: #ffffff;
 }
 
 .fc-day-sun,
 .fc-day-sun .fc-col-header-cell-cushion {
-  color: #dd2222;
+  color: #dd4444;
 }
 
 .fc-day-sat,
 .fc-day-sat .fc-col-header-cell-cushion {
-  color: #3366ff;
+  color: #4477ee;
 }
 
 .fc .fc-daygrid-day-top {
@@ -168,12 +172,12 @@ input::-webkit-inner-spin-button {
 /* DatePicker 용 CSS */
 .react-datepicker__day-names .react-datepicker__day-name:first-child,
 .react-datepicker__month-container .react-datepicker__day:first-child {
-  color: #dd2222 !important;
+  color: #cc3333 !important;
 }
 
 .react-datepicker__day-names .react-datepicker__day-name:last-child,
 .react-datepicker__month-container .react-datepicker__day:last-child {
-  color: #3333ff !important;
+  color: #3366ff !important;
 }
 
 .react-datepicker__day--outside-month {
