@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import planApi from '../api/planApi';
 import { useDispatch } from 'react-redux';
 import { setCurrentPlanTitle } from '../store/slices/planForHeaderSlice';
+import Housemate from '../component/plan/Housemate';
 
 export default function PlanSetting() {
   const { movingPlanId } = useParams();
@@ -10,19 +11,24 @@ export default function PlanSetting() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const isOwnerRef = useRef(false);
+
   // 상태 관리 데이터
   const [title, setTitle] = useState('');
   const [titleInput, setTitleInput] = useState('');
   const [isTitleEditing, setIsTitleEditing] = useState(false);
+  const [housemates, setHousemates] = useState([]);
 
   // 이사 플랜 조회
   useEffect(() => {
     async function fetchPlan() {
       try {
-        const response = await planApi.readPlanTitle(movingPlanId);
+        const response = await planApi.readPlan(movingPlanId);
         const data = response.data.data;
 
         setTitle(data.title);
+        isOwnerRef.current = data.isOwner;
+        setHousemates(data.housemates);
       } catch (error) {
         const errordata = error.response.data;
         if (errordata.code === 'NOT_FOUND') {
@@ -90,9 +96,12 @@ export default function PlanSetting() {
   const displayStyle = 'w-300 mx-auto my-5';
   const titleHeader = 'h-full mx-60 flex justify-between';
   const titleDiv = 'flex';
-  const titleStyle = 'text-2xl mr-3';
+  const titleStyle = 'text-2xl mr-5';
   const titleButton = 'text-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary';
   const titleInputStyle = 'w-120 text-gray-700 text-2xl border-b outline-none';
+  const housemateDiv = 'mx-60 mt-15';
+  const housemateTitleStyle = 'ml-5 text-primary text-xl';
+  const housemateListContainer = 'w-180 mt-10 px-20 pt-5 pb-15 border-2 border-primary rounded-3xl';
 
   return (
     <div className={displayStyle}>
@@ -101,9 +110,11 @@ export default function PlanSetting() {
           {!isTitleEditing ? (
             <>
               <h2 className={titleStyle}>{title}</h2>
-              <button className={titleButton} onClick={handleTitleEditing}>
-                수정
-              </button>
+              {isOwnerRef.current && (
+                <button className={titleButton} onClick={handleTitleEditing}>
+                  수정
+                </button>
+              )}
             </>
           ) : (
             <>
@@ -121,9 +132,21 @@ export default function PlanSetting() {
             </>
           )}
         </div>
-        <button className={titleButton} onClick={deletePlan}>
-          이사 플랜 삭제
-        </button>
+        {isOwnerRef.current ? (
+          <button className={titleButton} onClick={deletePlan}>
+            이사 플랜 삭제
+          </button>
+        ) : (
+          <button className={titleButton}>이사 플랜에서 나가기</button>
+        )}
+      </div>
+      <div className={housemateDiv}>
+        <h2 className={housemateTitleStyle}>이사에 함께 하는 Zipper</h2>
+        <ul className={housemateListContainer}>
+          {housemates.map((housemate) => (
+            <Housemate key={housemate.id} housemate={housemate} canManage={isOwnerRef.current} />
+          ))}
+        </ul>
       </div>
     </div>
   );
