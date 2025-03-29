@@ -18,6 +18,12 @@ export default function CalendarModal({
   modalClose,
   showingScheduleToModal,
 }) {
+  const now = new Date();
+  const selectedMonthDateObject = new Date(yearState, monthState - 1, 1);
+  const isSelectedMonthIsNow =
+    selectedMonthDateObject.getFullYear() === now.getFullYear() &&
+    selectedMonthDateObject.getMonth() === now.getMonth();
+
   const [content, setContent] = useState(
     showingScheduleToModal ? showingScheduleToModal.content : '',
   );
@@ -26,10 +32,18 @@ export default function CalendarModal({
     showingScheduleToModal ? showingScheduleToModal.color : '#69DB7C',
   );
   const [startDate, setStartDate] = useState(
-    showingScheduleToModal ? new Date(showingScheduleToModal.startDate) : new Date(),
+    showingScheduleToModal
+      ? new Date(showingScheduleToModal.startDate)
+      : isSelectedMonthIsNow
+        ? now
+        : selectedMonthDateObject,
   );
   const [endDate, setEndDate] = useState(
-    showingScheduleToModal ? new Date(showingScheduleToModal.endDate) : new Date(),
+    showingScheduleToModal
+      ? new Date(showingScheduleToModal.endDate)
+      : isSelectedMonthIsNow
+        ? now
+        : selectedMonthDateObject,
   );
   const [showColorDropdown, setShowColorDropdown] = useState(false);
 
@@ -202,7 +216,7 @@ export default function CalendarModal({
   const buttonStyle =
     'w-40 h-15 bg-white border-4 border-primary rounded-3xl text-primary text-xl font-bold cursor-pointer hover:bg-primary hover:text-white';
   const calendarModalDropdownStyle = 'relative group';
-  const calendarModalDropdownBodyStyle = `absolute text-xl text-center top-11 space-y-4 -left-45 right-0 w-100 py-4 bg-white border-1 border-primary rounded-2xl shadow-sm z-8 ${showColorDropdown ? 'opacity-100 visible' : 'opacity-0 invisible'}`;
+  const calendarModalDropdownBodyStyle = `absolute text-xl text-center top-11 space-y-4 -left-57 right-0 w-125 py-4 bg-white border-1 border-primary rounded-2xl shadow-sm z-8 ${showColorDropdown ? 'opacity-100 visible' : 'opacity-0 invisible'}`;
 
   return (
     <div className={transparentBlackBackgroundStyle} onClick={handleBackgroundClick}>
