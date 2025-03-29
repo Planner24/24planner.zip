@@ -3,12 +3,12 @@ package com.example.p24zip.global.config;
 import com.example.p24zip.global.security.handler.CustomAccessDeniedHandler;
 import com.example.p24zip.global.security.handler.JwtAuthenticationEntryPoint;
 import com.example.p24zip.global.security.jwt.JwtAuthenticationFilter;
-import com.example.p24zip.oauth2.CustomOAuth2UserService;
+import com.example.p24zip.oauth2.handler.CustomOAuthLoginSuccessHandler;
+import com.example.p24zip.oauth2.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -33,6 +33,8 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomAccessDeniedHandler accessDeniedHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuthLoginSuccessHandler customOAuthLoginSuccessHandler;
 
     @Value("${origin}")
     private String origin;
@@ -60,11 +62,8 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2
                     .loginPage("/login") // ✅ 백엔드 테스트용 로그인 페이지
-                    .userInfoEndpoint(userInfo -> userInfo.userService(new CustomOAuth2UserService()))
-                    .successHandler((request, response, authentication) -> {
-                        System.out.println("로그인 성공: " + authentication.getName());
-                        response.sendRedirect("/home");
-                    })
+                    .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                    .successHandler(customOAuthLoginSuccessHandler)
                     .failureHandler((request, response, exception) -> {
                         System.out.println("로그인 실패: " + exception.getMessage());
                         response.sendRedirect("/login?error=true");
