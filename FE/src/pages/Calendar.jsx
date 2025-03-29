@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import CalendarContent from '../component/calendar/CalendarContent';
+import CalendarMain from '../component/calendar/CalendarMain';
 import CalendarSidebar from '../component/calendar/CalendarSidebar';
 import CalendarModal from '../component/calendar/CalendarModal';
 
@@ -138,7 +138,7 @@ export default function Calendar() {
           />,
           document.body,
         )}
-      <CalendarContent
+      <CalendarMain
         yearState={yearState}
         setYearState={setYearState}
         monthState={monthState}
