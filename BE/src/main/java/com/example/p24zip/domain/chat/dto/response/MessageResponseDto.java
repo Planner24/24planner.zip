@@ -9,10 +9,12 @@ import lombok.Getter;
 public class MessageResponseDto {
 
     private final String text;
+    private final String nickname;
 
-    public static MessageResponseDto from(String text) {
+    public static MessageResponseDto from(String text, String nickname) {
         return MessageResponseDto.builder()
                 .text(text)
+                .nickname(nickname)
                 .build();
     }
 }
