@@ -120,8 +120,8 @@ export default function Password({ expireTime }) {
     }
   };
 
-  const container = 'w-full h-screen grid content-center justify-items-center';
-  const form = 'relative';
+  const container = 'w-full grid content-center justify-items-center';
+  const form = 'w-full grid content-center justify-items-center relative ';
   const inputStyle = 'w-110 m-3 px-2 focus:outline-none text-xl';
   const invalid = 'text-gray-300 font-semibold';
   const valid = 'text-primary font-semibold';
@@ -132,77 +132,73 @@ export default function Password({ expireTime }) {
   const messageStyle = 'mb-2 pl-2 font-semibold text-red-400';
 
   return (
-    <>
-      <div className={`${container}`}>
-        <form className={`${form}`}>
-          <div>
-            <input
-              type="password"
-              name="password"
-              placeholder="비밀번호"
-              className={inputStyle}
-              onChange={handleInputValue}
-              required
-            />
-            <hr className={`${lineStyle}`}></hr>
-            <ul class="flex justify-between ml-2 mt-1 mb-3">
-              <li
-                className={
-                  checkMinLength(formData.password) && !checkInvalidChar(formData.password)
-                    ? valid
-                    : invalid
-                }
-              >
-                ✓ 8자 이상
-              </li>
-              <li
-                className={
-                  checkLetter(formData.password) && !checkInvalidChar(formData.password)
-                    ? valid
-                    : invalid
-                }
-              >
-                ✓ 영문
-              </li>
-              <li
-                className={
-                  checkNumber(formData.password) && !checkInvalidChar(formData.password)
-                    ? valid
-                    : invalid
-                }
-              >
-                ✓ 숫자
-              </li>
-              <li
-                className={
-                  checkSpecialChar(formData.password) && !checkInvalidChar(formData.password)
-                    ? valid
-                    : invalid
-                }
-              >
-                ✓ 특수문자(@$!%*#?&)
-              </li>
-              <li className={checkInvalidChar(formData.password) ? wrong : invalid}>
-                ✗ 허용되지 않는 문자&nbsp;
-              </li>
-            </ul>
-            <input
-              type="password"
-              name="verifyPassword"
-              placeholder="비밀번호 확인"
-              className={inputStyle}
-              onChange={handleInputValue}
-              required
-            />
-            <hr className={lineStyle} />
-            <p className={`${messageStyle}`}>{passwordMessage || '\u00A0'}</p>
-          </div>
-          <p className={`${messageStyle}`}>{message || '\u00A0'}</p>
-          <button type="button" className={`${buttonStyle}`} onClick={patchPassword}>
-            비밀번호 변경
-          </button>
-        </form>
+    <form className={`${form}`}>
+      <div>
+        <input
+          type="password"
+          name="password"
+          placeholder="비밀번호"
+          className={inputStyle}
+          onChange={handleInputValue}
+          required
+        />
+        <hr className={`${lineStyle}`}></hr>
+        <ul class="flex justify-between ml-2 mt-1 mb-3">
+          <li
+            className={
+              checkMinLength(formData.password) && !checkInvalidChar(formData.password)
+                ? valid
+                : invalid
+            }
+          >
+            ✓ 8자 이상
+          </li>
+          <li
+            className={
+              checkLetter(formData.password) && !checkInvalidChar(formData.password)
+                ? valid
+                : invalid
+            }
+          >
+            ✓ 영문
+          </li>
+          <li
+            className={
+              checkNumber(formData.password) && !checkInvalidChar(formData.password)
+                ? valid
+                : invalid
+            }
+          >
+            ✓ 숫자
+          </li>
+          <li
+            className={
+              checkSpecialChar(formData.password) && !checkInvalidChar(formData.password)
+                ? valid
+                : invalid
+            }
+          >
+            ✓ 특수문자(@$!%*#?&)
+          </li>
+          <li className={checkInvalidChar(formData.password) ? wrong : invalid}>
+            ✗ 허용되지 않는 문자&nbsp;
+          </li>
+        </ul>
+        <input
+          type="password"
+          name="verifyPassword"
+          placeholder="비밀번호 확인"
+          className={inputStyle}
+          onChange={handleInputValue}
+          required
+        />
+        <hr className={lineStyle} />
+        <p className={`${messageStyle}`}>{passwordMessage || '\u00A0'}</p>
       </div>
-    </>
+      <p className={`${messageStyle}`}>{message || '\u00A0'}</p>
+      <button type="button" className={`${buttonStyle}`} onClick={patchPassword}>
+        비밀번호 변경
+      </button>
+    </form>
   );
 }

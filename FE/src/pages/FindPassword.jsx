@@ -52,9 +52,8 @@ export default function FindPassword() {
     }
   };
 
-  const container = 'w-full h-screen grid content-center justify-items-center';
-  const form = 'relative';
-  const image = 'w-64 text-center cursor-pointer absolute left-48 bottom-50';
+  const container = 'w-full grid content-center justify-items-center relative top-50';
+  const image = 'w-64 mb-20 text-center cursor-pointer relative left-50';
   const inputStyle = 'w-110 m-3 px-2 focus:outline-none text-xl';
   const lineStyle = 'w-168';
   const buttonStyle =
@@ -63,7 +62,7 @@ export default function FindPassword() {
 
   return (
     <div className={`${container}`}>
-      <form className={`${form}`}>
+      <form>
         <img alt="이사모음집 로고" className={`${image}`} src="/src/logo.png"></img>
         <div>
           <input

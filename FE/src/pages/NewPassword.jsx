@@ -26,8 +26,8 @@ export default function NewPassword() {
     }
   }, [dispatch]);
 
-  const container = 'relative';
-  const image = 'w-64 text-center cursor-pointer absolute left-173 top-38';
+  const container = 'w-full grid content-center justify-items-center relative top-50';
+  const image = 'w-64 mb-20 text-center cursor-pointer';
 
   return (
     <div className={`${container}`}>
