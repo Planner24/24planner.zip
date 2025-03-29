@@ -84,8 +84,8 @@ public class AuthController {
     }
 
     @PatchMapping("/password")
-    public ResponseEntity<ApiResponse<Void>> updatePassword(@RequestBody @Valid ChangePasswordRequestDto requestDto, @AuthenticationPrincipal User user) {
-        authService.updatePassword(requestDto, user);
+    public ResponseEntity<ApiResponse<Void>> updatePassword(@RequestBody @Valid ChangePasswordRequestDto requestDto,HttpServletResponse response ,@AuthenticationPrincipal User user) {
+        authService.updatePassword(requestDto, response, user);
 
         return ResponseEntity.ok(
             ApiResponse.ok("UPDATED","비밀번호 수정에 성공했습니다.", null)

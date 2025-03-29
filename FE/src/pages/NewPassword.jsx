@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Password from '../component/user/Password';
 import { useDispatch } from 'react-redux';
 import { clearTempToken } from '../store/slices/authPwdSlice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function NewPassword() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const [search] = useSearchParams();
+  const query = search.get('query');
   useEffect(() => {
     const storedTokenData = localStorage.getItem('tempToken');
     if (storedTokenData) {
@@ -15,13 +16,9 @@ export default function NewPassword() {
 
       const expireTime = new Date(expiredAt);
       const now = new Date();
-      console.log('토큰 만료 시간:', expireTime);
-      console.log('현재 시간:', now);
 
       if (now >= expireTime) {
-        console.log('토큰 만료됨, 삭제 중...');
-        localStorage.removeItem('tempToken');
-        dispatch(clearTempToken);
+        dispatch(clearTempToken());
         navigate('/notFound');
       }
     } else {

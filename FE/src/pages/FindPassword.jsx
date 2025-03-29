@@ -34,10 +34,9 @@ export default function FindPassword() {
       const message = response.message;
       const tempToken = response.data.tempToken;
       const expiredAt = response.data.expiredAt;
-      // 이메일 인증 성공시 tempToken을 localstorage에 저장
       if (code === 'OK') {
-        dispatch(setTempToken(tempToken)); // Redux에 저장
-        localStorage.setItem('tempToken', JSON.stringify({ value: tempToken, expiredAt }));
+        const ob = { value: tempToken, expiredAt };
+        dispatch(setTempToken(ob));
       }
 
       setMessage(message);

@@ -193,20 +193,20 @@ public class AuthService {
         String tempJwt = jwtTokenProvider.accessCreateToken(user);
 
         String key = username +"_tempToken";
-        redisTemplate.opsForValue().set(key,tempJwt, 30, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(key,tempJwt, 10, TimeUnit.MINUTES);
         String createdAt = username + "_createdAt";
-        redisTemplate.opsForValue().set(createdAt, String.valueOf(ZonedDateTime.now()), 30, TimeUnit.MINUTES); // 생성시간
+        redisTemplate.opsForValue().set(createdAt, String.valueOf(ZonedDateTime.now()), 10, TimeUnit.MINUTES); // 생성시간
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         helper.setFrom(new InternetAddress(mailAddress, "이사모음.zip"));
         helper.setTo(username);
         helper.setSubject("이사모음.zip 비밀번호 인증 메일입니다.");
-        String text = String.format("<h1>해당 링크로 접속 후 비밀번호를 변경해 주세요. 이용시간은 30분까지 입니다.</h1><p>%s/newpassword?query=%s</p>",origin,tempJwt);
+        String text = String.format("<h1>해당 링크로 접속 후 비밀번호를 변경해 주세요. 이용시간은 10분 입니다.</h1><p>%s/newpassword?query=%s</p>",origin,tempJwt);
         helper.setText(text, true);
         mailSender.send(message);
 
-        ZonedDateTime date = ZonedDateTime.now().plusMinutes(3);
+        ZonedDateTime date = ZonedDateTime.now().plusMinutes(10);
         String expiredAt = date.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);;
 
         return new FindPasswordResponseDto(tempJwt,expiredAt);
@@ -214,12 +214,15 @@ public class AuthService {
 
     /**
      * 비밀번호 수정
+     *
      * @param requestDto 수정될 password
-     * @param user 인증된 사용자
+     * @param response
+     * @param user       인증된 사용자
      * @return null
-     * **/
+     **/
     @Transactional
-    public void updatePassword(ChangePasswordRequestDto requestDto, User user) {
+    public void updatePassword(ChangePasswordRequestDto requestDto, HttpServletResponse response,
+        User user) {
         String encryptedPassword = passwordEncoder.encode(requestDto.getPassword());
 
         user.setPassword(encryptedPassword);

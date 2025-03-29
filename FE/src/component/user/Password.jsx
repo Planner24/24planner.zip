@@ -2,9 +2,15 @@ import React, { useState } from 'react';
 import authApi from '../../api/authApi';
 import { useDispatch } from 'react-redux';
 import { clearTempToken } from '../../store/slices/authPwdSlice';
+import { useNavigate } from 'react-router-dom';
+import { login, logout } from '../../store/slices/authSlice';
 
-export default function Password() {
+export default function Password({ expireTime }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const tempTokenData = localStorage.getItem('tempToken');
+  const accessTokenData = localStorage.getItem('accessToken');
 
   const [message, setMessage] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -13,8 +19,12 @@ export default function Password() {
   const [formData, setFormData] = useState({
     password: '',
   });
+  const [validation, setValidation] = useState({
+    password: { isValid: false, isEqual: false },
+  });
 
   const handleInputValue = (e) => {
+    setMessage();
     const { name, value } = e.target;
     if (name === 'verifyPassword') {
       setVerifyPassword(value);
@@ -28,10 +38,10 @@ export default function Password() {
     if (name === 'password') {
       setValidation((prev) => ({
         ...prev,
-        password: { isValid: checkPassword(value), isEqual: value === formData.verifyPassword },
+        password: { isValid: checkPassword(value), isEqual: value === verifyPassword },
       }));
 
-      if (value === verifyPassword || !verifyPassword) {
+      if (!verifyPassword) {
         setPasswordMessage('');
       } else {
         setPasswordMessage('비밀번호가 일치하지 않습니다.');
@@ -63,20 +73,45 @@ export default function Password() {
 
     if (isSubmitting) return;
     setIsSubmitting(true);
+    if (!verifyPassword) {
+      setMessage('필수값이 누락되거나 형식이 올바르지 않습니다.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (tempTokenData) {
+      const { value, expiredAt } = JSON.parse(tempTokenData);
+      const expireTime = new Date(expiredAt);
+      const now = new Date();
+
+      if (now >= expireTime) {
+        alert('페이지 사용시간이 만료되어 비밀번호 변경에 실패하였습니다.');
+        dispatch(clearTempToken());
+        dispatch(logout());
+        navigate('/login');
+        return;
+      }
+
+      dispatch(login({ accessToken: value }));
+    }
 
     try {
       const response = await authApi.patchPassword(formData);
       const code = response.code;
       const message = response.message;
 
-      if (code === 'OK') {
+      if (tempTokenData && code === 'UPDATED') {
         dispatch(clearTempToken());
-        localStorage.removeItem('tempToken');
+        dispatch(logout());
+        navigate('/login');
+      } else {
+        alert('비밀번호가 수정되었습니다.');
       }
     } catch (error) {
       const errorData = error.response.data;
       const code = errorData.code;
       const message = errorData.message;
+
       if (code !== 'TOOMANY_REQUEST') {
         setMessage(message);
       }
@@ -160,8 +195,9 @@ export default function Password() {
               required
             />
             <hr className={lineStyle} />
-            <p className={`${messageStyle} text-red-400`}>{passwordMessage || '\u00A0'}</p>
+            <p className={`${messageStyle}`}>{passwordMessage || '\u00A0'}</p>
           </div>
+          <p className={`${messageStyle}`}>{message || '\u00A0'}</p>
           <button type="button" className={`${buttonStyle}`} onClick={patchPassword}>
             비밀번호 변경
           </button>
