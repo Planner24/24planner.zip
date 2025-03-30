@@ -190,7 +190,7 @@ public class AuthService {
         // refreshToken redis 넣기
         redisTemplate.opsForValue().set(refreshjwt, refreshjwt, 2, TimeUnit.DAYS);
 
-        return new LoginResponseDto(accessjwt, refreshjwt, user.getNickname());
+        return new LoginResponseDto(accessjwt, user.getNickname());
     }
 
     // refresh token 검증 및 access token 재발급
