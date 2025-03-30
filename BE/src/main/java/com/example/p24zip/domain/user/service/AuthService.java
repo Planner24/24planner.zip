@@ -298,12 +298,17 @@ public class AuthService {
 
 
     public ShowNicknameResponseDto getNickname(User user) {
-
+        if(user==null){
+            new ResourceNotFoundException();
+        }
         return new ShowNicknameResponseDto(user.getId(), user.getNickname());
     }
 
     @Transactional
     public ChangeNicknameResponseDto updateNickname(ChangeNicknameRequestDto requestDto, User user) {
+        if(user==null){
+            new ResourceNotFoundException();
+        }
         String nickname = requestDto.getNickname();
 
         user.setNickname(nickname);

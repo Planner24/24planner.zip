@@ -117,6 +117,10 @@ export default function Password({ expireTime }) {
       }
     } finally {
       setIsSubmitting(false);
+      setFormData({
+        password: '',
+      });
+      setVerifyPassword('');
     }
   };
 
@@ -132,11 +136,12 @@ export default function Password({ expireTime }) {
   const messageStyle = 'mb-2 pl-2 font-semibold text-red-400';
 
   return (
-    <form className={`${form}`}>
+    <form className={`${form}`} onSubmit={patchPassword}>
       <div>
         <input
           type="password"
           name="password"
+          value={formData.password}
           placeholder="비밀번호"
           className={inputStyle}
           onChange={handleInputValue}
@@ -187,6 +192,7 @@ export default function Password({ expireTime }) {
         <input
           type="password"
           name="verifyPassword"
+          value={verifyPassword}
           placeholder="비밀번호 확인"
           className={inputStyle}
           onChange={handleInputValue}

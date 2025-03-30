@@ -51,6 +51,18 @@ const authApi = {
     return response;
   },
 
+  // 닉네임 조회
+  getNickname: async () => {
+    const response = await api.get(`${ENDPOINT}/nickname`);
+    return response.data;
+  },
+
+  // 닉네임 수정
+  patchNickname: async (formData) => {
+    const response = await api.patch(`${ENDPOINT}/nickname`, formData);
+    return response.data;
+  },
+
   // 로그아웃
   logout: async () => {
     const response = await api.delete(`${ENDPOINT}/logout`, {}, { withCredentials: true });
