@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import scheduleApi from '../../api/scheduleApi';
 
 import calendarUtil from './util/calendarUtil';
+import LoadingCircle from './svg/LoadingCircle';
 
 export default function CalendarSidebar({
   yearState,
@@ -17,6 +18,7 @@ export default function CalendarSidebar({
 }) {
   const [content, setContent] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { movingPlanId } = useParams();
 
@@ -48,6 +50,8 @@ export default function CalendarSidebar({
     if (!content.length) {
       setErrorMessage(() => '내용은 필수로 입력해야 합니다.');
     } else {
+      setIsLoading(true);
+
       try {
         const response = await scheduleApi.createSchedule(movingPlanId, {
           content: content,
@@ -69,6 +73,8 @@ export default function CalendarSidebar({
         setErrorMessage(() => '등록 도중 오류가 발생했습니다.');
         console.log(err);
       }
+
+      setIsLoading(false);
     }
   };
 
@@ -97,8 +103,7 @@ export default function CalendarSidebar({
   const inputDivStyle =
     'flex justify-center items-center border-1 border-gray-300 rounded-3xl w-full py-2 pr-5 m-2 h-10';
   const inputStyle = 'focus:outline-none w-full p-4';
-  const addButtonStyle =
-    'flex justify-center items-center mx-1 px-4 bg-primary rounded-3xl h-10 cursor-pointer';
+  const addButtonStyle = `flex justify-center items-center border-2 border-primary rounded-3xl w-15 h-10 cursor-pointer ${isLoading ? '' : 'bg-primary'}`;
 
   const dailyScheduleListDiv = dailyScheduleList.map((schedule, i) => {
     return (
@@ -145,7 +150,7 @@ export default function CalendarSidebar({
                 />
               </div>
               <div className={addButtonStyle} onClick={handleAddButton}>
-                +
+                {isLoading ? <LoadingCircle /> : '+'}
               </div>
             </div>
             <div className="px-4 mx-2 text-red-300">{errorMessage ? errorMessage : '\u00A0'}</div>

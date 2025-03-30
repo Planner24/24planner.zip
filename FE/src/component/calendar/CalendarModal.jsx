@@ -6,6 +6,7 @@ import CalendarModalDatePicker from './CalendarModalDatePicker';
 import scheduleApi from '../../api/scheduleApi';
 
 import calendarUtil from './util/calendarUtil';
+import LoadingCircle from './svg/LoadingCircle';
 
 export default function CalendarModal({
   yearState,
@@ -46,6 +47,7 @@ export default function CalendarModal({
         : selectedMonthDateObject,
   );
   const [showColorDropdown, setShowColorDropdown] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { movingPlanId } = useParams();
 
@@ -92,6 +94,8 @@ export default function CalendarModal({
       if (!content.length) {
         setErrorMessage(() => '내용은 필수 입력 항목입니다.');
       } else {
+        setIsLoading(true);
+
         try {
           if (showingScheduleToModal) {
             const scheduleId = showingScheduleToModal.id;
@@ -197,6 +201,8 @@ export default function CalendarModal({
           setErrorMessage(() => '등록 도중 오류가 발생했습니다.');
           console.log(err);
         }
+
+        setIsLoading(false);
       }
     }
   };
@@ -213,8 +219,7 @@ export default function CalendarModal({
   const inputStyle = 'grow focus:outline-hidden';
   const circleStyle = `bg-[${color}] w-10 h-10 rounded-4xl`;
   const errorDivStyle = 'text-red-300';
-  const buttonStyle =
-    'w-40 h-15 bg-white border-4 border-primary rounded-3xl text-primary text-xl font-bold cursor-pointer hover:bg-primary hover:text-white';
+  const buttonStyle = `flex justify-center items-center w-40 h-15 bg-white border-4 border-primary rounded-3xl text-primary text-xl font-bold cursor-pointer ${isLoading ? '' : 'hover:bg-primary hover:text-white'}`;
   const calendarModalDropdownStyle = 'relative group';
   const calendarModalDropdownBodyStyle = `absolute text-xl text-center top-11 space-y-4 -left-57 right-0 w-125 py-4 bg-white border-1 border-primary rounded-2xl shadow-sm z-8 ${showColorDropdown ? 'opacity-100 visible' : 'opacity-0 invisible'}`;
 
@@ -250,7 +255,11 @@ export default function CalendarModal({
             />
             <div>
               <button className={buttonStyle} onClick={handleButton}>
-                할 일 {showingScheduleToModal ? '수정' : '추가'}하기
+                {isLoading ? (
+                  <LoadingCircle />
+                ) : (
+                  `할 일 ${showingScheduleToModal ? '수정' : '추가'}하기`
+                )}
               </button>
             </div>
           </form>
