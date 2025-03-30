@@ -1,6 +1,7 @@
 package com.example.p24zip.domain.chat.service;
 
 import com.example.p24zip.domain.chat.dto.request.MessageRequestDto;
+import com.example.p24zip.domain.chat.dto.response.ChatsResponseDto;
 import com.example.p24zip.domain.chat.dto.response.MessageResponseDto;
 import com.example.p24zip.domain.chat.entity.Chat;
 import com.example.p24zip.domain.chat.repository.ChatRepository;
@@ -14,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.HtmlUtils;
+
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -39,14 +43,39 @@ public class ChatService {
         User user = userRepository.findByUsername(tokenusername)
                 .orElseThrow(() -> new ResourceNotFoundException());
 
-        log.info(user.getNickname());
+        Chat chat = chatRepository.save(requestDto.toEntity(movingPlan, user));
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        String createTime = chat.getCreatedAt().format(formatter);
 
+        String text = HtmlUtils.htmlEscape(chat.getText());
 
-        Chat save = chatRepository.save(requestDto.toEntity(movingPlan, user));
+        return MessageResponseDto.from(text, user.getNickname(), createTime);
+    }
 
-        String text = HtmlUtils.htmlEscape(save.getText());
+    public ChatsResponseDto readchats(Long movingPlanId, User user) {
 
-        return MessageResponseDto.from(text, user.getNickname());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        movingPlanRepository.findById(movingPlanId)
+                .orElseThrow(() -> new ResourceNotFoundException());
+
+        List<Chat> chats = chatRepository.findAllById(movingPlanId);
+
+        List<MessageResponseDto> chatlist =
+                chats.stream()
+                        .map(chat -> MessageResponseDto.from(chat.getText(), user.getNickname(), chat.getCreatedAt().format(formatter)))
+                        .toList();
+
+        return ChatsResponseDto.from(chatlist);
+    }
+
+    @Transactional
+    public void deletechats(Long movingPlanId) {
+
+        movingPlanRepository.findById(movingPlanId)
+                .orElseThrow(() -> new ResourceNotFoundException());
+
+        chatRepository.deletemovingplan(movingPlanId);
     }
 }

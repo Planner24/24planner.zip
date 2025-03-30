@@ -29,7 +29,6 @@ public class Chat extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-
     @Builder
     public Chat(String text, MovingPlan movingPlan, User user) {
         this.text = text;
