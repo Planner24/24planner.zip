@@ -1,10 +1,13 @@
 package com.example.p24zip.domain.user.controller;
 
+import com.example.p24zip.domain.house.dto.response.ShowNicknameResponseDto;
+import com.example.p24zip.domain.user.dto.request.ChangeNicknameRequestDto;
 import com.example.p24zip.domain.user.dto.request.ChangePasswordRequestDto;
 import com.example.p24zip.domain.user.dto.request.LoginRequestDto;
 import com.example.p24zip.domain.user.dto.request.SignupRequestDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestCodeDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestDto;
+import com.example.p24zip.domain.user.dto.response.ChangeNicknameResponseDto;
 import com.example.p24zip.domain.user.dto.response.FindPasswordResponseDto;
 import com.example.p24zip.domain.user.dto.response.VerifyEmailDataResponseDto;
 import com.example.p24zip.domain.user.dto.response.AccessTokenResponseDto;
@@ -108,6 +111,26 @@ public class AuthController {
                 "OK",
                 "accessToken 재발급을 성공했습니다.",
                 authService.reissue(request)
+        ));
+    }
+
+    @GetMapping("/nickname")
+    public ResponseEntity<ApiResponse<ShowNicknameResponseDto>> getNickname(@AuthenticationPrincipal User user){
+
+        return ResponseEntity.ok(ApiResponse.ok(
+                "OK",
+            "닉네임 조회에 성공했습니다.",
+            authService.getNickname(user)
+            )
+        );
+    }
+    @PatchMapping("/nickname")
+    public ResponseEntity<ApiResponse<ChangeNicknameResponseDto>> updateNickname(@RequestBody @Valid ChangeNicknameRequestDto requestDto, @AuthenticationPrincipal User user){
+
+        return ResponseEntity.ok(ApiResponse.ok(
+            "UPDATED",
+            "닉네임 수정에 성공했습니다.",
+            authService.updateNickname(requestDto, user)
         ));
     }
 

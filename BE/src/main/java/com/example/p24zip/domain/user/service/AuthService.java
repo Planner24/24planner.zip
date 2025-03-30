@@ -1,11 +1,14 @@
 package com.example.p24zip.domain.user.service;
 
 
+import com.example.p24zip.domain.house.dto.response.ShowNicknameResponseDto;
+import com.example.p24zip.domain.user.dto.request.ChangeNicknameRequestDto;
 import com.example.p24zip.domain.user.dto.request.ChangePasswordRequestDto;
 import com.example.p24zip.domain.user.dto.request.LoginRequestDto;
 import com.example.p24zip.domain.user.dto.request.SignupRequestDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestCodeDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestDto;
+import com.example.p24zip.domain.user.dto.response.ChangeNicknameResponseDto;
 import com.example.p24zip.domain.user.dto.response.FindPasswordResponseDto;
 import com.example.p24zip.domain.user.dto.response.VerifyEmailDataResponseDto;
 import com.example.p24zip.domain.user.dto.response.AccessTokenResponseDto;
@@ -293,6 +296,23 @@ public class AuthService {
         return new AccessTokenResponseDto(accessjwt);
     }
 
+
+    public ShowNicknameResponseDto getNickname(User user) {
+
+        return new ShowNicknameResponseDto(user.getId(), user.getNickname());
+    }
+
+    @Transactional
+    public ChangeNicknameResponseDto updateNickname(ChangeNicknameRequestDto requestDto, User user) {
+        String nickname = requestDto.getNickname();
+
+        user.setNickname(nickname);
+        userRepository.save(user);
+
+        return new ChangeNicknameResponseDto(user.getId(),user.getNickname());
+
+    }
+
     // 로그아웃
     public void logout(HttpServletRequest request, HttpServletResponse response) {
 
@@ -363,7 +383,6 @@ public class AuthService {
         redisTemplate.opsForValue().set(createdAt, String.valueOf(LocalDateTime.now()), 3, TimeUnit.MINUTES); // 생성시간
         return ZonedDateTime.now(ZoneId.of("Asia/Seoul")).plusMinutes(3);
     }
-
 
 
 }
