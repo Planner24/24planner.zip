@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import { useParams } from 'react-router-dom';
@@ -8,6 +8,9 @@ export default function Chat() {
 
   const [stompClient, setStompClient] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [inputmessage, setInputmessage] = useState('');
+
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     const stomp = new Client({
@@ -40,45 +43,69 @@ export default function Chat() {
     };
   }, []);
 
-  const sendMessage = () => {
+  useEffect(() => {
+    // messages가 변경될 때마다 스크롤을 맨 아래로 이동
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const textinput = (e) => {
+    setInputmessage((prev) => ({ ...prev, text: e.target.value }));
+  };
+
+  const sendMessage = (e) => {
+    e.preventDefault();
+
     if (stompClient && stompClient.connected) {
       const accessToken = localStorage.getItem('accessToken');
 
-      const messageBody = JSON.stringify({ text: '123' });
+      const messageBody = JSON.stringify({
+        text: inputmessage.text,
+      });
+
       stompClient.publish({
         destination: `/app/chat/${movingPlanId}`,
         headers: { Authorization: `${accessToken}` },
         body: messageBody,
-      }); // 서버로 메시지 전송
+      });
     }
+    setInputmessage({ text: '' });
   };
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center mx-60 my-15 box-border max-w-200">
-        <div className="w-full">
-          <div className="border rounded-3xl border-primary border-2 mb-10 px-18 py-12 h-120 overflow-y-auto"></div>
-          <form action="" className="flex items-center w-full">
-            <input className="border rounded-xl border-black border-2 px-4 py-3 flex-grow h-10" />
-            <button className="cursor-pointer h-10 border-2 rounded-xl px-3 text-black hover:bg-white hover:text-primary ml-3 w-[80px]">
-              보내기
-            </button>
-          </form>
+      <div className="mx-auto my-10 max-w-200">
+        <div className="flex justify-between">
+          <div className="self-start text-xl ml-2 mb-2">채팅방</div>
+          <div className="text-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary mr-2">
+            채팅 삭제
+          </div>
         </div>
+        <div className="border rounded-3xl border-primary border-2 mb-10 h-130 w-full overflow-y-auto p-7">
+          {messages.map((message) => {
+            const { nickname, text } = message;
+
+            return (
+              <div className="w-full mb-3 flex flex-col items-end">
+                <div className="mr-1 mb-1">{nickname}</div>
+                <div className="border-2 rounded-lg border-primary w-fit max-w-140 px-1 break-words">
+                  {text}
+                </div>
+              </div>
+            );
+          })}
+          <div ref={messagesEndRef} />
+        </div>
+        <form action="" className="flex w-full" onSubmit={sendMessage}>
+          <input
+            className="border rounded-xl border-black border-2 px-4 flex-grow h-10"
+            onChange={textinput}
+            value={inputmessage.text}
+          />
+          <button className="cursor-pointer w-[80px] h-10 border-2 rounded-xl text-black hover:bg-white hover:text-primary px-3 ml-3">
+            보내기
+          </button>
+        </form>
       </div>
-      <button onClick={sendMessage}>Chat</button>
-      {messages.map((message) => {
-        console.log(message);
-
-        const { nickname, text } = message;
-
-        return (
-          <>
-            <div>{nickname}</div>
-            <div>{text}</div>
-          </>
-        );
-      })}
     </>
   );
 }
