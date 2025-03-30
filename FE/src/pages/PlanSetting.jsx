@@ -4,6 +4,7 @@ import planApi from '../api/planApi';
 import { useDispatch } from 'react-redux';
 import { setCurrentPlanTitle } from '../store/slices/planForHeaderSlice';
 import Housemate from '../component/plan/Housemate';
+import housemateApi from '../api/housemateApi';
 
 export default function PlanSetting() {
   const { movingPlanId } = useParams();
@@ -94,6 +95,28 @@ export default function PlanSetting() {
     }
   };
 
+  // 동거인 삭제
+  const deleteHousemate = async () => {
+    const confirmDelete = window.confirm(
+      '더 이상 이 이사 플랜에 접근할 수 없게 됩니다.\n정말 나가시겠습니까?',
+    );
+
+    if (confirmDelete) {
+      try {
+        await housemateApi.deleteHousemate(movingPlanId, housemateRef.current);
+
+        handleHousemateDelete(housemateRef.current);
+        navigate('/plans');
+      } catch (error) {}
+    }
+  };
+
+  const handleHousemateDelete = (housemateId) => {
+    setHousemates((prevHousemates) =>
+      prevHousemates.filter((housemate) => housemate.id !== housemateId),
+    );
+  };
+
   // CSS
   const displayStyle = 'w-300 mx-auto my-5';
   const titleHeader = 'h-full mx-60 flex justify-between';
@@ -139,7 +162,9 @@ export default function PlanSetting() {
             이사 플랜 삭제
           </button>
         ) : (
-          <button className={titleButton}>이사 플랜에서 나가기</button>
+          <button className={titleButton} onClick={deleteHousemate}>
+            이사 플랜에서 나가기
+          </button>
         )}
       </div>
       <div className={housemateDiv}>
@@ -151,6 +176,7 @@ export default function PlanSetting() {
               housemateId={housemateRef.current}
               housemate={housemate}
               canManage={isOwnerRef.current}
+              onHousemateDelete={handleHousemateDelete}
             />
           ))}
         </ul>
