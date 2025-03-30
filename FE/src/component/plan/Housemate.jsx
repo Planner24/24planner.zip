@@ -1,4 +1,4 @@
-export default function Housemate({ housemate, canManage }) {
+export default function Housemate({ housemateId, housemate, canManage }) {
   const { id, username, nickname, isOwner } = housemate;
 
   // CSS
@@ -6,6 +6,7 @@ export default function Housemate({ housemate, canManage }) {
   const ownerCheck = 'w-5';
   const textStyle = 'ml-5 text-xl';
   const usernameStyle = 'text-primary';
+  const whoAmIStyle = 'ml-3 text-gray-500';
   const deleteButtonStyle = 'ml-5 text-gray-500 text-opacity-70 cursor-pointer';
 
   return (
@@ -13,6 +14,7 @@ export default function Housemate({ housemate, canManage }) {
       <p className={ownerCheck}>{isOwner ? '👑' : '👤'}</p>
       <p className={textStyle}>{nickname}</p>
       <p className={`${textStyle} ${usernameStyle}`}>({username})</p>
+      {housemateId == id && <p className={whoAmIStyle}>( 나 )</p>}
       {canManage && !isOwner && <button className={deleteButtonStyle}>✕</button>}
     </li>
   );

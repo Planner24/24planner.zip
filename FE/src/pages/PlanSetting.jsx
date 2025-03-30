@@ -12,6 +12,7 @@ export default function PlanSetting() {
   const dispatch = useDispatch();
 
   const isOwnerRef = useRef(false);
+  const housemateRef = useRef();
 
   // 상태 관리 데이터
   const [title, setTitle] = useState('');
@@ -28,6 +29,7 @@ export default function PlanSetting() {
 
         setTitle(data.title);
         isOwnerRef.current = data.isOwner;
+        housemateRef.current = data.housemateId;
         setHousemates(data.housemates);
       } catch (error) {
         const errordata = error.response.data;
@@ -144,7 +146,12 @@ export default function PlanSetting() {
         <h2 className={housemateTitleStyle}>이사에 함께 하는 Zipper</h2>
         <ul className={housemateListContainer}>
           {housemates.map((housemate) => (
-            <Housemate key={housemate.id} housemate={housemate} canManage={isOwnerRef.current} />
+            <Housemate
+              key={housemate.id}
+              housemateId={housemateRef.current}
+              housemate={housemate}
+              canManage={isOwnerRef.current}
+            />
           ))}
         </ul>
       </div>
