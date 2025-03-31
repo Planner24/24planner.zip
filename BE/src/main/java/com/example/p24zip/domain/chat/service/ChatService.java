@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.HtmlUtils;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -51,7 +52,13 @@ public class ChatService {
         Chat chat = chatRepository.save(requestDto.toEntity(movingPlan, user));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        String createTime = chat.getCreatedAt().format(formatter);
+//        String createTime = chat.getCreatedAt().format(formatter);
+
+        log.info(String.valueOf(LocalDateTime.now()));
+        String createTime = LocalDateTime.now().format(formatter);
+
+//        log.info(DateTime);
+
 
         String text = HtmlUtils.htmlEscape(chat.getText());
 
