@@ -42,7 +42,7 @@ export default function Chat() {
     fetchChatList();
 
     const stomp = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8080/api/gs-guide-websocket'),
+      webSocketFactory: () => new SockJS('wss://localhost:8080/api/gs-guide-websocket'),
       debug: (str) => console.log(str), // 디버깅 로그 출력
     });
 
