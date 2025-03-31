@@ -61,6 +61,7 @@ export default function HousemateListSection({
   const popupStyle =
     'absolute right-0 top-6 w-100 p-8 bg-white border-2 border-secondary rounded-2xl z-10';
   const inputStyle = 'w-full px-2 py-1 mr-2 border border-gray-300 rounded-xl';
+  const explainstyle = 'ml-2 mt-1 text-sm text-gray-500';
   const copyButtonStyle =
     'w-20 py-2 bg-primary text-sm text-white rounded-xl hover:bg-secondary cursor-pointer';
   const copyDoneStyle = 'w-20 py-2 bg-gray-400 text-sm text-white rounded-xl';
@@ -80,7 +81,7 @@ export default function HousemateListSection({
             {showPopup && (
               <div className={popupStyle}>
                 <p className="mb-2">초대 링크가 생성되었습니다.</p>
-                <p className="mb-3">링크를 공유해 함께 할 Zipper을 초대하세요!</p>
+                <p className="mb-2">링크를 공유해 함께 할 Zipper을 초대하세요!</p>
                 <div className="flex justify-center items-center">
                   <input type="text" value={invitationLink} className={inputStyle} readOnly />
                   <button
@@ -90,6 +91,7 @@ export default function HousemateListSection({
                     {isCopied ? '복사됨' : '복사'}
                   </button>
                 </div>
+                <p className={explainstyle}>✓ 링크는 24시간 동안 유효합니다.</p>
                 <button className={closeButtonStyle} onClick={closePopup}>
                   ✕
                 </button>
