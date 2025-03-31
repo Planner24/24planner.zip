@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import logo from '../logo.png';
 import housemateApi from '../api/housemateApi';
+import { useSelector } from 'react-redux';
 
 export default function Invite() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
 
   const navigate = useNavigate();
+
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   // 상태 관리 데이터
   const [inviteData, setInviteData] = useState(null);
@@ -43,6 +46,17 @@ export default function Invite() {
   }, [token]);
 
   const accpetInvitaion = async () => {
+    if (!isLoggedIn) {
+      const confirmLogin = window.confirm('초대 수락을 위해서는 로그인이 필요합니다.');
+
+      if (confirmLogin) {
+        navigate(
+          `/login?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`,
+        );
+      }
+      return;
+    }
+
     try {
       const response = await housemateApi.acceptInvitation(token);
       const data = response.data.data;
