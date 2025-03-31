@@ -41,8 +41,10 @@ export default function Chat() {
     }
     fetchChatList();
 
+    const chaturl = import.meta.env.VITE_CHAT_URL;
+
     const stomp = new Client({
-      webSocketFactory: () => new SockJS('https://24zip.com/api/gs-guide-websocket'),
+      webSocketFactory: () => new SockJS(chaturl),
       debug: (str) => console.log(str), // 디버깅 로그 출력
     });
 
@@ -132,6 +134,7 @@ export default function Chat() {
             return (
               <div
                 className={`w-full mb-3 flex flex-col ${isOwnMessage ? 'items-end' : 'items-start'}`}
+                key={index}
               >
                 {previousMessage.nickname === nickname &&
                 previousMessage.createTime === createTime ? (
