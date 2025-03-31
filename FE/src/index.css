@@ -218,6 +218,11 @@ input::-webkit-inner-spin-button {
   color: #000000;
 }
 
+/* 달력에서 일별 전체 일정을 보여 주는 popover에 불필요하게 일자가 적힌 부분을 삭제 */
+.fc-more-popover-misc {
+  display: none;
+}
+
 /* DatePicker 용 CSS */
 .react-datepicker__day-names .react-datepicker__day-name:first-child,
 .react-datepicker__month-container .react-datepicker__day:first-child {
