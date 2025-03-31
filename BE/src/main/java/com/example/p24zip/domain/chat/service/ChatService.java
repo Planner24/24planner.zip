@@ -58,7 +58,7 @@ public class ChatService {
         return MessageResponseDto.from(text, user.getNickname(), createTime);
     }
 
-    public ChatsResponseDto readchats(Long movingPlanId, User user) {
+    public ChatsResponseDto readchats(Long movingPlanId) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -76,12 +76,10 @@ public class ChatService {
     }
 
     @Transactional
-    public void deletechats(Long movingPlanId, User user) {
+    public void deletechats(Long movingPlanId) {
 
         movingPlanRepository.findById(movingPlanId)
                 .orElseThrow(() -> new ResourceNotFoundException());
-
-//        log.info(String.valueOf(user.getId()));
 
         chatRepository.deletemovingplan(movingPlanId);
     }

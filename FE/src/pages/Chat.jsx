@@ -19,7 +19,7 @@ export default function Chat() {
   const chattingDelete =
     'text-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary mr-2';
   const chattingBox =
-    'border rounded-3xl border-primary border-2 mb-10 h-130 w-full overflow-y-auto p-7';
+    'border rounded-xl border-primary border-2 mb-10 h-130 w-full overflow-y-auto p-7';
   const myTimeStyle = 'text-sm mr-2 text-gray-500';
   const otherTimeStyle = 'text-sm ml-2 text-gray-500';
   const myTextStyle = 'border-2 rounded-lg border-gray-400 w-fit max-w-140 px-3 py-1 break-words';
@@ -44,13 +44,10 @@ export default function Chat() {
     const chaturl = import.meta.env.VITE_CHAT_URL;
 
     const stomp = new Client({
-      webSocketFactory: () => new SockJS(chaturl),
-      debug: (str) => console.log(str), // 디버깅 로그 출력
+      webSocketFactory: () => new SockJS(chaturl)
     });
 
     stomp.onConnect = () => {
-      console.log('✅ WebSocket 연결 성공!');
-
       stomp.subscribe(`/topic/${movingPlanId}`, (message) => {
         console.log('받은 메시지:', message.body); // 메시지 수신 시 출력
 
@@ -60,10 +57,6 @@ export default function Chat() {
       });
 
       setStompClient(stomp);
-    };
-
-    stomp.onStompError = (frame) => {
-      console.error('❌ WebSocket 연결 실패:', frame);
     };
 
     stomp.activate(); // WebSocket 활성화

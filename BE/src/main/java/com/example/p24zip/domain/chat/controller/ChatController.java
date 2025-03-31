@@ -56,8 +56,7 @@ public class ChatController {
         return ResponseEntity.ok(
                 ApiResponse.ok("OK",
                         "조회에 성공했습니다.",
-                        chatService.readchats(movingPlanId, user
-                        ))
+                        chatService.readchats(movingPlanId))
         );
     }
 
@@ -66,7 +65,7 @@ public class ChatController {
 
 //        movingPlanValidator.validateMovingPlanAccess(movingPlanId, user);
 
-        chatService.deletechats(movingPlanId, user);
+        chatService.deletechats(movingPlanId);
 
         return ResponseEntity.ok(
                 ApiResponse.ok("DELETED","내용을 삭제했습니다.",null)
