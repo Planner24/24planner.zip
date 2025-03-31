@@ -6,6 +6,7 @@ import CalendarModalDatePicker from './CalendarModalDatePicker';
 import scheduleApi from '../../api/scheduleApi';
 
 import calendarUtil from './util/calendarUtil';
+import scheduleUtil from './util/scheduleUtil';
 import LoadingCircle from './svg/LoadingCircle';
 
 export default function CalendarModal({
@@ -118,30 +119,36 @@ export default function CalendarModal({
             calendarUtil.parseDateStrFromObject(endDateOfMonthObj(yearState, monthState)),
           );
 
+          let newDailyScheduleList;
+
           if (showingScheduleToModal) {
-            const newDailyScheduleList = [];
+            newDailyScheduleList = [];
 
             dailyScheduleList.forEach((schedule) => {
               if (schedule.id !== scheduleId) {
                 newDailyScheduleList.push(schedule);
                 return;
-              }
-
-              if (startDateToInt <= selectDateToInt && endDateToInt >= selectDateToInt) {
+              } else if (startDateToInt <= selectDateToInt && endDateToInt >= selectDateToInt) {
                 newDailyScheduleList.push(returnedSchedule);
               }
             });
+          } else {
+            newDailyScheduleList = [...dailyScheduleList];
+            if (startDateToInt <= selectDateToInt && endDateToInt >= selectDateToInt) {
+              newDailyScheduleList.push(returnedSchedule);
+            }
+          }
 
-            setDailyScheduleList(() => newDailyScheduleList);
+          setDailyScheduleList(() =>
+            newDailyScheduleList.sort(scheduleUtil.scheduleCompareFunction),
+          );
 
+          if (showingScheduleToModal) {
             const newMonthlyEventList = [];
             monthlyEventList.forEach((event) => {
               if (event.scheduleId !== scheduleId) {
                 newMonthlyEventList.push(event);
-                return;
-              }
-
-              if (
+              } else if (
                 startDateToInt <= endDateOfSelectedMonthToInt &&
                 endDateToInt >= startDateOfSelectedMonthToInt
               ) {
@@ -151,10 +158,6 @@ export default function CalendarModal({
 
             setMonthlyEventList(() => newMonthlyEventList);
           } else {
-            if (startDateToInt <= selectDateToInt && endDateToInt >= selectDateToInt) {
-              setDailyScheduleList((prev) => [...prev, returnedSchedule]);
-            }
-
             if (
               startDateToInt <= endDateOfSelectedMonthToInt &&
               endDateToInt >= startDateOfSelectedMonthToInt
