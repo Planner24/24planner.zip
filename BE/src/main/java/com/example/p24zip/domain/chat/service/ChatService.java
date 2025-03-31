@@ -81,6 +81,6 @@ public class ChatService {
         movingPlanRepository.findById(movingPlanId)
                 .orElseThrow(() -> new ResourceNotFoundException());
 
-        chatRepository.deletemovingplan(movingPlanId);
+        chatRepository.deletechattingplan(movingPlanId);
     }
 }

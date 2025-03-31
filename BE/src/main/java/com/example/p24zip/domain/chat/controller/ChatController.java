@@ -42,8 +42,6 @@ public class ChatController {
 
         String token = headerAccessor.getFirstNativeHeader("Authorization");
         String tokenusername = jwtTokenProvider.getUsername(token);
-        log.info(tokenusername);
-
 
         return chatService.Chatting(movingPlanId, requestDto, tokenusername);
     }

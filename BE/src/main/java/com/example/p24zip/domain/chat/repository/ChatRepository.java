@@ -23,5 +23,5 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
         FROM Chat c
         WHERE c.movingPlan.id = :movingPlanId
 """)
-    void deletemovingplan(@Param("movingPlanId") Long movingPlanId);
+    void deletechattingplan(@Param("movingPlanId") Long movingPlanId);
 }
