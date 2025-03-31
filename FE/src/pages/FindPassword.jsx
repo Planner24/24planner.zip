@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import authApi from '../api/authApi';
-import { setTempToken } from '../store/slices/authPwdSlice';
-import { useDispatch } from 'react-redux';
 
 export default function FindPassword() {
-  const dispatch = useDispatch();
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState();
   const [formData, setFormData] = useState({
@@ -32,12 +28,6 @@ export default function FindPassword() {
       const response = await authApi.findPassword(formData);
       const code = response.code;
       const message = response.message;
-      const tempToken = response.data.tempToken;
-      const expiredAt = response.data.expiredAt;
-      if (code === 'OK') {
-        const ob = { value: tempToken, expiredAt };
-        dispatch(setTempToken(ob));
-      }
 
       setMessage(message);
     } catch (error) {
@@ -80,7 +70,7 @@ export default function FindPassword() {
         </div>
         <hr className={`${lineStyle}`}></hr>
       </form>
-      {message ? <p className={`${messageStyle}`}>{message}</p> : <>&nbsp;</>}
+      <p className={`${messageStyle}`}>{message || '\u00A0'}</p>
     </div>
   );
 }

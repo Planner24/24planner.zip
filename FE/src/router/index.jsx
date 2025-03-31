@@ -13,7 +13,6 @@ import NotFound from '../pages/NotFound';
 import PlanSetting from '../pages/PlanSetting';
 import FindPassword from '../pages/FindPassword';
 import NewPassword from '../pages/NewPassword';
-import PwdLayout from '../layout/PwdLayout';
 import Mypage from '../pages/Mypage';
 
 const router = createBrowserRouter([
@@ -79,8 +78,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/newpassword',
-    element: <PwdLayout />,
-    children: [{ index: true, element: <NewPassword /> }],
+    element: <NewPassword />,
   },
   {
     path: '/notfound',

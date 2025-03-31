@@ -51,7 +51,11 @@ export default function Mypage() {
       setFormData({ nickname: '' });
     } catch (error) {
       const errorData = error.response.data;
+      const code = errorData.code;
       const message = errorData.message;
+      if (code === 'EXIST_NICKNAME') {
+        setMessage(message);
+      }
       setMessage(message);
     } finally {
       setIsSubmitting(false);

@@ -1,30 +1,49 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Password from '../component/user/Password';
-import { useDispatch } from 'react-redux';
-import { clearTempToken } from '../store/slices/authPwdSlice';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import authApi from '../api/authApi';
+import { jwtDecode } from 'jwt-decode';
 
 export default function NewPassword() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [value, setValue] = useState();
+
   const [search] = useSearchParams();
   const query = search.get('query');
+
+  const accessTokenData = localStorage.getItem('accessToken');
+
   useEffect(() => {
-    const storedTokenData = localStorage.getItem('tempToken');
-    if (storedTokenData) {
-      const { value: tempToken, expiredAt } = JSON.parse(storedTokenData);
-
-      const expireTime = new Date(expiredAt);
-      const now = new Date();
-
-      if (now >= expireTime) {
-        dispatch(clearTempToken());
-        navigate('/notFound');
-      }
-    } else {
+    if (!query) {
       navigate('/notfound');
+      return;
     }
-  }, [dispatch]);
+    const getRedisValue = async () => {
+      try {
+        const decoded = jwtDecode(query);
+        const username = decoded.sub;
+        const key = username + '_tempToken';
+
+        const response = await authApi.redis(key);
+        console.log(response);
+        const code = response.code;
+        const value = response.data.value;
+        setValue(value);
+        if (!value) {
+          navigate('/notfound');
+          return;
+        } else if (query !== value) {
+          navigate('/notfound');
+          return;
+        }
+      } catch (error) {
+        console.error();
+      }
+    };
+
+    getRedisValue();
+  }, []);
 
   const container = 'w-full grid content-center justify-items-center relative top-50';
   const image = 'w-64 mb-20 text-center cursor-pointer';
@@ -33,7 +52,7 @@ export default function NewPassword() {
     <div className={`${container}`}>
       <img alt="이사모음집 로고" className={`${image}`} src="/src/logo.png"></img>
 
-      <Password></Password>
+      <Password value={value}></Password>
     </div>
   );
 }

@@ -68,15 +68,15 @@ const authApi = {
     const response = await api.delete(`${ENDPOINT}/logout`, {}, { withCredentials: true });
   },
 
-  // 테스트
-  test: async () => {
-    const response = await api.get(`/test`);
-  },
-
   // redis 값 가져오기
   redis: async (key) => {
     const response = await api.get(`${ENDPOINT}/redis/${key}`);
     return response.data;
+  },
+
+  // 테스트
+  test: async () => {
+    const response = await api.get(`/test`);
   },
 };
 

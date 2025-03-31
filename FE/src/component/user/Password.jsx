@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import authApi from '../../api/authApi';
 import { useDispatch } from 'react-redux';
-import { clearTempToken } from '../../store/slices/authPwdSlice';
 import { useNavigate } from 'react-router-dom';
 import { login, logout } from '../../store/slices/authSlice';
 
-export default function Password({ expireTime }) {
+export default function Password({ value }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const tempTokenData = localStorage.getItem('tempToken');
   const accessTokenData = localStorage.getItem('accessToken');
 
   const [message, setMessage] = useState();
@@ -73,39 +71,32 @@ export default function Password({ expireTime }) {
 
     if (isSubmitting) return;
     setIsSubmitting(true);
+
     if (!verifyPassword) {
       setMessage('필수값이 누락되거나 형식이 올바르지 않습니다.');
       setIsSubmitting(false);
       return;
-    }
-
-    if (tempTokenData) {
-      const { value, expiredAt } = JSON.parse(tempTokenData);
-      const expireTime = new Date(expiredAt);
-      const now = new Date();
-
-      if (now >= expireTime) {
-        alert('페이지 사용시간이 만료되어 비밀번호 변경에 실패하였습니다.');
-        dispatch(clearTempToken());
-        dispatch(logout());
-        navigate('/login');
-        return;
-      }
-
-      dispatch(login({ accessToken: value }));
+    } else if (!value && !accessTokenData) {
+      alert('페이지 사용시간이 만료되어 비밀번호 변경에 실패하였습니다.');
+      navigate('/login');
+      return;
     }
 
     try {
+      if (value) {
+        dispatch(login({ accessToken: value }));
+      }
       const response = await authApi.patchPassword(formData);
       const code = response.code;
       const message = response.message;
-
-      if (tempTokenData && code === 'UPDATED') {
-        dispatch(clearTempToken());
+      console.log(value);
+      if (!value && code === 'UPDATED') {
+        alert('비밀번호가 수정되었습니다.');
+        return;
+      } else {
         dispatch(logout());
         navigate('/login');
-      } else {
-        alert('비밀번호가 수정되었습니다.');
+        return;
       }
     } catch (error) {
       const errorData = error.response.data;
