@@ -1,13 +1,12 @@
 package com.example.p24zip.domain.movingPlan.service;
 
 import com.example.p24zip.domain.movingPlan.dto.response.HousemateInvitationResponseDto;
-import com.example.p24zip.domain.movingPlan.dto.response.HousemateInvitationValidationResponseDto;
+import com.example.p24zip.domain.movingPlan.dto.response.HousemateInvitationValidateResponseDto;
 import com.example.p24zip.domain.movingPlan.entity.MovingPlan;
 import com.example.p24zip.domain.movingPlan.repository.MovingPlanRepository;
 import com.example.p24zip.domain.user.entity.User;
 import com.example.p24zip.domain.user.repository.UserRepository;
 import com.example.p24zip.global.exception.CustomException;
-import com.example.p24zip.global.exception.ResourceNotFoundException;
 import com.example.p24zip.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,9 +46,9 @@ public class InvitationService {
         return HousemateInvitationResponseDto.from(invitationLink);
     }
 
-    public HousemateInvitationValidationResponseDto validateInvitationToken(String token) {
+    public HousemateInvitationValidateResponseDto validateInvitationToken(String token) {
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new CustomException("INVALID_INVITATION", "유효하지 않은 초대 링크입니다.");
+            throw new CustomException("INVALID_INVITATION", "만료되었거나 유효하지 않은 초대 링크입니다.");
         }
 
         Long movingPlanId = jwtTokenProvider.getMovingPlanId(token);
@@ -63,10 +62,10 @@ public class InvitationService {
         }
 
         MovingPlan movingPlan = movingPlanRepository.findById(movingPlanId)
-                .orElseThrow(ResourceNotFoundException::new);
+                .orElseThrow(() -> new CustomException("INVALID_INVITATION", "만료되었거나 유효하지 않은 초대 링크입니다."));
         User inviter = userRepository.findById(inviterId)
-                .orElseThrow(ResourceNotFoundException::new);
+                .orElseThrow(() -> new CustomException("INVALID_INVITATION", "만료되었거나 유효하지 않은 초대 링크입니다."));
 
-        return HousemateInvitationValidationResponseDto.from(movingPlan, inviter);
+        return HousemateInvitationValidateResponseDto.from(movingPlan, inviter);
     }
 }

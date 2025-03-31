@@ -16,4 +16,6 @@ public interface HousemateRepository extends JpaRepository<Housemate, Long> {
     List<Housemate> findByMovingPlan(MovingPlan movingPlan);
 
     Housemate findByUserAndMovingPlan(User user, MovingPlan movingPlan);
+
+    Boolean existsByUserAndMovingPlan(User user, MovingPlan movingPlan);
 }

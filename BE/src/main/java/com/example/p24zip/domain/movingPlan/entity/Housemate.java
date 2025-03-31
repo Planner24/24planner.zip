@@ -34,6 +34,14 @@ public class Housemate {
                 .build();
     }
 
+    public static Housemate createHousemate(User user, MovingPlan movingPlan) {
+        return Housemate.builder()
+                .user(user)
+                .movingPlan(movingPlan)
+                .isOwner(false)
+                .build();
+    }
+
     @Builder
     public Housemate(User user, MovingPlan movingPlan, Boolean isOwner) {
         this.user = user;

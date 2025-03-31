@@ -7,13 +7,15 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class HousemateInvitationValidationResponseDto {
+public class HousemateInvitationValidateResponseDto {
 
+    private Long movingPlanId;
     private String planTitle;
     private String inviterName;
 
-    public static HousemateInvitationValidationResponseDto from(MovingPlan movingPlan, User user) {
-        return HousemateInvitationValidationResponseDto.builder()
+    public static HousemateInvitationValidateResponseDto from(MovingPlan movingPlan, User user) {
+        return HousemateInvitationValidateResponseDto.builder()
+                .movingPlanId(movingPlan.getId())
                 .planTitle(movingPlan.getTitle())
                 .inviterName(user.getNickname())
                 .build();
