@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import { useNavigate, useParams } from 'react-router-dom';
-import chatApi from '../api/ChatApi';
+import chatApi from '../api/chatApi';
 
 export default function Chat() {
   const { movingPlanId } = useParams();
