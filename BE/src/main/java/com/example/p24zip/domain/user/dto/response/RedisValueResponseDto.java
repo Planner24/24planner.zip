@@ -1,7 +1,6 @@
 package com.example.p24zip.domain.user.dto.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter

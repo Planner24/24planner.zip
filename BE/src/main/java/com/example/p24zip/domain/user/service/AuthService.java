@@ -307,6 +307,10 @@ public class AuthService {
 
         String nickname = requestDto.getNickname();
 
+        if(userRepository.existsByNickname(nickname)){
+            throw new CustomException("EXIST_NICKNAME", "이미 존재하는 닉네임입니다.");
+        }
+
         user.setNickname(nickname);
         userRepository.save(user);
 
