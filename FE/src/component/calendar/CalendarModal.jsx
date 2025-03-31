@@ -208,16 +208,16 @@ export default function CalendarModal({
   };
 
   const transparentBlackBackgroundStyle =
-    'absolute flex top-0 left-0 z-2 w-full h-full min-w-320 min-h-220 bg-black/75';
-  const flexColStyle = 'flex flex-col justify-center items-center mx-auto my-auto';
-  const sizeLimiterStyle = flexColStyle + ' w-full h-full max-w-320 max-h-220 bg-transparent';
-  const modalBodyStyle = flexColStyle + ' w-2/3 h-2/3 bg-white rounded-3xl border-2 border-primary';
-  const formStyle = 'flex flex-col justify-between items-center mx-auto my-auto h-1/2 w-2/3';
+    'absolute flex top-0 left-0 z-2 size-full min-w-320 min-h-220 bg-black/75';
+  const flexColStyle = 'flex flex-col justify-center items-center m-auto';
+  const sizeLimiterStyle = flexColStyle + ' size-full max-w-320 max-h-220 bg-transparent';
+  const modalBodyStyle = flexColStyle + ' size-2/3 bg-white rounded-3xl border-2 border-primary';
+  const formStyle = 'flex flex-col justify-between items-center m-auto h-1/2 w-2/3';
   const inputLineStyle =
     'flex justify-between items-center w-full border-b-1 border-gray-500 text-xl p-1 m-3';
   const inputWrapperStyle = 'flex grow';
   const inputStyle = 'grow focus:outline-hidden';
-  const circleStyle = `bg-[${color}] w-10 h-10 rounded-4xl`;
+  const circleStyle = `bg-[${color}] size-10 rounded-4xl`;
   const errorDivStyle = 'text-red-300';
   const buttonStyle = `flex justify-center items-center w-40 h-15 bg-white border-4 border-primary rounded-3xl text-primary text-xl font-bold cursor-pointer ${isLoading ? '' : 'hover:bg-primary hover:text-white'}`;
   const calendarModalDropdownStyle = 'relative group';

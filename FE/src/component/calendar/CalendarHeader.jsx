@@ -56,6 +56,10 @@ export default function CalendarHeader({
 
   const calendarHeaderStyle = 'flex justify-between w-full pt-4';
   const calendarHeaderLeftStyle = 'flex flex-1 justify-start';
+  const calendarHeaderLeftContentStyle = 'flex items-center mx-2';
+  const calendarHeaderLeftMonthNumberStyle =
+    'bg-secondary rounded-[50%] text-center text-white text-xl font-black p-2 px-4';
+  const calendarHeaderLeftMonthStyle = 'mx-2 text-secondary text-lg font-bold font-lexend';
   const calendarHeaderCenterStyle = 'flex flex-2 justify-center items-center font-lexend';
   const calendarHeaderRightStyle = 'flex flex-1 justify-end items-center';
   const calendarHeaderCenterPrevDivStyle = 'flex flex-1 justify-end';
@@ -70,13 +74,11 @@ export default function CalendarHeader({
   return (
     <div className={calendarHeaderStyle}>
       <nav className={calendarHeaderLeftStyle}>
-        <div className="flex items-center mx-2">
-          <div className="bg-secondary rounded-[50%] text-center text-white text-xl font-black p-2 px-4">
+        <div className={calendarHeaderLeftContentStyle}>
+          <div className={calendarHeaderLeftMonthNumberStyle}>
             {monthState.toString().padStart(2, '0')}
           </div>
-          <div className="mx-2 text-secondary text-lg font-bold font-lexend">
-            {monthList[monthState - 1]}
-          </div>
+          <div className={calendarHeaderLeftMonthStyle}>{monthList[monthState - 1]}</div>
         </div>
       </nav>
       <nav className={calendarHeaderCenterStyle}>

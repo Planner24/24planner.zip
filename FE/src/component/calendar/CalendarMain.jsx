@@ -18,7 +18,7 @@ export default function CalendarMain({
 }) {
   const calendarRef = useRef(null);
 
-  const calendarMainStyle = 'flex flex-col flex-2 h-full w-full border-r-1 border-gray-300 my-4';
+  const calendarMainStyle = 'flex flex-col flex-2 size-full border-r-1 border-gray-300 my-4';
   const calendarPaddingStyle = 'px-8';
 
   return (

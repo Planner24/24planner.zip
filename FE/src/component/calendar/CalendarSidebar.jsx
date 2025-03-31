@@ -93,17 +93,10 @@ export default function CalendarSidebar({
     }
   };
 
-  const calendarSidebarStyle = 'flex flex-1 flex-col items-center m-4';
-  const scheduleDateStyle = 'text-xl mt-12';
-  const scheduleListStyle = 'flex flex-col w-full mt-8';
   const scheduleElementDivStyle = 'flex items-center';
   const scheduleElementContentStyle =
     'flex justify-center items-center rounded-3xl w-full p-2 m-2 cursor-pointer';
   const deleteButtonDivStyle = 'text-gray-500 text-opacity-70 cursor-pointer';
-  const inputDivStyle =
-    'flex justify-center items-center border-1 border-gray-300 rounded-3xl w-full py-2 pr-5 m-2 h-10';
-  const inputStyle = 'focus:outline-none w-full p-4';
-  const addButtonStyle = `flex justify-center items-center border-2 border-primary rounded-3xl w-15 h-10 cursor-pointer ${isLoading ? '' : 'bg-primary'}`;
 
   const dailyScheduleListDiv = dailyScheduleList.map((schedule, i) => {
     return (
@@ -127,6 +120,15 @@ export default function CalendarSidebar({
       </div>
     );
   });
+
+  const calendarSidebarStyle = 'flex flex-1 flex-col items-center m-4';
+  const scheduleDateStyle = 'text-xl mt-12';
+  const scheduleListStyle = 'flex flex-col w-full mt-8';
+  const inputDivStyle =
+    'flex justify-center items-center border-1 border-gray-300 rounded-3xl w-full py-2 pr-5 m-2 h-10';
+  const inputStyle = 'focus:outline-none w-full p-4';
+  const addButtonStyle = `flex justify-center items-center border-2 border-primary rounded-3xl w-15 h-10 cursor-pointer ${isLoading ? '' : 'bg-primary'}`;
+  const errorMessageStyle = 'px-4 mx-2 text-red-300';
 
   return (
     <section className={calendarSidebarStyle}>
@@ -153,7 +155,7 @@ export default function CalendarSidebar({
                 {isLoading ? <LoadingCircle /> : '+'}
               </div>
             </div>
-            <div className="px-4 mx-2 text-red-300">{errorMessage ? errorMessage : '\u00A0'}</div>
+            <div className={errorMessageStyle}>{errorMessage ? errorMessage : '\u00A0'}</div>
           </div>
         </>
       ) : (
