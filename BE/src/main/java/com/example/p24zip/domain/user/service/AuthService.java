@@ -2,18 +2,22 @@ package com.example.p24zip.domain.user.service;
 
 
 import com.example.p24zip.domain.user.dto.request.LoginRequestDto;
+import com.example.p24zip.domain.user.dto.request.OAuthSignupRequestDto;
 import com.example.p24zip.domain.user.dto.request.SignupRequestDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestCodeDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestDto;
+import com.example.p24zip.domain.user.dto.response.OAuthSignupResponseDto;
 import com.example.p24zip.domain.user.dto.response.VerifyEmailDataResponseDto;
 import com.example.p24zip.domain.user.dto.response.AccessTokenResponseDto;
 import com.example.p24zip.domain.user.dto.response.LoginResponseDto;
+import com.example.p24zip.domain.user.entity.Role;
 import com.example.p24zip.domain.user.entity.User;
 import com.example.p24zip.domain.user.repository.UserRepository;
 import com.example.p24zip.global.exception.CustomException;
 import com.example.p24zip.global.exception.ResourceNotFoundException;
 import com.example.p24zip.global.exception.TokenException;
 import com.example.p24zip.global.security.jwt.JwtTokenProvider;
+import com.example.p24zip.oauth2.TempUserRedisService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,6 +28,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -48,7 +53,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
 
- 
+    private final TempUserRedisService tempUserRedisService;
 
     /**
      * 회원가입
@@ -290,5 +295,51 @@ public class AuthService {
         redisTemplate.opsForValue().set(key, code, 3, TimeUnit.MINUTES);
         redisTemplate.opsForValue().set(createdAt, String.valueOf(LocalDateTime.now()), 3, TimeUnit.MINUTES); // 생성시간
         return ZonedDateTime.now(ZoneId.of("Asia/Seoul")).plusMinutes(3);
+    }
+
+    // 기존 사용자 확인 및 신규 사용자 처리
+    @Transactional
+    public OAuthSignupResponseDto completeSignup(HttpServletRequest request,
+        HttpServletResponse response, OAuthSignupRequestDto requestDto) {
+
+        String tempToken = requestDto.getTempToken();
+        String nickname = requestDto.getNickname();
+
+        String tempUsername = tempUserRedisService.getTempUser(tempToken);
+
+        // 사용자가 이미 존재하는 경우 처리
+        if (userRepository.existsByUsername(tempUsername)){
+            throw new IllegalStateException("이미 가입된 사용자입니다.");
+        }
+
+        String password = String.valueOf(UUID.randomUUID());
+        // 비밀번호 처리 (UUID를 이용해 기본 비밀번호를 설정하고, 이를 암호화)
+        String encodedPassword = passwordEncoder.encode(password);
+
+        // 임시 유저 정보를 일반 사용자로 변환
+        User user = User.builder()
+            .username(tempUsername)
+            .password(encodedPassword)
+            .nickname(nickname)
+            .role(Role.ROLE_USER)
+            .build();
+
+        // User 엔티티로 저장
+        userRepository.save(user);
+
+        // 임시 유저 삭제
+        tempUserRedisService.deleteTempUser(user.getUsername());
+
+        String refreshToken = jwtTokenProvider.refreshCreateToken(user);
+        String accessToken = jwtTokenProvider.accessCreateToken(user);
+
+        // 쿠키 생성 및 refreshToken 쿠키에 넣기
+        Cookie cookie = new Cookie("refreshToken", refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return OAuthSignupResponseDto.from(nickname, accessToken);
     }
 }

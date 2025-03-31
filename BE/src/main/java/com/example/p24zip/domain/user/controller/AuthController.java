@@ -1,9 +1,11 @@
 package com.example.p24zip.domain.user.controller;
 
 import com.example.p24zip.domain.user.dto.request.LoginRequestDto;
+import com.example.p24zip.domain.user.dto.request.OAuthSignupRequestDto;
 import com.example.p24zip.domain.user.dto.request.SignupRequestDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestCodeDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestDto;
+import com.example.p24zip.domain.user.dto.response.OAuthSignupResponseDto;
 import com.example.p24zip.domain.user.dto.response.VerifyEmailDataResponseDto;
 import com.example.p24zip.domain.user.dto.response.AccessTokenResponseDto;
 import com.example.p24zip.domain.user.dto.response.LoginResponseDto;
@@ -100,5 +102,18 @@ public class AuthController {
     @GetMapping("/verify")
     public void verify() {
 
+    }
+
+    @PostMapping("/signup/additional-info")
+    public ResponseEntity<ApiResponse<OAuthSignupResponseDto>> completeSignup(
+        HttpServletRequest request,
+        HttpServletResponse response,
+        @RequestBody OAuthSignupRequestDto requestDto
+    ) {
+        return ResponseEntity.ok(ApiResponse.ok(
+            "OK",
+            "회원가입 후 로그인에 성공했습니다.",
+            authService.completeSignup(request, response, requestDto)
+        ));
     }
 }

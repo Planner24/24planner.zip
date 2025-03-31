@@ -1,6 +1,7 @@
 package com.example.p24zip.global.security.jwt;
 
 import com.example.p24zip.domain.user.entity.User;
+import com.example.p24zip.oauth2.userinfo.OAuthUserInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -8,7 +9,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
@@ -25,6 +25,8 @@ public class JwtTokenProvider {
   
 //    private final long accessTokenValidityInMilliseconds = 1000L * 30;
 //    private final long refreshTokenValidityInMilliseconds = 1000L * 60;
+
+    private static final long TEMP_USER_EXPIRATION_TIME = 10 * 60 * 1000;
 
     @PostConstruct
     protected void init() {
@@ -85,4 +87,29 @@ public class JwtTokenProvider {
                 .getBody()
                 .getSubject();
     }
+
+    public String getTempToken(OAuthUserInfo oAuthUserInfo) {
+
+        Claims claims = Jwts.claims().setSubject(oAuthUserInfo.getEmail());
+        claims.put("email", oAuthUserInfo.getEmail());
+        claims.put("provider", oAuthUserInfo.getProvider());
+        claims.put("providerId", oAuthUserInfo.getProviderId());
+
+        return Jwts.builder()
+            .setClaims(claims)
+            .setExpiration(new Date(System.currentTimeMillis() + TEMP_USER_EXPIRATION_TIME))
+            .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
+            .compact();
+    }
+
+    public String getEmailFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+            .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+
+        return claims.get("email", String.class);
+    }
+
 }
