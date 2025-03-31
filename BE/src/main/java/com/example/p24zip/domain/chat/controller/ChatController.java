@@ -8,6 +8,7 @@ import com.example.p24zip.domain.chat.service.ChatService;
 import com.example.p24zip.domain.user.entity.User;
 import com.example.p24zip.global.response.ApiResponse;
 import com.example.p24zip.global.security.jwt.JwtTokenProvider;
+import com.example.p24zip.global.validator.MovingPlanValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ public class ChatController {
 
     private final ChatService chatService;
     private final JwtTokenProvider jwtTokenProvider;
+    final MovingPlanValidator movingPlanValidator;
 
 
 
@@ -49,6 +51,8 @@ public class ChatController {
     @GetMapping("/chats/{movingPlanId}")
     public ResponseEntity<ApiResponse<ChatsResponseDto>> readchats(@PathVariable Long movingPlanId, @AuthenticationPrincipal User user) {
 
+//        movingPlanValidator.validateMovingPlanAccess(movingPlanId, user);
+
         return ResponseEntity.ok(
                 ApiResponse.ok("OK",
                         "조회에 성공했습니다.",
@@ -60,7 +64,9 @@ public class ChatController {
     @DeleteMapping("/chats/{movingPlanId}")
     public ResponseEntity<ApiResponse<Object>> deletechats(@PathVariable Long movingPlanId, @AuthenticationPrincipal User user) {
 
-        chatService.deletechats(movingPlanId);
+//        movingPlanValidator.validateMovingPlanAccess(movingPlanId, user);
+
+        chatService.deletechats(movingPlanId, user);
 
         return ResponseEntity.ok(
                 ApiResponse.ok("DELETED","내용을 삭제했습니다.",null)

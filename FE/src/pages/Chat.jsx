@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import chatApi from '../api/ChatApi';
 
 export default function Chat() {
@@ -13,10 +13,31 @@ export default function Chat() {
 
   const messagesEndRef = useRef(null);
 
+  const navigate = useNavigate();
+
+  const chattingName = 'self-start text-xl ml-2 mb-2';
+  const chattingDelete =
+    'text-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary mr-2';
+  const chattingBox =
+    'border rounded-3xl border-primary border-2 mb-10 h-130 w-full overflow-y-auto p-7';
+  const myTimeStyle = 'text-sm mr-2 text-gray-500';
+  const otherTimeStyle = 'text-sm ml-2 text-gray-500';
+  const myTextStyle = 'border-2 rounded-lg border-gray-400 w-fit max-w-140 px-3 py-1 break-words';
+  const otherTextStyle = 'border-2 rounded-lg border-primary w-fit max-w-140 px-3 py-1 break-words';
+  const sendTextBox = 'border rounded-xl border-black border-2 px-4 flex-grow h-10';
+  const sendButtonBox =
+    'cursor-pointer w-[80px] h-10 border-2 rounded-xl text-black hover:bg-white hover:text-primary px-3 ml-3';
+
   useEffect(() => {
     async function fetchChatList() {
-      const response = await chatApi.chatlist(movingPlanId);
-      setMessages(response.data.data.chats);
+      try {
+        const response = await chatApi.chatlist(movingPlanId);
+        setMessages(response.data.data.chats);
+      } catch (error) {
+        if (error.response.data.code == 'NOT_FOUND') {
+          navigate('/not-found');
+        }
+      }
     }
     fetchChatList();
 
@@ -83,10 +104,10 @@ export default function Chat() {
   };
 
   const chatdelete = async (e) => {
-    const isConfirmed = window.confirm('채팅을 삭제하시겠습니까?'); // 확인 대화상자 띄우기
+    const isConfirmed = window.confirm('채팅을 삭제하시겠습니까?');
 
     if (isConfirmed) {
-      const response = await chatApi.chatsdelete(movingPlanId);
+      await chatApi.chatsdelete(movingPlanId);
       setMessages([]);
     }
   };
@@ -95,41 +116,50 @@ export default function Chat() {
     <>
       <div className="mx-auto my-10 max-w-200">
         <div className="flex justify-between">
-          <div className="self-start text-xl ml-2 mb-2">채팅방</div>
-          <div
-            className="text-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary mr-2"
-            onClick={chatdelete}
-          >
+          <div className={chattingName}>채팅방</div>
+          <div className={chattingDelete} onClick={chatdelete}>
             채팅 삭제
           </div>
         </div>
-        <div className="border rounded-3xl border-primary border-2 mb-10 h-130 w-full overflow-y-auto p-7">
-          {messages.map((message) => {
+        <div className={chattingBox}>
+          {messages.map((message, index) => {
             const { nickname, text, createTime } = message;
+            // 이전 값
+            const previousMessage = index === 0 ? '' : messages[index - 1];
+
+            const isOwnMessage = nickname === localStorage.getItem('nickname');
 
             return (
-              <div className="w-full mb-5 flex flex-col items-end">
-                <div className="mr-1 mb-1">{nickname}</div>
+              <div
+                className={`w-full mb-3 flex flex-col ${isOwnMessage ? 'items-end' : 'items-start'}`}
+              >
+                {previousMessage.nickname === nickname &&
+                previousMessage.createTime === createTime ? (
+                  <></>
+                ) : (
+                  <div className={`${isOwnMessage ? 'mr-1' : 'ml-1'} mb-1`}>{nickname}</div>
+                )}
                 <div className="flex items-end">
-                  <div className="text-sm mr-2 text-gray-500">{createTime}</div>
-                  <div className="border-2 rounded-lg border-primary w-fit max-w-140 px-1 break-words">
-                    {text}
-                  </div>
+                  {isOwnMessage ? (
+                    <>
+                      <div className={myTimeStyle}>{createTime}</div>
+                      <div className={myTextStyle}>{text}</div>
+                    </>
+                  ) : (
+                    <>
+                      <div className={otherTextStyle}>{text}</div>
+                      <div className={otherTimeStyle}>{createTime}</div>
+                    </>
+                  )}
                 </div>
               </div>
             );
           })}
           <div ref={messagesEndRef} />
         </div>
-        <form action="" className="flex w-full" onSubmit={sendMessage}>
-          <input
-            className="border rounded-xl border-black border-2 px-4 flex-grow h-10"
-            onChange={textinput}
-            value={inputmessage.text}
-          />
-          <button className="cursor-pointer w-[80px] h-10 border-2 rounded-xl text-black hover:bg-white hover:text-primary px-3 ml-3">
-            보내기
-          </button>
+        <form className="flex w-full" onSubmit={sendMessage}>
+          <input className={sendTextBox} onChange={textinput} value={inputmessage.text} />
+          <button className={sendButtonBox}>보내기</button>
         </form>
       </div>
     </>

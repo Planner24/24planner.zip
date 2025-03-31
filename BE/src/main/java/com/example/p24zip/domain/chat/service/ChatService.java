@@ -10,6 +10,7 @@ import com.example.p24zip.domain.movingPlan.repository.MovingPlanRepository;
 import com.example.p24zip.domain.user.entity.User;
 import com.example.p24zip.domain.user.repository.UserRepository;
 import com.example.p24zip.global.exception.ResourceNotFoundException;
+import com.example.p24zip.global.validator.MovingPlanValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,20 +29,24 @@ public class ChatService {
     private final MovingPlanRepository movingPlanRepository;
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
+    final MovingPlanValidator movingPlanValidator;
 
 
     @Transactional
     public MessageResponseDto Chatting(
-            Long id,
+            Long movingPlanId,
             MessageRequestDto requestDto,
             String tokenusername
             ) {
 
-        MovingPlan movingPlan = movingPlanRepository.findById(id)
+        MovingPlan movingPlan = movingPlanRepository.findById(movingPlanId)
                 .orElseThrow(() -> new ResourceNotFoundException());
 
         User user = userRepository.findByUsername(tokenusername)
                 .orElseThrow(() -> new ResourceNotFoundException());
+
+//        movingPlanValidator.validateMovingPlanAccess(movingPlanId, user);
+
 
         Chat chat = chatRepository.save(requestDto.toEntity(movingPlan, user));
 
@@ -64,17 +69,19 @@ public class ChatService {
 
         List<MessageResponseDto> chatlist =
                 chats.stream()
-                        .map(chat -> MessageResponseDto.from(chat.getText(), user.getNickname(), chat.getCreatedAt().format(formatter)))
+                        .map(chat -> MessageResponseDto.from(chat.getText(), chat.getUser().getNickname(), chat.getCreatedAt().format(formatter)))
                         .toList();
 
         return ChatsResponseDto.from(chatlist);
     }
 
     @Transactional
-    public void deletechats(Long movingPlanId) {
+    public void deletechats(Long movingPlanId, User user) {
 
         movingPlanRepository.findById(movingPlanId)
                 .orElseThrow(() -> new ResourceNotFoundException());
+
+//        log.info(String.valueOf(user.getId()));
 
         chatRepository.deletemovingplan(movingPlanId);
     }
