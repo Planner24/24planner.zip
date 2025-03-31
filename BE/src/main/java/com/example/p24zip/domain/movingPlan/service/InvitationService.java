@@ -1,7 +1,13 @@
 package com.example.p24zip.domain.movingPlan.service;
 
 import com.example.p24zip.domain.movingPlan.dto.response.HousemateInvitationResponseDto;
+import com.example.p24zip.domain.movingPlan.dto.response.HousemateInvitationValidationResponseDto;
+import com.example.p24zip.domain.movingPlan.entity.MovingPlan;
+import com.example.p24zip.domain.movingPlan.repository.MovingPlanRepository;
 import com.example.p24zip.domain.user.entity.User;
+import com.example.p24zip.domain.user.repository.UserRepository;
+import com.example.p24zip.global.exception.CustomException;
+import com.example.p24zip.global.exception.ResourceNotFoundException;
 import com.example.p24zip.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +22,9 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class InvitationService {
 
+    private final MovingPlanRepository movingPlanRepository;
+    private final UserRepository userRepository;
+
     private final JwtTokenProvider jwtTokenProvider;
     private final StringRedisTemplate redisTemplate;
 
@@ -23,7 +32,6 @@ public class InvitationService {
     private String origin;
 
     public HousemateInvitationResponseDto createHouseMateInvitation(Long movingPlanId, User inviter) {
-
         String token = jwtTokenProvider.invitationToken(movingPlanId, inviter);
 
         String invitationKey = "invitation:" + token;
@@ -37,5 +45,28 @@ public class InvitationService {
         String invitationLink = origin + "/invite?token=" + token;
 
         return HousemateInvitationResponseDto.from(invitationLink);
+    }
+
+    public HousemateInvitationValidationResponseDto validateInvitationToken(String token) {
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new CustomException("INVALID_INVITATION", "유효하지 않은 초대 링크입니다.");
+        }
+
+        Long movingPlanId = jwtTokenProvider.getMovingPlanId(token);
+        Long inviterId = jwtTokenProvider.getInviterId(token);
+
+        String invitationKey = "invitation:" + token;
+        String storedPlanId = redisTemplate.opsForValue().get(invitationKey);
+
+        if (storedPlanId == null || !storedPlanId.equals(String.valueOf(movingPlanId))) {
+            throw new CustomException("INVALID_INVITATION", "만료되었거나 유효하지 않은 초대 링크입니다.");
+        }
+
+        MovingPlan movingPlan = movingPlanRepository.findById(movingPlanId)
+                .orElseThrow(ResourceNotFoundException::new);
+        User inviter = userRepository.findById(inviterId)
+                .orElseThrow(ResourceNotFoundException::new);
+
+        return HousemateInvitationValidationResponseDto.from(movingPlan, inviter);
     }
 }
