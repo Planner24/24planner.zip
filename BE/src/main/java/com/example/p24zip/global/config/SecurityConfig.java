@@ -53,6 +53,7 @@ public class SecurityConfig {
                                 .requestMatchers("/auth/verify").authenticated()
                                 .requestMatchers("/auth/**", "/error", "/images/**").permitAll()
                                 .requestMatchers("/swagger-ui/**", "swagger-ui.html", "/api-docs/**").permitAll()
+                                .requestMatchers("/plans/invitations/validate").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
