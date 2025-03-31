@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import housemateApi from '../../api/housemateApi';
 
-export default function Housemate({ housemateId, housemate, canManage, onHousemateDelete }) {
+export default function Housemate({ myHousemateId, housemate, canManage, onHousemateDelete }) {
   const { movingPlanId } = useParams();
   const { id, username, nickname, isOwner } = housemate;
 
@@ -33,7 +33,7 @@ export default function Housemate({ housemateId, housemate, canManage, onHousema
       <p className={ownerCheck}>{isOwner ? '👑' : '👤'}</p>
       <p className={textStyle}>{nickname}</p>
       <p className={`${textStyle} ${usernameStyle}`}>({username})</p>
-      {housemateId == id && <p className={whoAmIStyle}>( 나 )</p>}
+      {myHousemateId == id && <p className={whoAmIStyle}>( 나 )</p>}
       {canManage && !isOwner && (
         <button className={deleteButtonStyle} onClick={deleteHousemate}>
           ✕

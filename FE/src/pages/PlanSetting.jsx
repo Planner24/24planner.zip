@@ -3,8 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import planApi from '../api/planApi';
 import { useDispatch } from 'react-redux';
 import { setCurrentPlanTitle } from '../store/slices/planForHeaderSlice';
-import Housemate from '../component/plan/Housemate';
 import housemateApi from '../api/housemateApi';
+import HousemateListSection from '../component/plan/HousemateListSection';
 
 export default function PlanSetting() {
   const { movingPlanId } = useParams();
@@ -95,8 +95,8 @@ export default function PlanSetting() {
     }
   };
 
-  // 동거인 삭제
-  const deleteHousemate = async () => {
+  // 이사 플랜 나가기
+  const leavePlan = async () => {
     const confirmDelete = window.confirm(
       '더 이상 이 이사 플랜에 접근할 수 없게 됩니다.\n정말 나가시겠습니까?',
     );
@@ -111,6 +111,7 @@ export default function PlanSetting() {
     }
   };
 
+  // 동거인 삭제 처리
   const handleHousemateDelete = (housemateId) => {
     setHousemates((prevHousemates) =>
       prevHousemates.filter((housemate) => housemate.id !== housemateId),
@@ -124,9 +125,6 @@ export default function PlanSetting() {
   const titleStyle = 'text-2xl mr-5';
   const titleButton = 'text-gray-500 text-opacity-70 underline cursor-pointer hover:text-primary';
   const titleInputStyle = 'w-120 text-gray-700 text-2xl border-b outline-none';
-  const housemateDiv = 'mx-60 mt-15';
-  const housemateTitleStyle = 'ml-5 text-primary text-xl';
-  const housemateListContainer = 'w-180 mt-10 px-20 pt-5 pb-15 border-2 border-primary rounded-3xl';
 
   return (
     <div className={displayStyle}>
@@ -162,25 +160,17 @@ export default function PlanSetting() {
             이사 플랜 삭제
           </button>
         ) : (
-          <button className={titleButton} onClick={deleteHousemate}>
+          <button className={titleButton} onClick={leavePlan}>
             이사 플랜에서 나가기
           </button>
         )}
       </div>
-      <div className={housemateDiv}>
-        <h2 className={housemateTitleStyle}>이사에 함께 하는 Zipper</h2>
-        <ul className={housemateListContainer}>
-          {housemates.map((housemate) => (
-            <Housemate
-              key={housemate.id}
-              housemateId={housemateRef.current}
-              housemate={housemate}
-              canManage={isOwnerRef.current}
-              onHousemateDelete={handleHousemateDelete}
-            />
-          ))}
-        </ul>
-      </div>
+      <HousemateListSection
+        housemates={housemates}
+        myHousemateId={housemateRef.current}
+        canManage={isOwnerRef.current}
+        onHousemateDelete={handleHousemateDelete}
+      />
     </div>
   );
 }
