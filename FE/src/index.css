@@ -180,7 +180,7 @@ input::-webkit-inner-spin-button {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: gray; /* 스크롤바 색상 */
+  background-color: lightgray; /* 스크롤바 색상 */
   border-radius: 4px;
 }
 
