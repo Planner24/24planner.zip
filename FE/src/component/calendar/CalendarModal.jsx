@@ -97,27 +97,24 @@ export default function CalendarModal({
         setIsLoading(true);
 
         try {
+          const inputSchedule = { ...showingScheduleToModal };
+          inputSchedule.content = content;
+          inputSchedule.startDate = calendarUtil.parseDateFromObject(startDate);
+          inputSchedule.endDate = calendarUtil.parseDateFromObject(endDate);
+          inputSchedule.color = color;
+          const scheduleId = showingScheduleToModal ? showingScheduleToModal.id : -1;
+          const response = showingScheduleToModal
+            ? await scheduleApi.updateSchedule(movingPlanId, scheduleId, inputSchedule)
+            : await scheduleApi.createSchedule(movingPlanId, inputSchedule);
+
+          const returnedSchedule = response.data.data;
+          const selectDateToInt = parseIntFromDate(selectDate);
+          const startDateToInt = parseIntFromDate(returnedSchedule.startDate);
+          const endDateToInt = parseIntFromDate(returnedSchedule.endDate);
+
           if (showingScheduleToModal) {
-            const scheduleId = showingScheduleToModal.id;
-            const changedSchedule = {
-              ...showingScheduleToModal,
-              content: content,
-              startDate: calendarUtil.parseDateFromObject(startDate),
-              endDate: calendarUtil.parseDateFromObject(endDate),
-              color: color,
-            };
-            const response = await scheduleApi.updateSchedule(
-              movingPlanId,
-              scheduleId,
-              changedSchedule,
-            );
-            const returnedSchedule = response.data.data;
-
-            const selectDateToInt = parseIntFromDate(selectDate);
-            const startDateToInt = parseIntFromDate(returnedSchedule.startDate);
-            const endDateToInt = parseIntFromDate(returnedSchedule.endDate);
-
             const newDailyScheduleList = [];
+
             dailyScheduleList.forEach((schedule) => {
               if (schedule.id !== scheduleId) {
                 newDailyScheduleList.push(schedule);
@@ -130,25 +127,26 @@ export default function CalendarModal({
             });
 
             setDailyScheduleList(() => newDailyScheduleList);
+          } else {
+            if (startDateToInt <= selectDateToInt && endDateToInt >= selectDateToInt) {
+              setDailyScheduleList((prev) => [...prev, returnedSchedule]);
+            }
+          }
 
+          const startDateOfSelectedMonthToInt = parseIntFromDate(
+            calendarUtil.parseDateFromObject(new Date(yearState, monthState - 1, 1)),
+          );
+          const endDateOfSelectedMonthToInt = parseIntFromDate(
+            calendarUtil.parseDateFromObject(endDateOfMonthObj(yearState, monthState)),
+          );
+
+          if (showingScheduleToModal) {
             const newMonthlyEventList = [];
             monthlyEventList.forEach((event) => {
               if (event.scheduleId !== scheduleId) {
                 newMonthlyEventList.push(event);
                 return;
               }
-
-              const startDateOfSelectedMonthToInt = parseIntFromDate(
-                calendarUtil.parseDateFromObject(new Date(yearState, monthState - 1, 1)),
-              );
-              const endDateOfSelectedMonthToInt = parseIntFromDate(
-                calendarUtil.parseDateFromObject(
-                  new Date(
-                    new Date(yearState + (monthState === 12 ? 1 : 0), monthState % 12, 1) -
-                      86400000,
-                  ),
-                ),
-              );
 
               if (
                 startDateToInt <= endDateOfSelectedMonthToInt &&
@@ -160,39 +158,14 @@ export default function CalendarModal({
 
             setMonthlyEventList(() => newMonthlyEventList);
           } else {
-            const response = await scheduleApi.createSchedule(movingPlanId, {
-              content: content,
-              startDate: calendarUtil.parseDateFromObject(startDate),
-              endDate: calendarUtil.parseDateFromObject(endDate),
-              color: color,
-            });
-
-            const newSchedule = response.data.data;
-
-            const selectDateToInt = parseIntFromDate(selectDate);
-            const startDateToInt = parseIntFromDate(newSchedule.startDate);
-            const endDateToInt = parseIntFromDate(newSchedule.endDate);
-
-            if (startDateToInt <= selectDateToInt && endDateToInt >= selectDateToInt) {
-              setDailyScheduleList((prev) => [...prev, newSchedule]);
-            }
-
-            const startDateOfSelectedMonthToInt = parseIntFromDate(
-              calendarUtil.parseDateFromObject(new Date(yearState, monthState - 1, 1)),
-            );
-            const endDateOfSelectedMonthToInt = parseIntFromDate(
-              calendarUtil.parseDateFromObject(
-                new Date(
-                  new Date(yearState + (monthState === 12 ? 1 : 0), monthState % 12, 1) - 86400000,
-                ),
-              ),
-            );
-
             if (
               startDateToInt <= endDateOfSelectedMonthToInt &&
               endDateToInt >= startDateOfSelectedMonthToInt
             ) {
-              setMonthlyEventList((prev) => [...prev, calendarUtil.scheduleToEvent(newSchedule)]);
+              setMonthlyEventList((prev) => [
+                ...prev,
+                calendarUtil.scheduleToEvent(returnedSchedule),
+              ]);
             }
           }
 
@@ -275,4 +248,8 @@ function parseIntFromDate(date) {
     Number.parseInt(date.substring(5, 7)) * 100 +
     Number.parseInt(date.substring(8, 10))
   );
+}
+
+function endDateOfMonthObj(year, month) {
+  return new Date(new Date(year + !!(month === 12), month % 12, 1) - 86400000);
 }
