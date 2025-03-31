@@ -1,6 +1,8 @@
 import calendarUtil from './calendarUtil';
 
 const scheduleUtil = {
+  // 달력과 일별 일정 목록의 순서를 일치시키기 위한 비교 함수
+  // https://fullcalendar.io/docs/eventOrder
   scheduleCompareFunction: (date1, date2) => {
     const startDateInt1 = calendarUtil.parseIntFromDateStr(date1.startDate);
     const startDateInt2 = calendarUtil.parseIntFromDateStr(date2.startDate);

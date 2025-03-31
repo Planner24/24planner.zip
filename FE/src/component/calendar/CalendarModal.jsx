@@ -243,5 +243,5 @@ export default function CalendarModal({
 }
 
 function endDateOfMonthObj(year, month) {
-  return new Date(new Date(year + !!(month === 12), month % 12, 1) - 86400000);
+  return new Date(new Date(year + (month === 12), month % 12, 1) - 86400000);
 }
