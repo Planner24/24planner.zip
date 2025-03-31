@@ -99,7 +99,7 @@ export default function Calendar() {
   const [yearState, setYearState] = useState(now.getFullYear());
   const [monthState, setMonthState] = useState(now.getMonth() + 1);
   const [selectDate, setSelectDate] = useState(
-    calendarUtil.parseDate(now.getFullYear(), now.getMonth() + 1, now.getDate()),
+    calendarUtil.parseDateStr(now.getFullYear(), now.getMonth() + 1, now.getDate()),
   );
   /* 
     Schedule은 DB에서 받아오는 형식을 그대로 사용함을 의미

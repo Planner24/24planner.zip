@@ -29,7 +29,7 @@ export default function CalendarContent({
       eventMouseHoverReducer({
         title: e.event.title,
         start: e.event.startStr,
-        end: calendarUtil.parseDateFromObject(new Date(e.event.end - 86400000)),
+        end: calendarUtil.parseDateStrFromObject(new Date(e.event.end - 86400000)),
         color: e.event.backgroundColor,
       }),
     );

@@ -15,7 +15,7 @@ export default function CalendarHeader({
   const moveToCurrentMonth = () => {
     const now = new Date();
     calendarRef.current.getApi().gotoDate(now);
-    setSelectDate(calendarUtil.parseDateFromObject(now));
+    setSelectDate(calendarUtil.parseDateStrFromObject(now));
   };
 
   const moveToPrevMonth = () => {
@@ -23,7 +23,7 @@ export default function CalendarHeader({
     const targetMonth = ((monthState + 10) % 12) + 1;
     setYearState(targetYear);
     setMonthState(targetMonth);
-    calendarRef.current.getApi().gotoDate(calendarUtil.parseDate(targetYear, targetMonth, 1));
+    calendarRef.current.getApi().gotoDate(calendarUtil.parseDateStr(targetYear, targetMonth, 1));
   };
 
   const moveToNextMonth = () => {
@@ -31,7 +31,7 @@ export default function CalendarHeader({
     const targetMonth = (monthState % 12) + 1;
     setYearState(targetYear);
     setMonthState(targetMonth);
-    calendarRef.current.getApi().gotoDate(calendarUtil.parseDate(targetYear, targetMonth, 1));
+    calendarRef.current.getApi().gotoDate(calendarUtil.parseDateStr(targetYear, targetMonth, 1));
   };
 
   const handleCalendarModal = () => {
