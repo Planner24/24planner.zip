@@ -88,6 +88,9 @@ export default function CalendarContent({
           html: `<div class="${eventLineStyle} ${calendarUtil.determineBlackText(calendarUtil.hexColorToIntArray(arg.event.backgroundColor)) ? 'text-black' : 'text-white'}">${arg.event.title}</div>`,
         };
       }}
+      dayPopoverFormat={(arg) => {
+        return `${arg.date.year}년 ${arg.date.month + 1}월 ${arg.date.day}일`;
+      }}
       datesSet={async (dateInfo) => {
         const selectedYear = dateInfo.start.getFullYear();
         const selectedMonth = dateInfo.start.getMonth() + 1;
