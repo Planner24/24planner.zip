@@ -46,10 +46,19 @@ export default function CalendarSidebar({
     setErrorMessage(() => null);
   };
 
-  const handleAddButton = async (e) => {
+  const handleAddButton = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    addSchedule();
+  };
 
+  const handleEnterKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      addSchedule();
+    }
+  };
+
+  const addSchedule = async () => {
     if (!content.length) {
       setErrorMessage(() => '내용은 필수로 입력해야 합니다.');
     } else {
@@ -154,6 +163,7 @@ export default function CalendarSidebar({
                   placeholder="할 일 입력"
                   value={content}
                   onChange={handleContentChange}
+                  onKeyDown={handleEnterKeyDown}
                 />
               </div>
               <div className={addButtonStyle} onClick={handleAddButton}>
