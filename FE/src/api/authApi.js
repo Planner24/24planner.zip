@@ -26,7 +26,7 @@ const authApi = {
     const response = await api.post(`${ENDPOINT}/signup`, signupData);
     return response;
   },
-  
+
   // 로그인
   login: async (formData) => {
     const response = await api.post(`${ENDPOINT}/login`, formData, { withCredentials: true });
@@ -44,11 +44,15 @@ const authApi = {
     const response = await api.delete(`${ENDPOINT}/logout`, {}, { withCredentials: true });
   },
 
-  // 테스트
-  test: async () => {
-    const response = await api.get(`/test`);
+  // 소셜로그인 회원가입
+  completeSignup: async (nickname, tempToken) => {
+    const response = await api.post(
+      `${ENDPOINT}/signup/additional-info`,
+      { nickname, tempToken },
+      { withCredentials: true },
+    );
+    return response;
   },
-
 };
 
 export default authApi;

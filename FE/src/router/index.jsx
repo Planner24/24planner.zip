@@ -12,6 +12,7 @@ import Calendar from '../pages/Calendar';
 import NotFound from '../pages/NotFound';
 import PlanSetting from '../pages/PlanSetting';
 import LoginRedirect from '../pages/LoginRedirect';
+import SignupAdditionalInfo from '../pages/SignupAdditionalInfo';
 
 const router = createBrowserRouter([
   {
@@ -73,6 +74,11 @@ const router = createBrowserRouter([
   {
     path: '/login-success',
     element: <LoginRedirect />,
+    // errorElement: <NotFound />,
+  },
+  {
+    path: '/signup/additional-info',
+    element: <SignupAdditionalInfo />,
     // errorElement: <NotFound />,
   },
 ]);
