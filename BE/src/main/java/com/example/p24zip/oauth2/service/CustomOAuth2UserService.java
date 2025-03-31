@@ -1,9 +1,10 @@
 package com.example.p24zip.oauth2.service;
 
-import com.example.p24zip.domain.user.entity.Role;
 import com.example.p24zip.domain.user.entity.User;
 import com.example.p24zip.domain.user.repository.UserRepository;
+import com.example.p24zip.global.exception.AdditionalInfoRequiredException;
 import com.example.p24zip.oauth2.CustomOAuth2User;
+import com.example.p24zip.oauth2.TempUserRedisService;
 import com.example.p24zip.oauth2.userinfo.KakaoOAuthUserInfo;
 import com.example.p24zip.oauth2.userinfo.OAuthUserInfo;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
+    private final TempUserRedisService tempUserRedisService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -36,13 +38,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         // 이메일로 사용자 조회
         String email = oAuthUserInfo.getEmail();
         User user = userRepository.findByUsername(email).orElseGet(() -> {
-            User newUser = User.builder()
-                .username(email)
-                .password("test123!")
-                .nickname("test")
-                .role(Role.ROLE_USER)
-                .build();
-            return userRepository.save(newUser);
+            String tempToken = tempUserRedisService.saveTempUser(oAuthUserInfo);
+            throw new AdditionalInfoRequiredException("추가 정보 필요", tempToken);
         });
 
         // OAuth 제공자에서 제공하는 사용자 이름 속성 값 가져오기
