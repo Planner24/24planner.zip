@@ -5,11 +5,13 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 
-import scheduleApi from '../../api/scheduleApi';
+import scheduleApi from '../../../api/scheduleApi';
 
-import calendarUtil from './util/calendarUtil';
+import { eventMouseHoverReducer, eventMouseLeaveReducer } from '../../../store/slices/popoverSlice';
 
-import { eventMouseHoverReducer, eventMouseLeaveReducer } from '../../store/slices/popoverSlice';
+import calendarUtil from '../util/calendarUtil';
+
+import '../style/calendarContent.css';
 
 export default function CalendarContent({
   calendarRef,

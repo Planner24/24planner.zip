@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import scheduleApi from '../../api/scheduleApi';
+import scheduleApi from '../../../api/scheduleApi';
 
-import calendarUtil from './util/calendarUtil';
-import scheduleUtil from './util/scheduleUtil';
-import LoadingCircle from './svg/LoadingCircle';
+import calendarUtil from '../util/calendarUtil';
+import scheduleUtil from '../util/scheduleUtil';
+import LoadingCircle from '../svg/LoadingCircle';
 
 export default function CalendarSidebar({
   yearState,
