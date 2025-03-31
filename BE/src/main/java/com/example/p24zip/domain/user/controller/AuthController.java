@@ -9,6 +9,7 @@ import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestCodeDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestDto;
 import com.example.p24zip.domain.user.dto.response.ChangeNicknameResponseDto;
 import com.example.p24zip.domain.user.dto.response.FindPasswordResponseDto;
+import com.example.p24zip.domain.user.dto.response.RedisValueResponseDto;
 import com.example.p24zip.domain.user.dto.response.VerifyEmailDataResponseDto;
 import com.example.p24zip.domain.user.dto.response.AccessTokenResponseDto;
 import com.example.p24zip.domain.user.dto.response.LoginResponseDto;
@@ -124,6 +125,17 @@ public class AuthController {
             )
         );
     }
+
+    @GetMapping("/redis/{key}")
+    public ResponseEntity<ApiResponse<RedisValueResponseDto>> getRedisValue(@PathVariable String key){
+
+        return ResponseEntity.ok(ApiResponse.ok(
+            "OK",
+            "redis 접근에 성공했습니다.",
+            authService.getRedisValue(key)
+        ));
+    }
+
     @PatchMapping("/nickname")
     public ResponseEntity<ApiResponse<ChangeNicknameResponseDto>> updateNickname(@RequestBody @Valid ChangeNicknameRequestDto requestDto, @AuthenticationPrincipal User user){
 

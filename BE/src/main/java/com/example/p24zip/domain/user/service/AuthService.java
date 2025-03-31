@@ -10,6 +10,7 @@ import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestCodeDto;
 import com.example.p24zip.domain.user.dto.request.VerifyEmailRequestDto;
 import com.example.p24zip.domain.user.dto.response.ChangeNicknameResponseDto;
 import com.example.p24zip.domain.user.dto.response.FindPasswordResponseDto;
+import com.example.p24zip.domain.user.dto.response.RedisValueResponseDto;
 import com.example.p24zip.domain.user.dto.response.VerifyEmailDataResponseDto;
 import com.example.p24zip.domain.user.dto.response.AccessTokenResponseDto;
 import com.example.p24zip.domain.user.dto.response.LoginResponseDto;
@@ -97,9 +98,9 @@ public class AuthService {
         throws UnsupportedEncodingException, MessagingException {
         String username = requestDto.getUsername();
 
-        if(redisTemplate.hasKey(username)){
+        if(redisTemplate.hasKey(username+"_mail")){
             LocalDateTime checkAccessTime = LocalDateTime.parse(
-            redisTemplate.opsForValue().get(username + "_createdAt"));
+            redisTemplate.opsForValue().get(username + "_mail_createdAt"));
 
             if(!checkAccessTime.plusSeconds(5).isBefore(LocalDateTime.now())){
                 throw new CustomException("TOOMANY_REQUEST","5초안에 다시 요청했습니다.");
@@ -138,16 +139,16 @@ public class AuthService {
         String username = requestDto.getUsername();
         String code = requestDto.getCode();
 
-        if(!redisTemplate.hasKey(username)) {
+        if(!redisTemplate.hasKey(username+"_mail")) {
             throw new CustomException("BAD_REQUEST", "인증번호가 틀렸습니다.");
         }
         // -2: 시간 만료
-        if(redisTemplate.getExpire(username)!=-2){
+        if(redisTemplate.getExpire(username+"_mail")!=-2){
             if(!code.equals(redisTemplate.opsForValue().get(username))){
                throw new CustomException("BAD_REQUEST", "인증번호가 틀렸습니다.");
             }else{
-                redisTemplate.delete(username);
-                redisTemplate.delete(username + "_createdAt");
+                redisTemplate.delete(username+"_mail");
+                redisTemplate.delete(username + "_mail_createdAt");
             }
         }
         else{
@@ -186,7 +187,7 @@ public class AuthService {
 
         if(redisTemplate.hasKey(username+"_tempToken")){
             ZonedDateTime checkAccessTime = ZonedDateTime.parse(
-                redisTemplate.opsForValue().get(username + "_createdAt"));
+                redisTemplate.opsForValue().get(username + "_tempToken_createdAt"));
 
             if(!checkAccessTime.plusSeconds(5).isBefore(ZonedDateTime.now())){
                 throw new CustomException("TOOMANY_REQUEST","5초안에 다시 요청했습니다.");
@@ -197,7 +198,7 @@ public class AuthService {
 
         String key = username +"_tempToken";
         redisTemplate.opsForValue().set(key,tempJwt, 10, TimeUnit.MINUTES);
-        String createdAt = username + "_createdAt";
+        String createdAt = username + "_tempToken_createdAt";
         redisTemplate.opsForValue().set(createdAt, String.valueOf(ZonedDateTime.now()), 10, TimeUnit.MINUTES); // 생성시간
 
         MimeMessage message = mailSender.createMimeMessage();
@@ -209,7 +210,7 @@ public class AuthService {
         helper.setText(text, true);
         mailSender.send(message);
 
-        ZonedDateTime date = ZonedDateTime.now().plusMinutes(10);
+        ZonedDateTime date = ZonedDateTime.now().plusMinutes(2);
         String expiredAt = date.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);;
 
         return new FindPasswordResponseDto(tempJwt,expiredAt);
@@ -233,7 +234,7 @@ public class AuthService {
 
         String username = user.getUsername();
         redisTemplate.delete(username+"_tempToken");
-        redisTemplate.delete(username + "_createdAt");
+        redisTemplate.delete(username + "_tempToken_createdAt");
     }
 
     // 로그인
@@ -298,17 +299,12 @@ public class AuthService {
 
 
     public ShowNicknameResponseDto getNickname(User user) {
-        if(user==null){
-            new ResourceNotFoundException();
-        }
         return new ShowNicknameResponseDto(user.getId(), user.getNickname());
     }
 
     @Transactional
     public ChangeNicknameResponseDto updateNickname(ChangeNicknameRequestDto requestDto, User user) {
-        if(user==null){
-            new ResourceNotFoundException();
-        }
+
         String nickname = requestDto.getNickname();
 
         user.setNickname(nickname);
@@ -380,14 +376,23 @@ public class AuthService {
      **/
     public ZonedDateTime saveCodeToRedis(String username, int codeNum) {
 
-        String key = username;
+        String key = username+"_mail";
         String code = String.valueOf(codeNum);
-        String createdAt = key + "_createdAt";
+        String createdAt = username + "_mail_createdAt";
 
         redisTemplate.opsForValue().set(key, code, 3, TimeUnit.MINUTES);
         redisTemplate.opsForValue().set(createdAt, String.valueOf(LocalDateTime.now()), 3, TimeUnit.MINUTES); // 생성시간
         return ZonedDateTime.now(ZoneId.of("Asia/Seoul")).plusMinutes(3);
     }
 
+
+    public RedisValueResponseDto getRedisValue(String key) {
+        String value = redisTemplate.opsForValue().get(key);
+        if(value == null){
+            new ResourceNotFoundException();
+        }
+        System.out.println(value);
+        return new RedisValueResponseDto(value);
+    }
 
 }
