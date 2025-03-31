@@ -72,6 +72,12 @@ const authApi = {
   test: async () => {
     const response = await api.get(`/test`);
   },
+
+  // redis 값 가져오기
+  redis: async (key) => {
+    const response = await api.get(`${ENDPOINT}/redis/${key}`);
+    return response.data;
+  },
 };
 
 export default authApi;
