@@ -44,7 +44,7 @@ export default function Chat() {
     const chaturl = import.meta.env.VITE_CHAT_URL;
 
     const stomp = new Client({
-      webSocketFactory: () => new SockJS("https://24zip.com/api/gs-guide-websocket"),
+      webSocketFactory: () => new SockJS(chaturl),
       debug: (str) => console.log(str), // 디버깅 로그 출력
     });
 
