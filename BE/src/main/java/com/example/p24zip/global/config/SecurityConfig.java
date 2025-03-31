@@ -66,7 +66,7 @@ public class SecurityConfig {
                     .successHandler(customOAuthLoginSuccessHandler)
                     .failureHandler((request, response, exception) -> {
                         System.out.println("로그인 실패: " + exception.getMessage());
-                        response.sendRedirect("/login?error=true");
+//                        response.sendRedirect("/login?error=true");
                     })
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

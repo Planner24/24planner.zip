@@ -38,6 +38,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         User user = userRepository.findByUsername(email).orElseGet(() -> {
             User newUser = User.builder()
                 .username(email)
+                .password("test123!")
+                .nickname("test")
                 .role(Role.ROLE_USER)
                 .build();
             return userRepository.save(newUser);

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import authApi from '../api/authApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../store/slices/authSlice';
+import KakaoLogin from '../component/login/KakaoLogin';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -145,6 +146,7 @@ export default function Login() {
           </div>
         </div>
       </div>
+      <KakaoLogin></KakaoLogin>
     </div>
   );
 }
