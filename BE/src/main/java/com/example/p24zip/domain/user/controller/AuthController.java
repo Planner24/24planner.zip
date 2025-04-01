@@ -111,7 +111,7 @@ public class AuthController {
         @RequestBody OAuthSignupRequestDto requestDto
     ) {
         return ResponseEntity.ok(ApiResponse.ok(
-            "OK",
+            "CREATED",
             "회원가입 후 로그인에 성공했습니다.",
             authService.completeSignup(request, response, requestDto)
         ));

@@ -6,10 +6,13 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 @Getter
 public class AdditionalInfoRequiredException extends OAuth2AuthenticationException {
 
-    private final String tempToken; // 프론트에 전달할 임시 토큰
+    private final String code;
+    // 프론트에 전달할 임시 토큰
+    private final String tempToken;
 
-    public AdditionalInfoRequiredException(String msg, String tempToken) {
-        super(msg);
+    public AdditionalInfoRequiredException(String code, String message, String tempToken) {
+        super(message);
+        this.code = code;
         this.tempToken = tempToken;
     }
 

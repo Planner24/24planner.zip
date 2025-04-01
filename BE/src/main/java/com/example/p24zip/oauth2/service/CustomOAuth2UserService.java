@@ -39,7 +39,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email = oAuthUserInfo.getEmail();
         User user = userRepository.findByUsername(email).orElseGet(() -> {
             String tempToken = tempUserRedisService.saveTempUser(oAuthUserInfo);
-            throw new AdditionalInfoRequiredException("추가 정보 필요", tempToken);
+            throw new AdditionalInfoRequiredException("INFO_REQUIRED", "닉네임 입력 후 회원가입할 수 있습니다.", tempToken);
         });
 
         // OAuth 제공자에서 제공하는 사용자 이름 속성 값 가져오기

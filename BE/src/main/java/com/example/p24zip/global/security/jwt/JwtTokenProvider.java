@@ -89,7 +89,6 @@ public class JwtTokenProvider {
     }
 
     public String getTempToken(OAuthUserInfo oAuthUserInfo) {
-
         Claims claims = Jwts.claims().setSubject(oAuthUserInfo.getEmail());
         claims.put("email", oAuthUserInfo.getEmail());
         claims.put("provider", oAuthUserInfo.getProvider());

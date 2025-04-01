@@ -11,6 +11,7 @@ public class CustomOAuth2User extends DefaultOAuth2User {
     private final User user;
     private final OAuth2User oAuth2User;
 
+    // 소셜로그인 유저 정보
     public CustomOAuth2User(OAuth2User oAuth2User, String nameAttributeKey, User user) {
         super(oAuth2User.getAuthorities(), oAuth2User.getAttributes(), nameAttributeKey);
         this.oAuth2User = oAuth2User;

@@ -16,14 +16,18 @@ public class TempUserRedisService {
 
     private static final long TEMP_USER_EXPIRE_MINUTES = 10; // 10분 유지
 
+    // 유저 정보 임시 저장
     public String saveTempUser(OAuthUserInfo oAuthInfo) {
+
         String tempToken = jwtTokenProvider.getTempToken(oAuthInfo);
         String key = oAuthInfo.getEmail();
 
         redisTemplate.opsForValue().set(key, tempToken, TEMP_USER_EXPIRE_MINUTES, TimeUnit.MINUTES);
+
         return tempToken;
     }
 
+    // 임시 저장된 유저 정보 조회
     public String getTempUser(String tempToken) {
 
             String email = jwtTokenProvider.getEmailFromToken(tempToken);
@@ -34,6 +38,7 @@ public class TempUserRedisService {
             return email;
     }
 
+    // 임시 저장된 유저 정보 삭제
     public void deleteTempUser(String email) {
         redisTemplate.delete(email);
     }

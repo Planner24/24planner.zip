@@ -19,6 +19,7 @@ export default function SignupAdditionalInfo() {
     content: '',
   });
 
+  // 로그인 상태인 경우 이사 플랜 목록으로 이동
   useEffect(() => {
     if (isLoggedIn) {
       navigate('/plans');
@@ -29,6 +30,7 @@ export default function SignupAdditionalInfo() {
   // 입력값 검증
   const checkNickname = (value) => /^[가-힣a-zA-Z0-9]{2,17}$/.test(value);
 
+  // 쿼리 파라미터에 있는 임시 토큰 가져오기
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const token = urlParams.get('tempToken');

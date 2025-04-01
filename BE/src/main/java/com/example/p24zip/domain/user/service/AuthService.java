@@ -305,6 +305,7 @@ public class AuthService {
         String tempToken = requestDto.getTempToken();
         String nickname = requestDto.getNickname();
 
+        // 임시 사용자 정보 가져오기
         String tempUsername = tempUserRedisService.getTempUser(tempToken);
 
         // 사용자가 이미 존재하는 경우 처리
@@ -330,6 +331,7 @@ public class AuthService {
         // 임시 유저 삭제
         tempUserRedisService.deleteTempUser(user.getUsername());
 
+        // 토큰 생성
         String refreshToken = jwtTokenProvider.refreshCreateToken(user);
         String accessToken = jwtTokenProvider.accessCreateToken(user);
 

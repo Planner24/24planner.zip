@@ -24,7 +24,8 @@ public class CustomOAuthLoginFailureHandler implements AuthenticationFailureHand
         AuthenticationException exception
     ) throws IOException {
         if (exception instanceof AdditionalInfoRequiredException ex) {
-            // tempToken을 쿼리 파라미터로 전달
+
+            // 임시 토큰을 파라미터로 추가하여, 추가 정보 입력 페이지로 리다이렉트
             String tempToken = ex.getTempToken();
             response.sendRedirect(origin + "/signup/additional-info?tempToken=" + tempToken);
         }

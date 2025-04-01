@@ -44,7 +44,7 @@ const authApi = {
     const response = await api.delete(`${ENDPOINT}/logout`, {}, { withCredentials: true });
   },
 
-  // 소셜로그인 회원가입
+  // 추가 정보 입력 후 회원가입 (소셜로그인)
   completeSignup: async (nickname, tempToken) => {
     const response = await api.post(
       `${ENDPOINT}/signup/additional-info`,
