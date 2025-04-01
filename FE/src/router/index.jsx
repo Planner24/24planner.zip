@@ -11,6 +11,7 @@ import Houses from '../pages/Houses';
 import Calendar from '../pages/Calendar';
 import NotFound from '../pages/NotFound';
 import PlanSetting from '../pages/PlanSetting';
+import Chat from '../pages/Chat';
 import Invite from '../pages/Invite';
 
 const router = createBrowserRouter([
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: ':movingPlanId/task/:taskGroupId',
         element: <TaskList />,
+      },
+      {
+        path: ':movingPlanId/chat',
+        element: <Chat />,
       },
       {
         path: ':movingPlanId/house',
