@@ -41,7 +41,7 @@ export default function SignupAdditionalInfo() {
       const response = await authApi.completeSignup(nickname, tempToken);
       const data = response.data.data;
 
-      dispatch(login(data.nickname, data.accessToken));
+      dispatch(login({ nickname: data.nickname, accessToken: data.accessToken }));
       alert(response.data.message);
       navigate('/plans', { replace: true });
     } catch (e) {
