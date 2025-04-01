@@ -3,6 +3,8 @@ import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import { useNavigate, useParams } from 'react-router-dom';
 import chatApi from '../api/chatApi';
+import { useSelector } from 'react-redux';
+
 
 export default function Chat() {
   const { movingPlanId } = useParams();
@@ -14,6 +16,8 @@ export default function Chat() {
   const messagesEndRef = useRef(null);
 
   const navigate = useNavigate();
+
+  const storeNickname = useSelector((state) => state.auth.nickname);
 
   const chattingName = 'self-start text-xl ml-2 mb-2';
   const chattingDelete =
@@ -126,7 +130,7 @@ export default function Chat() {
             // 이전 값
             const previousMessage = index === 0 ? '' : messages[index - 1];
 
-            const isOwnMessage = nickname === localStorage.getItem('nickname');
+            const isOwnMessage = nickname === storeNickname;
 
             return (
               <div
