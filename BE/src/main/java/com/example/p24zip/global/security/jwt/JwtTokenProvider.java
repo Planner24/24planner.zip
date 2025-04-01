@@ -1,7 +1,7 @@
 package com.example.p24zip.global.security.jwt;
 
 import com.example.p24zip.domain.user.entity.User;
-import com.example.p24zip.oauth2.userinfo.OAuthUserInfo;
+import com.example.p24zip.domain.user.provider.OAuthUserInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;

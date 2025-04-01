@@ -1,7 +1,7 @@
-package com.example.p24zip.oauth2;
+package com.example.p24zip.domain.user.service;
 
 import com.example.p24zip.global.security.jwt.JwtTokenProvider;
-import com.example.p24zip.oauth2.userinfo.OAuthUserInfo;
+import com.example.p24zip.domain.user.provider.OAuthUserInfo;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class TempUserRedisService {
+public class TempUserService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final StringRedisTemplate redisTemplate;

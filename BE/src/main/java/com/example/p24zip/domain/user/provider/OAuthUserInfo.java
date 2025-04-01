@@ -1,4 +1,4 @@
-package com.example.p24zip.oauth2.userinfo;
+package com.example.p24zip.domain.user.provider;
 
 public interface OAuthUserInfo {
 

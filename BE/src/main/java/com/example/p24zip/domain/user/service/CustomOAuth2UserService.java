@@ -1,12 +1,11 @@
-package com.example.p24zip.oauth2.service;
+package com.example.p24zip.domain.user.service;
 
 import com.example.p24zip.domain.user.entity.User;
 import com.example.p24zip.domain.user.repository.UserRepository;
 import com.example.p24zip.global.exception.AdditionalInfoRequiredException;
-import com.example.p24zip.oauth2.CustomOAuth2User;
-import com.example.p24zip.oauth2.TempUserRedisService;
-import com.example.p24zip.oauth2.userinfo.KakaoOAuthUserInfo;
-import com.example.p24zip.oauth2.userinfo.OAuthUserInfo;
+import com.example.p24zip.domain.user.provider.CustomOAuth2User;
+import com.example.p24zip.domain.user.provider.KakaoOAuthUserInfo;
+import com.example.p24zip.domain.user.provider.OAuthUserInfo;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -20,7 +19,7 @@ import org.springframework.stereotype.Service;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
-    private final TempUserRedisService tempUserRedisService;
+    private final TempUserService tempUserService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -38,7 +37,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         // 이메일로 사용자 조회
         String email = oAuthUserInfo.getEmail();
         User user = userRepository.findByUsername(email).orElseGet(() -> {
-            String tempToken = tempUserRedisService.saveTempUser(oAuthUserInfo);
+            String tempToken = tempUserService.saveTempUser(oAuthUserInfo);
             throw new AdditionalInfoRequiredException("INFO_REQUIRED", "닉네임 입력 후 회원가입할 수 있습니다.", tempToken);
         });
 

@@ -1,8 +1,8 @@
-package com.example.p24zip.oauth2.handler;
+package com.example.p24zip.domain.user.handler;
 
 import com.example.p24zip.domain.user.entity.User;
 import com.example.p24zip.global.security.jwt.JwtTokenProvider;
-import com.example.p24zip.oauth2.CustomOAuth2User;
+import com.example.p24zip.domain.user.provider.CustomOAuth2User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

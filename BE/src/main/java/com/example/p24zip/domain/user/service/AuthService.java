@@ -17,7 +17,6 @@ import com.example.p24zip.global.exception.CustomException;
 import com.example.p24zip.global.exception.ResourceNotFoundException;
 import com.example.p24zip.global.exception.TokenException;
 import com.example.p24zip.global.security.jwt.JwtTokenProvider;
-import com.example.p24zip.oauth2.TempUserRedisService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -54,7 +53,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
 
-    private final TempUserRedisService tempUserRedisService;
+    private final TempUserService tempUserService;
 
     /**
      * 회원가입
@@ -307,7 +306,7 @@ public class AuthService {
         String nickname = requestDto.getNickname();
 
         // 임시 사용자 정보 가져오기
-        Map<String, String> tempUser = tempUserRedisService.getTempUser(tempToken);
+        Map<String, String> tempUser = tempUserService.getTempUser(tempToken);
 
         String username = tempUser.get("email");
         String provider = tempUser.get("provider");
@@ -336,7 +335,7 @@ public class AuthService {
         userRepository.save(user);
 
         // 임시 유저 삭제
-        tempUserRedisService.deleteTempUser(user.getUsername());
+        tempUserService.deleteTempUser(user.getUsername());
 
         // 토큰 생성
         String refreshToken = jwtTokenProvider.refreshCreateToken(user);

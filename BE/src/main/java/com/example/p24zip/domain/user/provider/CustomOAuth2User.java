@@ -1,4 +1,4 @@
-package com.example.p24zip.oauth2;
+package com.example.p24zip.domain.user.provider;
 
 import com.example.p24zip.domain.user.entity.User;
 import lombok.Getter;
