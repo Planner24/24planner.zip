@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -306,10 +307,14 @@ public class AuthService {
         String nickname = requestDto.getNickname();
 
         // 임시 사용자 정보 가져오기
-        String tempUsername = tempUserRedisService.getTempUser(tempToken);
+        Map<String, String> tempUser = tempUserRedisService.getTempUser(tempToken);
+
+        String username = tempUser.get("email");
+        String provider = tempUser.get("provider");
+        String providerId = tempUser.get("providerId");
 
         // 사용자가 이미 존재하는 경우 처리
-        if (userRepository.existsByUsername(tempUsername)){
+        if (userRepository.existsByUsername(username)){
             throw new IllegalStateException("이미 가입된 사용자입니다.");
         }
 
@@ -319,10 +324,12 @@ public class AuthService {
 
         // 임시 유저 정보를 일반 사용자로 변환
         User user = User.builder()
-            .username(tempUsername)
+            .username(username)
             .password(encodedPassword)
             .nickname(nickname)
             .role(Role.ROLE_USER)
+            .provider(provider)
+            .providerId(providerId)
             .build();
 
         // User 엔티티로 저장

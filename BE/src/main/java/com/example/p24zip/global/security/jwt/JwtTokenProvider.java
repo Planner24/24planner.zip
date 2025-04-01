@@ -8,6 +8,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -109,6 +111,26 @@ public class JwtTokenProvider {
             .getBody();
 
         return claims.get("email", String.class);
+    }
+
+    public Map<String, String> getTempUserInfoFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+            .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+
+        String email = claims.get("email", String.class);
+        String provider = claims.get("provider", String.class);
+        String providerId = claims.get("providerId", String.class);
+
+        // 데이터를 Map에 담아 반환
+        Map<String, String> tempUserInfo = new HashMap<>();
+        tempUserInfo.put("email", email);
+        tempUserInfo.put("provider", provider);
+        tempUserInfo.put("providerId", providerId);
+
+        return tempUserInfo;
     }
 
 }

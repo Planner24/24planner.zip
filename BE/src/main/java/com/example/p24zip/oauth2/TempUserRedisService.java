@@ -2,6 +2,7 @@ package com.example.p24zip.oauth2;
 
 import com.example.p24zip.global.security.jwt.JwtTokenProvider;
 import com.example.p24zip.oauth2.userinfo.OAuthUserInfo;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -28,14 +29,16 @@ public class TempUserRedisService {
     }
 
     // 임시 저장된 유저 정보 조회
-    public String getTempUser(String tempToken) {
+    public Map<String, String> getTempUser(String tempToken) {
 
-            String email = jwtTokenProvider.getEmailFromToken(tempToken);
-            String value = redisTemplate.opsForValue().get(email);
+        Map<String, String> tempUserInfoFromToken = jwtTokenProvider.getTempUserInfoFromToken(
+            tempToken);
+        String email = tempUserInfoFromToken.get("email");
+        String value = redisTemplate.opsForValue().get(email);
 
             if (value == null || !value.equals(tempToken)) throw new IllegalArgumentException("유효하지 않은 토큰");
 
-            return email;
+            return tempUserInfoFromToken;
     }
 
     // 임시 저장된 유저 정보 삭제
