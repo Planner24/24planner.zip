@@ -27,9 +27,9 @@ export default function HeaderLeft() {
   // NavLink로는 구분이 어려운 URL이 있어서 Link 상에서 Active 수동 구현
   return (
     <ul className={headerListStyle}>
-      <li className={headerLogoStyle}>
+      <Link to="/" className={headerLogoStyle}>
         <img src={logo} />
-      </li>
+      </Link>
 
       <li className="flex">
         {headerLeftList.length > 0 &&
