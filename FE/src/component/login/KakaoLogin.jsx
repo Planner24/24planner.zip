@@ -2,7 +2,7 @@ import kakaoLogin from '../../assets/kakaoLogin.png';
 
 export default function KakaoLogin() {
   const handleSocialLogin = () => {
-    const apiUrl = import.meta.env.VITE_API_URL;
+    const apiUrl = import.meta.env.VITE_BASE_URL;
     window.location.href = `${apiUrl}/api/oauth2/authorization/kakao`;
   };
 
