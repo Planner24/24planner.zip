@@ -4,7 +4,7 @@ import { Client } from '@stomp/stompjs';
 import { useNavigate, useParams } from 'react-router-dom';
 import chatApi from '../api/chatApi';
 import { useSelector } from 'react-redux';
-
+import authApi from '../api/authApi';
 
 export default function Chat() {
   const { movingPlanId } = useParams();
@@ -49,13 +49,38 @@ export default function Chat() {
 
     const stomp = new Client({
       webSocketFactory: () => new SockJS(chaturl),
+      debug: (str) => console.log(str), // 디버깅 로그 출력
     });
 
     stomp.onConnect = () => {
       stomp.subscribe(`/topic/${movingPlanId}`, (message) => {
-        const parsedMessage = JSON.parse(message.body); // JSON 문자열을 객체로
 
+        console.log(message.body);
+        
+
+        const parsedMessage = JSON.parse(message.body); // JSON 문자열을 객체로
         setMessages((prev) => [...prev, parsedMessage]);
+      });
+
+      stomp.subscribe(`/topic/${movingPlanId}/errors`, async (message) => {
+
+        const parsedMessage = JSON.parse(message.body);
+
+        if (parsedMessage.code == "INVALID_TOKEN") {
+
+          const response = await authApi.reissue();
+
+          const accessToken = response.data.data.accessToken;
+
+          const messageBody = JSON.stringify({
+            text: inputmessage.text,
+          });
+          stomp.publish({
+            destination: `/app/chat/${movingPlanId}`,
+            headers: { Authorization: `${accessToken}` },
+            body: messageBody,
+          });
+        }
       });
 
       setStompClient(stomp);
@@ -66,7 +91,7 @@ export default function Chat() {
     return () => {
       stomp.deactivate(); // 컴포넌트 언마운트 시 연결 해제
     };
-  }, []);
+  }, [inputmessage]);
 
   useEffect(() => {
     // messages가 변경될 때마다 스크롤을 맨 아래로 이동
