@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feature/P24-104-FE-housemate-invatation-kakao
 
 jobs:
   deploy: # Job 이름
