@@ -33,7 +33,7 @@ export default function SignupAdditionalInfo() {
   // 쿼리 파라미터에 있는 임시 토큰 가져오기
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
-    const token = urlParams.get('tempToken');
+    const token = urlParams.get('code');
     setTempToken(token);
   }, [location]);
 

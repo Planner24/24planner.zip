@@ -10,7 +10,7 @@ export default function LoginRedirect() {
   useEffect(() => {
     const handleLoginRedirect = () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const accessToken = urlParams.get('token');
+      const accessToken = urlParams.get('code');
       const nickname = urlParams.get('nickname');
 
       if (!accessToken) {
@@ -19,7 +19,7 @@ export default function LoginRedirect() {
         return;
       }
 
-      dispatch(login(nickname, accessToken));
+      dispatch(login({ nickname: nickname, accessToken: accessToken }));
       setTimeout(() => {
         navigate('/plans', { replace: true });
       }, 0);
@@ -28,9 +28,5 @@ export default function LoginRedirect() {
     handleLoginRedirect();
   }, [navigate, dispatch]);
 
-  return (
-    <div>
-      <p>로그인 중입니다.</p>
-    </div>
-  );
+  return <></>;
 }

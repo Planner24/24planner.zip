@@ -27,7 +27,7 @@ public class CustomOAuthLoginFailureHandler implements AuthenticationFailureHand
 
             // 임시 토큰을 파라미터로 추가하여, 추가 정보 입력 페이지로 리다이렉트
             String tempToken = ex.getTempToken();
-            response.sendRedirect(origin + "/signup/additional-info?tempToken=" + tempToken);
+            response.sendRedirect(origin + "/signup/additional-info?code=" + tempToken);
         }
     }
 }

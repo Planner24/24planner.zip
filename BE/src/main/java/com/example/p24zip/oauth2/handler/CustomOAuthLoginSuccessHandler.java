@@ -14,6 +14,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
 @RequiredArgsConstructor
@@ -48,6 +49,13 @@ public class CustomOAuthLoginSuccessHandler implements AuthenticationSuccessHand
         // refreshToken redis 넣기
         redisTemplate.opsForValue().set(refreshToken, refreshToken, 2, TimeUnit.DAYS);
 
-        response.sendRedirect(origin + "/login-success?nickname=" + nickname + "&token=" + accessToken);
+        // 로그인 성공 페이지로 이동
+        String redirectUrl = UriComponentsBuilder.fromHttpUrl(origin + "/login-success")
+            .queryParam("nickname", nickname)
+            .queryParam("code", accessToken)
+            .toUriString();
+
+        response.sendRedirect(redirectUrl);
+
     }
 }
