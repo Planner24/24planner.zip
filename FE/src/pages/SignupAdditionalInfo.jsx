@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import authApi from '../api/authApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../store/slices/authSlice';
+import logo from '../logo.png';
 
 export default function SignupAdditionalInfo() {
   const location = useLocation();
@@ -26,6 +27,11 @@ export default function SignupAdditionalInfo() {
       return;
     }
   }, [isLoggedIn]);
+
+  // 로고 클릭 시 메인 페이지로 이동
+  const toHome = () => {
+    navigate('/');
+  };
 
   // 입력값 검증
   const checkNickname = (value) => /^[가-힣a-zA-Z0-9]{2,17}$/.test(value);
@@ -92,18 +98,27 @@ export default function SignupAdditionalInfo() {
     }
   };
 
+  // 엔터키 눌러 닉네임 유효성 검증
+  const handlePressEnter = (e) => {
+    if (e.key === 'Enter') {
+      verifyNickname();
+    }
+  };
+
   // CSS
-  const signupWrapperStyle = 'h-screen flex flex-col justify-center items-center gap-2';
-  const inputButtonDiv = 'flex justify-center';
-  const inputStyle = 'w-80 mx-1 px-2 focus:outline-none text-xl border-b border-gray-400';
+  const signupWrapperStyle = 'h-screen flex flex-col justify-center items-center gap-3';
+  const logoStyle = 'w-40 text-center cursor-pointer mb-15';
+  const inputButtonDiv = 'w-full max-w-90 flex justify-center';
+  const inputStyle = 'w-2/3 mx-1 px-2 focus:outline-none text-xl border-b border-gray-400';
   const able = 'border-primary text-primary hover:bg-primary hover:text-white cursor-pointer';
   const disable = 'border-gray-300 text-gray-300 hover:none';
-  const buttonStyle = 'w-25 h-10 border-2 rounded-full px-2 py-1' + able;
-  const signupButton = 'block mx-auto border-2 rounded-2xl px-8 py-2 mt-1 text-xl';
+  const buttonStyle = 'w-1/4 h-10 border-2 rounded-full px-2 py-1' + able;
+  const signupButton = 'block mx-auto border-2 rounded-2xl px-8 py-2 text-xl';
   const messageStyle = 'font-semibold';
 
   return (
     <div className={signupWrapperStyle}>
+      <img src={logo} alt="로고" className={logoStyle} onClick={toHome} />
       <div className={inputButtonDiv}>
         <input
           type="text"
@@ -113,6 +128,7 @@ export default function SignupAdditionalInfo() {
           placeholder="닉네임"
           className={inputStyle}
           onChange={handleInputNickname}
+          onKeyDown={handlePressEnter}
           required
         />
         <button
