@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import logo from '../logo.png';
 import housemateApi from '../api/housemateApi';
 import { useSelector } from 'react-redux';
-import { Helmet } from 'react-helmet';
 
 export default function Invite() {
   const [searchParams] = useSearchParams();
@@ -22,7 +21,6 @@ export default function Invite() {
     navigate('/');
   };
 
-  // 초대 링크 검증
   useEffect(() => {
     if (!token) {
       setError('유효하지 않은 초대 링크입니다.');
@@ -47,7 +45,6 @@ export default function Invite() {
     validateInvitation();
   }, [token]);
 
-  // 초대 수락
   const accpetInvitaion = async () => {
     if (!isLoggedIn) {
       const confirmLogin = window.confirm('초대 수락을 위해서는 로그인이 필요합니다.');
@@ -95,42 +92,21 @@ export default function Invite() {
   }
 
   return (
-    <>
-      <Helmet>
-        <title>{`${inviteData?.planTitle ?? ''} 이사 플랜으로 초대합니다 | 이사모음.zip`}</title>
-        <meta
-          name="description"
-          content={`${inviteData?.inviterName ?? 'Zipper'}님의 이사 플랜에 함께 하세요!`}
-        />
-
-        <meta
-          property="og:title"
-          content={`${inviteData?.planTitle && inviteData.planTitle} 이사 플랜으로 초대합니다 | 이사모음.zip`}
-        />
-        <meta
-          property="og:description"
-          content={`${inviteData?.inviterName ?? 'Zipper'}님의 이사 플랜에 함께 하세요!`}
-        />
-        <meta property="og:image" content="https://24zip.com/logo.png" />
-        <meta property="og:url" content={window.location.href} />
-        <meta property="og:type" content="website" />
-      </Helmet>
-      <div className={displayStyle}>
-        <img src={logo} alt="이사모음집 로고" className={logoStyle} onClick={toHome} />
-        <div>
-          <h2 className={explainTextStyle}>
-            <span className="text-primary">{inviteData?.planTitle}</span> 이사 플랜의
-            <br /> 새로운 <b className="text-secondary">Zipper</b>가 되어주세요!
-          </h2>
-          <h3 className={explain2TextStyle}>
-            이제 <span className="text-primary">{inviteData?.inviterName}</span>님의 이사 플랜에
-            함께 할 수 있습니다.
-          </h3>
-        </div>
-        <button className={inviteButton} onClick={accpetInvitaion}>
-          초대 수락하기
-        </button>
+    <div className={displayStyle}>
+      <img src={logo} alt="이사모음집 로고" className={logoStyle} onClick={toHome} />
+      <div>
+        <h2 className={explainTextStyle}>
+          <span className="text-primary">{inviteData?.planTitle}</span> 이사 플랜의
+          <br /> 새로운 <b className="text-secondary">Zipper</b>가 되어주세요!
+        </h2>
+        <h3 className={explain2TextStyle}>
+          이제 <span className="text-primary">{inviteData?.inviterName}</span>님의 이사 플랜에 함께
+          할 수 있습니다.
+        </h3>
       </div>
-    </>
+      <button className={inviteButton} onClick={accpetInvitaion}>
+        초대 수락하기
+      </button>
+    </div>
   );
 }
