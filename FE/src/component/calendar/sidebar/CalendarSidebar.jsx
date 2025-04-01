@@ -98,6 +98,10 @@ export default function CalendarSidebar({
   };
 
   const deleteSchedule = async (e, scheduleId) => {
+    if (!confirm(`'${e.target.previousSibling.innerText}' 일정을 삭제합니다.\n계속하시겠습니까?`)) {
+      return;
+    }
+
     try {
       const response = await scheduleApi.deleteSchedule(movingPlanId, scheduleId);
       setDailyScheduleList((prev) => prev.filter((schedule) => schedule.id !== scheduleId));
@@ -124,6 +128,7 @@ export default function CalendarSidebar({
           {schedule.content}
         </div>
         <div
+          val={schedule.content}
           className={deleteButtonDivStyle}
           onClick={(e) => {
             deleteSchedule(e, schedule.id);
