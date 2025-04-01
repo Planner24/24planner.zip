@@ -3,8 +3,11 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import logo from '../logo.png';
 import housemateApi from '../api/housemateApi';
 import { useSelector } from 'react-redux';
+import { Helmet } from 'react-helmet';
 
 export default function Invite() {
+  const domain = window.location.origin;
+
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
 
@@ -92,21 +95,42 @@ export default function Invite() {
   }
 
   return (
-    <div className={displayStyle}>
-      <img src={logo} alt="이사모음집 로고" className={logoStyle} onClick={toHome} />
-      <div>
-        <h2 className={explainTextStyle}>
-          <span className="text-primary">{inviteData?.planTitle}</span> 이사 플랜의
-          <br /> 새로운 <b className="text-secondary">Zipper</b>가 되어주세요!
-        </h2>
-        <h3 className={explain2TextStyle}>
-          이제 <span className="text-primary">{inviteData?.inviterName}</span>님의 이사 플랜에 함께
-          할 수 있습니다.
-        </h3>
+    <>
+      <Helmet>
+        <title>{`${inviteData?.planTitle} 이사 플랜으로 초대합니다! | 이사모음.zip`}</title>
+        <meta
+          name="description"
+          content={`${inviteData?.inviterName || '누군가'}님의 이사 플랜에 함께 하세요!.`}
+        />
+
+        <meta
+          property="og:title"
+          content={`${inviteData?.planTitle} 이사 플랜으로 초대합니다! | 이사모음.zip`}
+        />
+        <meta
+          property="og:description"
+          content={`${inviteData?.inviterName || '누군가'}님의 이사 플랜에 함께 하세요!.`}
+        />
+        <meta property="og:image" content={`${domain}/logo.png`} />
+        <meta property="og:url" content={domain} />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <div className={displayStyle}>
+        <img src={logo} alt="이사모음집 로고" className={logoStyle} onClick={toHome} />
+        <div>
+          <h2 className={explainTextStyle}>
+            <span className="text-primary">{inviteData?.planTitle}</span> 이사 플랜의
+            <br /> 새로운 <b className="text-secondary">Zipper</b>가 되어주세요!
+          </h2>
+          <h3 className={explain2TextStyle}>
+            이제 <span className="text-primary">{inviteData?.inviterName}</span>님의 이사 플랜에
+            함께 할 수 있습니다.
+          </h3>
+        </div>
+        <button className={inviteButton} onClick={accpetInvitaion}>
+          초대 수락하기
+        </button>
       </div>
-      <button className={inviteButton} onClick={accpetInvitaion}>
-        초대 수락하기
-      </button>
-    </div>
+    </>
   );
 }
