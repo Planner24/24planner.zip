@@ -44,7 +44,7 @@ public class ChatController {
 
         String token = headerAccessor.getFirstNativeHeader("Authorization");
         if(token == null || !jwtTokenProvider.validateToken(token)) {
-            throw new StompTokenException();
+            throw new StompTokenException(requestDto.getText());
         }
         String tokenusername = jwtTokenProvider.getUsername(token);
 

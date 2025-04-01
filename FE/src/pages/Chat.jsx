@@ -49,14 +49,10 @@ export default function Chat() {
 
     const stomp = new Client({
       webSocketFactory: () => new SockJS(chaturl),
-      debug: (str) => console.log(str), // 디버깅 로그 출력
     });
 
     stomp.onConnect = () => {
       stomp.subscribe(`/topic/${movingPlanId}`, (message) => {
-
-        console.log(message.body);
-        
 
         const parsedMessage = JSON.parse(message.body); // JSON 문자열을 객체로
         setMessages((prev) => [...prev, parsedMessage]);
@@ -69,11 +65,11 @@ export default function Chat() {
         if (parsedMessage.code == "INVALID_TOKEN") {
 
           const response = await authApi.reissue();
-
           const accessToken = response.data.data.accessToken;
+          localStorage.setItem('accessToken', accessToken);
 
           const messageBody = JSON.stringify({
-            text: inputmessage.text,
+            text: parsedMessage.text,
           });
           stomp.publish({
             destination: `/app/chat/${movingPlanId}`,
@@ -91,7 +87,7 @@ export default function Chat() {
     return () => {
       stomp.deactivate(); // 컴포넌트 언마운트 시 연결 해제
     };
-  }, [inputmessage]);
+  }, []);
 
   useEffect(() => {
     // messages가 변경될 때마다 스크롤을 맨 아래로 이동

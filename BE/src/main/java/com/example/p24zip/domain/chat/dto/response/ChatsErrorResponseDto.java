@@ -9,4 +9,5 @@ public class ChatsErrorResponseDto {
 
     private final String code;
     private final String message;
+    private final String text;
 }

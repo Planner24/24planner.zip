@@ -118,7 +118,7 @@ public class GlobalExceptionHandler {
     @MessageExceptionHandler(StompTokenException.class)
     @SendTo("/topic/{movingPlanId}/errors")
     public ChatsErrorResponseDto normalChatExceptionHandler(StompTokenException e,  @DestinationVariable Long movingPlanId) {
-        return new ChatsErrorResponseDto("INVALID_TOKEN","토큰이 유효하지 않습니다.");
+        return new ChatsErrorResponseDto("INVALID_TOKEN","토큰이 유효하지 않습니다.", e.getMessage());
     }
 }
 
