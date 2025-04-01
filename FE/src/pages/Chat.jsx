@@ -104,7 +104,9 @@ export default function Chat() {
         await chatApi.chatsdelete(movingPlanId);
         setMessages([]);
       } catch (error) {
-        alert("플랜에 소유자만 삭제할 수 있습니다.");
+        if (error.response.data.code === 'NOT_FOUND') {
+          alert('플랜 소유자만 삭제할 수 있습니다.');
+        }
       }
     }
   };
