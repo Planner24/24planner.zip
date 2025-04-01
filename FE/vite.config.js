@@ -16,7 +16,9 @@ export default defineConfig({
       deleteOriginFile: false,
     }),
     ssr({
-      routes: ['/', '/invite'],
+      routes: async () => {
+        return ['/', '/invite'];
+      },
     }),
   ],
   server: {
