@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import compression from 'vite-plugin-compression';
 import tailwindcss from '@tailwindcss/vite';
+import ssr from 'vite-plugin-prerender';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -13,6 +14,9 @@ export default defineConfig({
       ext: '.gz',
       threshold: 1024,
       deleteOriginFile: false,
+    }),
+    ssr({
+      routes: ['/', '/invite'],
     }),
   ],
   server: {
