@@ -38,6 +38,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -50,6 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -258,13 +260,14 @@ public class AuthService {
         Cookie cookie = new Cookie("refreshToken",refreshjwt);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
+        cookie.setMaxAge(172800);
         cookie.setPath("/");
         response.addCookie(cookie);
 
         // refreshToken redis 넣기
         redisTemplate.opsForValue().set(refreshjwt, refreshjwt, 2, TimeUnit.DAYS);
 
-        return new LoginResponseDto(accessjwt, refreshjwt);
+        return new LoginResponseDto(accessjwt, user.getNickname());
     }
 
     // refresh token 검증 및 access token 재발급

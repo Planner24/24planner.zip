@@ -14,6 +14,9 @@ import PlanSetting from '../pages/PlanSetting';
 import FindPassword from '../pages/FindPassword';
 import NewPassword from '../pages/NewPassword';
 import Mypage from '../pages/Mypage';
+import Chat from '../pages/Chat';
+import Invite from '../pages/Invite';
+
 
 const router = createBrowserRouter([
   {
@@ -51,6 +54,10 @@ const router = createBrowserRouter([
       {
         path: ':movingPlanId/task/:taskGroupId',
         element: <TaskList />,
+      },
+      {
+        path: ':movingPlanId/chat',
+        element: <Chat />,
       },
       {
         path: ':movingPlanId/house',
@@ -92,6 +99,9 @@ const router = createBrowserRouter([
       </ProtectedLayout>
     ),
     children: [{ index: true, element: <Mypage /> }],
+    path: '/invite',
+    element: <Invite />,
+    // errorElement: <NotFound />,
   },
 ]);
 
