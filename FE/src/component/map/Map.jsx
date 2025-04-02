@@ -24,7 +24,7 @@ export default function Map({
   const mapPlusStyle =
     'w-22 h-12 border-2 rounded-xl px-2 py-1 bg-primary text-2xl text-white me-2 cursor-pointer';
   const mapButtonStyle =
-    'cursor-pointer w-25 h-12 border-2 rounded-xl px-2 py-1 text-black hover:bg-white hover:text-primary mx-3';
+    'cursor-pointer w-25 h-12 border-2 rounded-xl px-2 py-1 hover:bg-white hover:text-primary mx-3';
 
   const handleCalendarModal = () => {
     setShowModal(() => true);
@@ -66,8 +66,13 @@ export default function Map({
 
     // 지도 중심지 설정
     if (centerlatitude == null || centerlongitude == null) {
-      position = new kakao.maps.LatLng(33.450701, 126.570667);
-      map.setCenter(position);
+      navigator.geolocation.getCurrentPosition((position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        position = new kakao.maps.LatLng(lat, lon);
+        map.setCenter(position);
+      });
     } else {
       position = new kakao.maps.LatLng(centerlatitude, centerlongitude);
       map.setCenter(position);
@@ -140,7 +145,7 @@ export default function Map({
 
               return (
                 <button
-                  className={`${mapButtonStyle} ${isSelected ? 'bg-white text-primary' : ''}`}
+                  className={`${mapButtonStyle} ${isSelected ? 'bg-white text-primary' : 'text-black'}`}
                   id={id}
                   key={id}
                   data-latitude={latitude}

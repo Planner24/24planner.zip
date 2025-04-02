@@ -13,6 +13,11 @@ import NotFound from '../pages/NotFound';
 import PlanSetting from '../pages/PlanSetting';
 import LoginRedirect from '../pages/LoginRedirect';
 import SignupAdditionalInfo from '../pages/SignupAdditionalInfo';
+import FindPassword from '../pages/FindPassword';
+import NewPassword from '../pages/NewPassword';
+import Mypage from '../pages/Mypage';
+import Chat from '../pages/Chat';
+import Invite from '../pages/Invite';
 
 const router = createBrowserRouter([
   {
@@ -52,6 +57,10 @@ const router = createBrowserRouter([
         element: <TaskList />,
       },
       {
+        path: ':movingPlanId/chat',
+        element: <Chat />,
+      },
+      {
         path: ':movingPlanId/house',
         element: <Houses />,
       },
@@ -79,6 +88,31 @@ const router = createBrowserRouter([
   {
     path: '/signup/additional-info',
     element: <SignupAdditionalInfo />,
+  },
+  {                                 
+    path: '/password',
+    element: <FindPassword />,
+  },
+  {
+    path: '/newpassword',
+    element: <NewPassword />,
+  },
+  {
+    path: '/not-found',
+    element: <NotFound />,
+  },
+  {
+    path: '/mypage',
+    element: (
+      <ProtectedLayout>
+        <RootLayout />
+      </ProtectedLayout>
+    ),
+    children: [{ index: true, element: <Mypage /> }],
+  },
+  {
+    path: '/invite',
+    element: <Invite />,
     // errorElement: <NotFound />,
   },
 ]);

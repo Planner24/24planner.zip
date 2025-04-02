@@ -4,6 +4,7 @@ import DatePicker, { registerLocale } from 'react-datepicker';
 import ko from 'date-fns/locale/ko';
 
 import 'react-datepicker/dist/react-datepicker.css';
+import '../style/calendarModalDatePicker.css';
 
 export default function CalendarModalDatePicker({ startDate, setStartDate, endDate, setEndDate }) {
   // DatePicker에 요일이 한국어로 뜨도록 할 때 필요한 설정
@@ -23,7 +24,7 @@ export default function CalendarModalDatePicker({ startDate, setStartDate, endDa
           </button>
         </div>
         <div className={datePickerDateStyle}>
-          {date.getFullYear()}년 {date.getMonth() + 1}월
+          {date.getFullYear()}.{String(date.getMonth() + 1).padStart(2, '0')}
         </div>
         <div className={datePickerButtonDivStyle}>
           <button className={datePickerButtonStyle} onClick={increaseMonth}>
