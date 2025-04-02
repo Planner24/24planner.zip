@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Password from '../component/user/Password';
 import authApi from '../api/authApi';
+import { useDispatch } from 'react-redux';
+import { modifyNickname } from '../store/slices/authSlice';
 
 export default function Mypage() {
+  const dispatch = useDispatch();
   const [nickname, setNickname] = useState();
   const [formData, setFormData] = useState({
     nickname: '',
@@ -47,8 +50,12 @@ export default function Mypage() {
     try {
       const response = await authApi.patchNickname(formData);
       const updatedNickname = response.data.nickname;
-      setNickname(updatedNickname);
-      setFormData({ nickname: '' });
+      const code = response.code;
+      if (code === 'UPDATED') {
+        setNickname(updatedNickname);
+        setFormData({ nickname: '' });
+        dispatch(modifyNickname({ nickname: updatedNickname }));
+      }
     } catch (error) {
       const errorData = error.response.data;
       const code = errorData.code;
