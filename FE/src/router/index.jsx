@@ -72,7 +72,7 @@ const router = createBrowserRouter([
     // errorElement: <NotFound />,
   },
   {
-    path: '/login-success',
+    path: '/login-redirect',
     element: <LoginRedirect />,
     // errorElement: <NotFound />,
   },

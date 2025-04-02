@@ -49,8 +49,8 @@ public class CustomOAuthLoginSuccessHandler implements AuthenticationSuccessHand
         // refreshToken redis 넣기
         redisTemplate.opsForValue().set(refreshToken, refreshToken, 2, TimeUnit.DAYS);
 
-        // 로그인 성공 페이지로 이동
-        String redirectUrl = UriComponentsBuilder.fromHttpUrl(origin + "/login-success")
+        // 로그인 리다이렉트 페이지로 이동
+        String redirectUrl = UriComponentsBuilder.fromHttpUrl(origin + "/login-redirect")
             .queryParam("nickname", nickname)
             .queryParam("code", accessToken)
             .toUriString();

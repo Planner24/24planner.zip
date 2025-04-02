@@ -36,10 +36,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         // 이메일로 사용자 조회
         String email = oAuthUserInfo.getEmail();
-        User user = userRepository.findByUsername(email).orElseGet(() -> {
+        User user = userRepository.findByUsername(email).orElseThrow(() -> {
             String tempToken = tempUserService.saveTempUser(oAuthUserInfo);
-            throw new AdditionalInfoRequiredException("INFO_REQUIRED", "닉네임 입력 후 회원가입할 수 있습니다.", tempToken);
+            return new AdditionalInfoRequiredException(
+                "INFO_REQUIRED",
+                "닉네임 입력 후 회원가입할 수 있습니다.",
+                tempToken
+            );
         });
+
+        // 동일한 메일로 소셜로그인을 시도한 경우
+        String provider = user.getProvider();
+        if (provider == null || !provider.equals(registrationId)) {
+            throw new OAuth2AuthenticationException("기존에 회원가입한 방식으로 로그인 후 이용 가능합니다.");
+        }
 
         // OAuth 제공자에서 제공하는 사용자 이름 속성 값 가져오기
         String nameAttributeKey = userRequest.getClientRegistration()

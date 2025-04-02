@@ -13,8 +13,8 @@ export default function LoginRedirect() {
       const accessToken = urlParams.get('code');
       const nickname = urlParams.get('nickname');
 
-      if (!accessToken) {
-        alert('로그인에 실패했습니다. 다시 시도해주세요.');
+      if (!accessToken && !nickname) {
+        alert("기존에 회원가입한 방식으로 로그인 후 이용 가능합니다.");
         navigate('/login', { replace: true });
         return;
       }
