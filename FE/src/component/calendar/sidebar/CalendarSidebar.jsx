@@ -173,7 +173,6 @@ export default function CalendarSidebar({
       return scheduleId;
     },
     onMutate: async (scheduleId) => {
-      console.log(scheduleId);
       await queryClient.cancelQueries({ queryKey: [movingPlanId, selectDate] });
       const previousDailyScheduleList = queryClient.getQueryData([movingPlanId, selectDate]);
       const newDailyScheduleList = previousDailyScheduleList.filter(
