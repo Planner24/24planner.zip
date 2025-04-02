@@ -60,10 +60,9 @@ export default function Mypage() {
       const errorData = error.response.data;
       const code = errorData.code;
       const message = errorData.message;
-      if (code === 'EXIST_NICKNAME') {
+      if (code !== 'INVALID_TOKEN') {
         setMessage(message);
       }
-      setMessage(message);
     } finally {
       setIsSubmitting(false);
     }
