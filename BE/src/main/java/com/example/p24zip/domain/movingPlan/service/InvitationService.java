@@ -44,23 +44,15 @@ public class InvitationService {
                 TimeUnit.HOURS
         );
 
-        String invitationKey = "invitation:" + token;
-        redisTemplate.opsForValue().set(
-                invitationKey,
-                String.valueOf(movingPlanId),
-                24,
-                TimeUnit.HOURS
-        );
-
         String invitationLink = origin + "/invite?code=" + shortId;
 
         return HousemateInvitationResponseDto.from(invitationLink);
     }
 
     public HousemateInvitationValidateResponseDto validateInvitationCode(String shortId) {
-        log.info("으아악" + shortId);
+
         String token = redisTemplate.opsForValue().get("short_invitation:" + shortId);
-        log.info("으아악" + token);
+
         if (token == null) {
             throw new CustomException("INVALID_INVITATION", "만료되었거나 유효하지 않은 초대 링크입니다.");
         }
@@ -68,17 +60,9 @@ public class InvitationService {
         if (!jwtTokenProvider.validateToken(token)) {
             throw new CustomException("INVALID_INVITATION", "만료되었거나 유효하지 않은 초대 링크입니다.");
         }
-        log.info("으아악 어디냐");
 
         Long movingPlanId = jwtTokenProvider.getMovingPlanId(token);
         Long inviterId = jwtTokenProvider.getInviterId(token);
-
-        String invitationKey = "invitation:" + token;
-        String storedPlanId = redisTemplate.opsForValue().get(invitationKey);
-
-        if (storedPlanId == null || !storedPlanId.equals(String.valueOf(movingPlanId))) {
-            throw new CustomException("INVALID_INVITATION", "만료되었거나 유효하지 않은 초대 링크입니다.");
-        }
 
         MovingPlan movingPlan = movingPlanRepository.findById(movingPlanId)
                 .orElseThrow(() -> new CustomException("INVALID_INVITATION", "만료되었거나 유효하지 않은 초대 링크입니다."));
