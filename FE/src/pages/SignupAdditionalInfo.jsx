@@ -107,7 +107,7 @@ export default function SignupAdditionalInfo() {
 
   // CSS
   const signupWrapperStyle = 'h-screen flex flex-col justify-center items-center gap-3';
-  const logoStyle = 'w-40 text-center cursor-pointer mb-15';
+  const logoStyle = 'w-55 text-center cursor-pointer mb-10';
   const inputButtonDiv = 'w-full max-w-90 flex justify-center';
   const inputStyle = 'w-2/3 mx-1 px-2 focus:outline-none text-xl border-b border-gray-400';
   const able = 'border-primary text-primary hover:bg-primary hover:text-white cursor-pointer';
