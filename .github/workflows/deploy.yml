@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feature/P24-96-BE-FE-kakao-social-login
 
 jobs:
   deploy: # Job 이름
