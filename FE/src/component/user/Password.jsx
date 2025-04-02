@@ -23,6 +23,7 @@ export default function Password({ value }) {
 
   const handleInputValue = (e) => {
     setMessage();
+
     const { name, value } = e.target;
     if (name === 'verifyPassword') {
       setVerifyPassword(value);
@@ -103,6 +104,7 @@ export default function Password({ value }) {
       const errorData = error.response.data;
       const code = errorData.code;
       const message = errorData.message;
+      console.error();
 
       if (code !== 'TOOMANY_REQUEST') {
         setMessage(message);
@@ -140,7 +142,7 @@ export default function Password({ value }) {
           required
         />
         <hr className={`${lineStyle}`}></hr>
-        <ul class="flex justify-between ml-2 mt-1 mb-3">
+        <ul className="flex justify-between ml-2 mt-1 mb-3">
           <li
             className={
               checkMinLength(formData.password) && !checkInvalidChar(formData.password)
