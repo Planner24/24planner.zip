@@ -200,7 +200,6 @@ public class AuthService {
     public FindPasswordResponseDto findPassword(VerifyEmailRequestDto requestDto)
         throws UnsupportedEncodingException, MessagingException {
         String username = requestDto.getUsername();
-        System.out.println(username);
         User user = userRepository.findByUsername(username).orElseThrow(()-> new CustomException("NOT_EXIST_EMAIL", "존재하지 않는 이메일입니다."));
 
         if(redisTemplate.hasKey(username+"_tempToken")){
@@ -245,6 +244,10 @@ public class AuthService {
     @Transactional
     public void updatePassword(ChangePasswordRequestDto requestDto, HttpServletResponse response,
         User user) {
+        if(user==null){
+            user = userRepository.findByUsername(requestDto.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException());
+        }
         String encryptedPassword = passwordEncoder.encode(requestDto.getPassword());
 
         user.setPassword(encryptedPassword);
@@ -364,10 +367,7 @@ public class AuthService {
     @Transactional
     public void deleteUser(User user) {
         List<Housemate> housemateList = housemateRepository.findByUserAndIsOwnerTrue(user);
-        System.out.println(housemateList);
-
         List<MovingPlan> movingPlanList = housemateList.stream().map(Housemate::getMovingPlan).toList();
-        System.out.println(movingPlanList);
 
         movingPlanList.forEach(movingPlanRepository::delete);
         userRepository.delete(user);
@@ -481,7 +481,6 @@ public class AuthService {
         if(value == null){
             new ResourceNotFoundException();
         }
-        System.out.println(value);
         return new RedisValueResponseDto(value);
     }
 

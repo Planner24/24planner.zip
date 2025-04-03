@@ -1,29 +1,50 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { login, logout } from '../../store/slices/authSlice';
 import userApi from '../../api/userApi';
+import { jwtDecode } from 'jwt-decode';
 
-export default function Password({ value }) {
+export default function Password({ token, email }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [formEmail, setFormEmail] = useState();
 
-  const accessTokenData = localStorage.getItem('accessToken');
+  const accessTokenData = useSelector((state) => state.auth.accessToken);
 
   const [message, setMessage] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [passwordMessage, setPasswordMessage] = useState('');
   const [verifyPassword, setVerifyPassword] = useState('');
   const [formData, setFormData] = useState({
+    username: '',
     password: '',
   });
   const [validation, setValidation] = useState({
     password: { isValid: false, isEqual: false },
   });
 
+  useEffect(() => {
+    const setEmailValue = () => {
+      if (!accessTokenData) {
+        setFormData((prev) => ({
+          ...prev,
+          username: email,
+        }));
+      } else {
+        const decode = jwtDecode(accessTokenData);
+        const decodedEmail = decode.sub;
+        setFormData((prev) => ({
+          ...prev,
+          username: decodedEmail,
+        }));
+      }
+    };
+    setEmailValue();
+  }, [email]);
+
   const handleInputValue = (e) => {
     setMessage();
-
     const { name, value } = e.target;
     if (name === 'verifyPassword') {
       setVerifyPassword(value);
@@ -77,22 +98,25 @@ export default function Password({ value }) {
       setMessage('필수값이 누락되거나 형식이 올바르지 않습니다.');
       setIsSubmitting(false);
       return;
-    } else if (!value && !accessTokenData) {
+    }
+    if (!token && !accessTokenData) {
       alert('페이지 사용시간이 만료되어 비밀번호 변경에 실패하였습니다.');
       navigate('/login');
       return;
     }
-
     try {
-      if (value) {
-        dispatch(login({ accessToken: value }));
+      let response;
+      if (token) {
+        response = await userApi.patchPassword(formData, token);
+      }
+      if (accessTokenData) {
+        response = await userApi.patchPassword(formData, accessTokenData);
       }
 
-      const response = await userApi.patchPassword(formData);
       const code = response.code;
       const message = response.message;
 
-      if (!value && code === 'UPDATED') {
+      if (!token && code === 'UPDATED') {
         alert('비밀번호가 수정되었습니다.');
         return;
       } else {
@@ -106,7 +130,7 @@ export default function Password({ value }) {
       const message = errorData.message;
       console.error();
 
-      if (code !== 'TOOMANY_REQUEST') {
+      if (code !== 'TOOMANY_REQUEST' && code !== 'INVALID_TOKEN') {
         setMessage(message);
       }
     } finally {
