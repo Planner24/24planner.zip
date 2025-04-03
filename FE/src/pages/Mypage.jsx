@@ -100,7 +100,7 @@ export default function Mypage() {
   };
   const userInfoContainer = 'w-full mt-30 flex justify-center items-center';
   const userInfo = 'text-2xl';
-  const image = 'size-8';
+  const image = 'size-8 m-3';
   const container = 'w-full mt-30 grid content-center justify-items-center ';
   const form = 'mb-20 relative';
   const inputStyle = 'w-110 m-3 px-2 focus:outline-none text-xl';
@@ -138,7 +138,7 @@ export default function Mypage() {
           <p className={`${messageStyle}`}>{message || '\u00A0'}</p>
         </form>
 
-        <Password></Password>
+        {!provider && <Password></Password>}
         <button className={`${del}`} onClick={deleteUser}>
           탈퇴하기
         </button>

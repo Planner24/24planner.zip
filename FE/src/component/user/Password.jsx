@@ -142,6 +142,12 @@ export default function Password({ token, email }) {
     }
   };
 
+  const moveToButton = (e) => {
+    if (e.key === 'Enter') {
+      patchPassword();
+    }
+  };
+
   const container = 'w-full grid content-center justify-items-center';
   const form = 'w-full grid content-center justify-items-center relative ';
   const inputStyle = 'w-110 m-3 px-2 focus:outline-none text-xl';
@@ -214,6 +220,7 @@ export default function Password({ token, email }) {
           placeholder="비밀번호 확인"
           className={inputStyle}
           onChange={handleInputValue}
+          onKeyDown={moveToButton}
           required
         />
         <hr className={lineStyle} />
