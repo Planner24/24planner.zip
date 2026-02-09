@@ -8,7 +8,7 @@
 # jar 파일 실행
 
 # Build stage
-FROM openjdk:21-jdk-slim AS build
+FROM eclipse-temurin:21-jdk-alpine AS build
 WORKDIR /app
 
 # 의존성 캐싱 레이어
